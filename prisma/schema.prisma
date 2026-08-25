@@ -290,18 +290,32 @@ model Testimonial {
 }
 
 model WebsiteSettings {
-  id                    String   @id @default("default")
-  siteName              String   @default("Sugandhika")
-  tagline               String   @default("Pure Eco-Friendly Fragrance & Organic Mosquito Solutions")
-  logoUrl               String?
+  id                    String   @id
+  siteName              String
+  tagline               String?
+  contactEmail          String
+  contactPhone          String
+  address               String?
+
+  freeShippingThreshold Float
+  shippingFee           Float
+
   fonepayQrUrl          String?
-  contactEmail          String   @default("info@sugandhika.com")
-  contactPhone          String   @default("+977 9800000000")
-  address               String   @default("Kathmandu, Nepal")
+
+  logoUrl               String?
   facebookUrl           String?
   instagramUrl          String?
-  whatsappNumber        String?  @default("+977 9800000000")
-  freeShippingThreshold Float    @default(1500)
-  shippingFee           Float    @default(100)
+  whatsappNumber        String?
+
+  // Dynamic social media links
+  socialLinks           Json?
+
+  // Additional phone numbers, emails, WhatsApp, etc.
+  extraContacts         Json?
+
+  // Additional information such as location,
+  // opening hours, delivery details, etc.
+  extraDetails          Json?
+
   updatedAt             DateTime @updatedAt
 }

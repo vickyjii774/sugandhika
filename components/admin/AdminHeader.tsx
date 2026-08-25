@@ -11,7 +11,7 @@ export function AdminHeader() {
     <header className="h-16 bg-white border-b border-slate-100 px-8 flex items-center justify-between sticky top-0 z-30">
       <div className="flex items-center gap-2">
         <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-        <span className="text-xs font-bold text-slate-700">Sugandhika Management Live</span>
+        <span className="text-xs font-bold text-slate-700">Sugandhika Management </span>
       </div>
 
       <div className="flex items-center gap-4">

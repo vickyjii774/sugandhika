@@ -62,6 +62,8 @@ npm run dev
 
 Visit `http://localhost:3000` in your browser.
 
+https://sugandhika-beryl.vercel.app/
+
 ### Credentials
 - **Admin**: `admin@sugandhika.com` / `admin123`
 - **Customer**: `customer@sugandhika.com` / `user123`

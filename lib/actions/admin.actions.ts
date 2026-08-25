@@ -198,6 +198,46 @@ export async function createCategoryAction(data: {
   }
 }
 
+export async function updateCategoryAction(
+  categoryId: string,
+  data: {
+    name: string;
+    description?: string;
+    image?: string;
+    sortOrder?: number;
+  }
+) {
+  try {
+    const slug = slugify(data.name);
+
+    const category = await prisma.category.update({
+      where: {
+        id: categoryId,
+      },
+      data: {
+        name: data.name,
+        slug,
+        description: data.description || null,
+        image: data.image || null,
+        sortOrder: Math.max(0, data.sortOrder ?? 0),
+      },
+    });
+
+    revalidatePath("/admin/categories");
+    revalidatePath("/categories");
+
+    return {
+      success: true,
+      category,
+    };
+  } catch (error: any) {
+    return {
+      success: false,
+      error: error?.message || "Failed to update category.",
+    };
+  }
+}
+
 export async function deleteCategoryAction(categoryId: string) {
   try {
     await prisma.category.delete({ where: { id: categoryId } });
@@ -207,6 +247,192 @@ export async function deleteCategoryAction(categoryId: string) {
     return { success: false, error: error.message || "Failed to delete category." };
   }
 }
+
+// Banners CRUD
+
+export interface CreateBannerInput {
+  title: string;
+  subtitle?: string;
+  imageUrl: string;
+  linkUrl?: string;
+  isActive?: boolean;
+  sortOrder?: number;
+}
+
+export interface UpdateBannerInput {
+  title: string;
+  subtitle?: string;
+  imageUrl?: string;
+  linkUrl?: string;
+  isActive?: boolean;
+  sortOrder?: number;
+}
+
+export async function createBannerAction(data: CreateBannerInput) {
+  try {
+    const title = data.title.trim();
+
+    if (!title) {
+      return {
+        success: false,
+        error: "Banner title is required.",
+      };
+    }
+
+    if (!data.imageUrl?.trim()) {
+      return {
+        success: false,
+        error: "Banner image is required.",
+      };
+    }
+
+    const banner = await prisma.banner.create({
+      data: {
+        title,
+        subtitle: data.subtitle?.trim() || null,
+        imageUrl: data.imageUrl.trim(),
+        linkUrl: data.linkUrl?.trim() || null,
+        isActive: data.isActive ?? true,
+        sortOrder: Math.max(0, data.sortOrder ?? 0),
+      },
+    });
+
+    revalidatePath("/admin/banners");
+    revalidatePath("/");
+
+    return {
+      success: true,
+      banner,
+    };
+  } catch (error: any) {
+    console.error("Create banner error:", error);
+
+    return {
+      success: false,
+      error: error?.message || "Failed to create banner.",
+    };
+  }
+}
+
+export async function updateBannerAction(
+  bannerId: string,
+  data: UpdateBannerInput
+) {
+  try {
+    if (!bannerId) {
+      return {
+        success: false,
+        error: "Banner ID is required.",
+      };
+    }
+
+    const title = data.title.trim();
+
+    if (!title) {
+      return {
+        success: false,
+        error: "Banner title is required.",
+      };
+    }
+
+    const existingBanner = await prisma.banner.findUnique({
+      where: {
+        id: bannerId,
+      },
+    });
+
+    if (!existingBanner) {
+      return {
+        success: false,
+        error: "Banner not found.",
+      };
+    }
+
+    const banner = await prisma.banner.update({
+      where: {
+        id: bannerId,
+      },
+      data: {
+        title,
+        subtitle: data.subtitle?.trim() || null,
+
+        // Keep the existing image if no new image was provided
+        ...(data.imageUrl !== undefined
+          ? {
+              imageUrl: data.imageUrl.trim(),
+            }
+          : {}),
+
+        linkUrl: data.linkUrl?.trim() || null,
+        isActive: data.isActive ?? existingBanner.isActive,
+        sortOrder: Math.max(
+          0,
+          data.sortOrder ?? existingBanner.sortOrder
+        ),
+      },
+    });
+
+    revalidatePath("/admin/banners");
+    revalidatePath("/");
+
+    return {
+      success: true,
+      banner,
+    };
+  } catch (error: any) {
+    console.error("Update banner error:", error);
+
+    return {
+      success: false,
+      error: error?.message || "Failed to update banner.",
+    };
+  }
+}
+
+export async function deleteBannerAction(bannerId: string) {
+  try {
+    if (!bannerId) {
+      return {
+        success: false,
+        error: "Banner ID is required.",
+      };
+    }
+
+    const existingBanner = await prisma.banner.findUnique({
+      where: {
+        id: bannerId,
+      },
+    });
+
+    if (!existingBanner) {
+      return {
+        success: false,
+        error: "Banner not found.",
+      };
+    }
+
+    await prisma.banner.delete({
+      where: {
+        id: bannerId,
+      },
+    });
+
+    revalidatePath("/admin/banners");
+    revalidatePath("/");
+
+    return {
+      success: true,
+    };
+  } catch (error: any) {
+    console.error("Delete banner error:", error);
+
+    return {
+      success: false,
+      error: error?.message || "Failed to delete banner.",
+    };
+  }
+}
+
 
 // Orders Management
 export async function updateOrderStatusAction(orderId: string, status: "PENDING" | "PROCESSING" | "SHIPPED" | "DELIVERED" | "CANCELLED") {
@@ -285,7 +511,17 @@ export async function deleteCouponAction(couponId: string) {
 }
 
 // Settings Update (Fonepay QR, Shipping Fees)
-export async function updateWebsiteSettingsAction(data: {
+export interface SocialLinkInput {
+  name: string;
+  url: string;
+}
+
+export interface ContactInfoInput {
+  title: string;
+  detail: string;
+}
+
+export interface UpdateWebsiteSettingsInput {
   siteName?: string;
   tagline?: string;
   contactEmail?: string;
@@ -294,19 +530,47 @@ export async function updateWebsiteSettingsAction(data: {
   freeShippingThreshold?: number;
   shippingFee?: number;
   fonepayQrUrl?: string;
-}) {
+  socialLinks?: SocialLinkInput[];
+  extraContacts?: ContactInfoInput[];
+  extraDetails?: ContactInfoInput[];
+}
+
+export async function updateWebsiteSettingsAction(
+  settings: UpdateWebsiteSettingsInput
+) {
   try {
-    const settings = await prisma.websiteSettings.upsert({
+    const updatedSettings = await prisma.websiteSettings.update({
       where: { id: "default" },
-      update: data,
-      create: {
-        id: "default",
-        ...data,
+      data: {
+        ...settings,
+        socialLinks: {
+          deleteMany: {}, // Clear existing social links
+          create: settings.socialLinks?.map((link) => ({
+            name: link.name,
+            url: link.url,
+          })),
+        },
+        extraContacts: {
+          deleteMany: {}, // Clear existing extra contacts
+          create: settings.extraContacts?.map((contact) => ({
+            title: contact.title,
+            detail: contact.detail,
+          })),
+        },
+        extraDetails: {
+          deleteMany: {}, // Clear existing extra details
+          create: settings.extraDetails?.map((detail) => ({
+            title: detail.title,
+            detail: detail.detail,
+          })),
+        },
       },
     });
+
     revalidatePath("/admin/settings");
     revalidatePath("/");
-    return { success: true, settings };
+
+    return { success: true, settings: updatedSettings };
   } catch (error: any) {
     return { success: false, error: error.message || "Failed to update website settings." };
   }
