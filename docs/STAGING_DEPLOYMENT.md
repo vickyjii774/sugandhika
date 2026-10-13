@@ -35,7 +35,7 @@ For initial owner creation, Render prompts for these three secret inputs:
 - DJANGO_OWNER_BOOTSTRAP_EMAIL
 - DJANGO_OWNER_BOOTSTRAP_PASSWORD
 
-Use a staging-only username/email and a unique password of at least 14 characters. The initial deploy hook runs bootstrap_owner; it refuses to elevate an existing non-superuser account. After confirming the owner can sign in, **remove all three bootstrap environment variables from the Render service immediately**. Never reuse production credentials or put secrets in Git, build arguments, or logs.
+Use a staging-only username/email and a unique password of at least 14 characters. The startup command runs bootstrap_owner after migrations; it refuses to elevate an existing non-superuser account. After the first owner is created, the command safely skips bootstrap if the secret variables are absent and a superuser already exists. After confirming the owner can sign in, **remove all three bootstrap environment variables from the Render service immediately**. Never reuse production credentials or put secrets in Git, build arguments, or logs.
 
 ## 3. Create the Render Blueprint
 
@@ -44,7 +44,7 @@ Use a staging-only username/email and a unique password of at least 14 character
 3. Review the resources and plans before confirming. The committed plan is free for temporary testing only; do not import real customer data into the free database.
 4. Enter the three bootstrap values when prompted. These values are used only to create the initial staging owner.
 5. Confirm the resources are exactly sugandhika-django-staging and sugandhika-staging-db. Do not modify or replace any production resources.
-6. Wait for the deploy and bootstrap hook to finish. Verify /api/health/ returns HTTP 200, sign in at /owner/login/, and remove the three bootstrap variables.
+6. Wait for the deploy and initial startup bootstrap to finish. Verify /api/health/ returns HTTP 200, sign in at /owner/login/, and remove the three bootstrap variables.
 
 The repository contains the Blueprint and startup configuration, but GitHub commits do not create Render resources. Provisioning must be confirmed through the connected Render account. No production environment variables or traffic are changed by this process.
 
