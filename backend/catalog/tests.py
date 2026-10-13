@@ -81,3 +81,22 @@ class OwnerDashboardPageTests(TestCase):
         self.client.force_login(staff)
         response = self.client.get("/owner/")
         self.assertEqual(response.status_code, 403)
+
+
+    def test_owner_resource_screens_render(self):
+        owner = get_user_model().objects.create_superuser(
+            username="resource-owner", email="resource-owner@example.com", password="strong-test-password"
+        )
+        self.client.force_login(owner)
+        category = Category.objects.create(name="Resource test category")
+        product = Product.objects.create(category=category, name="Resource test product", description="Test", price="12.00")
+        resources = [
+            "products", "categories", "product-images", "orders", "customers", "coupons",
+            "banners", "faqs", "testimonials", "reviews", "contact-messages",
+            "newsletter-subscribers", "store-settings",
+        ]
+        for resource in resources:
+            response = self.client.get(f"/owner/manage/{resource}/", follow=True)
+            self.assertEqual(response.status_code, 200, msg=f"Resource page failed: {resource}")
+        edit_response = self.client.get(f"/owner/manage/products/{product.pk}/edit/")
+        self.assertEqual(edit_response.status_code, 200)
