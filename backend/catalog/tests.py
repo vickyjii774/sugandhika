@@ -128,7 +128,7 @@ class PrismaImportCommandTests(TestCase):
                 "id": "legacy-order-1", "orderNumber": "SUG-TEST-1001",
                 "userId": "legacy-user-1",
                 "user": {"id": "legacy-user-1", "name": "Test Customer", "email": "customer-import@example.com", "phone": "9800000000"},
-                "shippingAddress": "{\\"fullName\\": \\"Test Customer\\", \\"phone\\": \\"9800000000\\"}",
+                "shippingAddress": '{"fullName": "Test Customer", "phone": "9800000000"}',
                 "totalAmount": 350, "discountAmount": 0, "shippingFee": 0, "finalAmount": 350,
                 "couponCode": None, "paymentMethod": "COD", "paymentStatus": "PENDING",
                 "orderStatus": "PENDING", "transactionId": None, "paymentScreenshot": None,
