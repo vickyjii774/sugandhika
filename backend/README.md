@@ -21,7 +21,11 @@ python manage.py runserver
 
 Set a strong unique `DJANGO_SECRET_KEY` in the local environment. Create the owner with `createsuperuser`; owner endpoints only allow Django superuser. Do not use demo credentials or commit secrets.
 
-## Custom owner dashboard\n\nAfter creating the owner account with `python manage.py createsuperuser`, visit `/owner/login/` on the Django host. The custom `/owner/` dashboard uses Django session authentication and CSRF-protected forms; it is restricted to a superuser. It provides screens for products, categories, orders and payment status, customers, coupons, banners, FAQs, testimonials, review approval, store settings, contact messages, newsletter subscribers, and product images. Django Admin remains separate for emergency developer use.\n\n## Endpoints
+## Custom owner dashboard
+
+After creating the owner account with `python manage.py createsuperuser`, visit `/owner/login/` on the Django host. The custom `/owner/` dashboard uses Django session authentication and CSRF-protected forms; it is restricted to a superuser. It provides screens for products, categories, orders and payment status, customers, coupons, banners, FAQs, testimonials, review approval, store settings, contact messages, newsletter subscribers, and product images. Django Admin remains separate for emergency developer use.
+
+## Endpoints
 Base URL: `http://127.0.0.1:8000/api/`
 
 - `health/` — service health
