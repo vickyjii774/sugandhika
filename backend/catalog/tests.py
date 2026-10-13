@@ -30,3 +30,16 @@ class CatalogPermissionTests(TestCase):
         self.client.force_authenticate(user=user)
         response = self.client.get("/api/orders/")
         self.assertEqual(response.status_code, 403)
+
+    def test_staff_without_owner_superuser_flag_is_denied(self):
+        user = get_user_model().objects.create_user(username="staff", password="strong-test-password", is_staff=True)
+        self.client.force_authenticate(user=user)
+        response = self.client.get("/api/owner/dashboard/")
+        self.assertEqual(response.status_code, 403)
+
+    def test_owner_superuser_can_access_dashboard(self):
+        user = get_user_model().objects.create_superuser(username="owner", email="owner@example.com", password="strong-test-password")
+        self.client.force_authenticate(user=user)
+        response = self.client.get("/api/owner/dashboard/")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("orders_total", response.data)
