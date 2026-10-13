@@ -11,12 +11,12 @@ from rest_framework.response import Response
 
 from .models import (
     AuditLog, Banner, ContactMessage, Coupon, FAQ, NewsletterSubscriber,
-    Order, Product, StoreSettings, Testimonial,
+    Order, Product, ProductReview, StoreSettings, Testimonial,
 )
 from .permissions import PublicReadOwnerWrite
 from .business_serializers import (
     AuditLogSerializer, BannerSerializer, ContactMessageSerializer, CouponSerializer, CustomerSerializer,
-    FAQSerializer, NewsletterSubscriberSerializer, OrderSerializer, StoreSettingsSerializer,
+    FAQSerializer, NewsletterSubscriberSerializer, OrderSerializer, ProductReviewSerializer, StoreSettingsSerializer,
     TestimonialSerializer,
 )
 
