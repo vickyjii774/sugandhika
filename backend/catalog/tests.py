@@ -56,3 +56,28 @@ class CatalogPermissionTests(TestCase):
         self.assertEqual(response.status_code, 201)
         review = ProductReview.objects.get(pk=response.data["id"])
         self.assertFalse(review.is_approved)
+
+
+class OwnerDashboardPageTests(TestCase):
+    def test_dashboard_redirects_anonymous_users_to_owner_login(self):
+        response = self.client.get("/owner/")
+        self.assertEqual(response.status_code, 302)
+        self.assertIn("/owner/login/", response.url)
+
+    def test_owner_superuser_can_open_custom_dashboard(self):
+        owner = get_user_model().objects.create_superuser(
+            username="dashboard-owner", email="dashboard-owner@example.com", password="strong-test-password"
+        )
+        self.client.force_login(owner)
+        response = self.client.get("/owner/")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Sugandhika")
+        self.assertContains(response, "Recent orders")
+
+    def test_staff_user_is_blocked_from_custom_dashboard(self):
+        staff = get_user_model().objects.create_user(
+            username="dashboard-staff", password="strong-test-password", is_staff=True
+        )
+        self.client.force_login(staff)
+        response = self.client.get("/owner/")
+        self.assertEqual(response.status_code, 403)
