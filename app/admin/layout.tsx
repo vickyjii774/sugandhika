@@ -10,6 +10,28 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
+  // Set this server-only variable after the Django owner dashboard is deployed
+  // and the owner account has been provisioned. Until then, keep the existing
+  // NextAuth/Prisma dashboard available for staging.
+  const djangoOwnerDashboardUrl = process.env.DJANGO_OWNER_DASHBOARD_URL?.trim();
+  if (djangoOwnerDashboardUrl) {
+    let target: URL;
+    try {
+      target = new URL(djangoOwnerDashboardUrl);
+    } catch {
+      throw new Error("DJANGO_OWNER_DASHBOARD_URL must be an absolute URL.");
+    }
+
+    if (
+      process.env.NODE_ENV === "production" &&
+      target.protocol !== "https:"
+    ) {
+      throw new Error("DJANGO_OWNER_DASHBOARD_URL must use HTTPS in production.");
+    }
+
+    redirect(target.toString());
+  }
+
   const session = await getServerSession(authOptions);
 
   if (!session?.user || (session.user as any).role !== "ADMIN") {
