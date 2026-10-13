@@ -12,7 +12,11 @@ class Command(BaseCommand):
         email = os.environ.get("DJANGO_OWNER_BOOTSTRAP_EMAIL", "").strip()
         password = os.environ.get("DJANGO_OWNER_BOOTSTRAP_PASSWORD", "")
 
+        User = get_user_model()
         if not username or not email or not password:
+            if User.objects.filter(is_superuser=True).exists():
+                self.stdout.write("A staging superuser already exists; owner bootstrap skipped.")
+                return
             raise CommandError(
                 "Set DJANGO_OWNER_BOOTSTRAP_USERNAME, DJANGO_OWNER_BOOTSTRAP_EMAIL, "
                 "and DJANGO_OWNER_BOOTSTRAP_PASSWORD in the hosting dashboard for the initial bootstrap."
@@ -20,7 +24,6 @@ class Command(BaseCommand):
         if len(password) < 14:
             raise CommandError("The staging owner password must be at least 14 characters.")
 
-        User = get_user_model()
         existing = User.objects.filter(username=username).first()
         if existing:
             if existing.is_superuser:
