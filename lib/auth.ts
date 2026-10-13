@@ -50,6 +50,8 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   ],
+  // Never use a committed fallback secret. Configure NEXTAUTH_SECRET in every environment.
+  secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
@@ -66,5 +68,4 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
   },
-  secret: process.env.NEXTAUTH_SECRET || "sugandhika-secret-key-production-ready-eco-luxury-2026",
 };
