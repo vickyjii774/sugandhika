@@ -81,3 +81,14 @@ class AuditLogSerializer(serializers.ModelSerializer):
         model = AuditLog
         fields = ("id", "actor", "actor_email", "action", "entity_type", "entity_id", "details", "created_at")
         read_only_fields = fields
+
+
+class CustomerSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    username = serializers.CharField(read_only=True)
+    email = serializers.EmailField(read_only=True)
+    first_name = serializers.CharField(read_only=True)
+    last_name = serializers.CharField(read_only=True)
+    is_active = serializers.BooleanField(read_only=True)
+    date_joined = serializers.DateTimeField(read_only=True)
+    orders_count = serializers.IntegerField(read_only=True)
