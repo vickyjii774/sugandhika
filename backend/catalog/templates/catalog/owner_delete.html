@@ -1,0 +1,7 @@
+{% extends "catalog/owner_base.html" %}
+{% block title %}Delete record · Sugandhika{% endblock %}
+{% block breadcrumb %}{{ resource.title }} / Delete{% endblock %}
+{% block content %}
+<div class="page-head"><div><div class="eyebrow">Confirm action</div><h1>Delete this record?</h1><div class="muted">This cannot be undone.</div></div></div>
+<div class="form-card"><p>You're about to delete <strong>{{ object }}</strong>.</p><form method="post">{% csrf_token %}<div class="actions"><button class="btn danger" type="submit">Yes, delete</button><a class="btn secondary" href="{% url 'owner-resource-list' resource_key %}">Cancel</a></div></form></div>
+{% endblock %}
