@@ -4,7 +4,7 @@ from .views import CategoryViewSet, ProductViewSet, catalog_summary
 from .business_views import (
     AuditLogViewSet, BannerViewSet, ContactMessageViewSet, CouponViewSet, CustomerViewSet,
     FAQViewSet, NewsletterViewSet, OrderViewSet, StoreSettingsViewSet,
-    TestimonialViewSet, owner_dashboard_summary,
+    ProductReviewViewSet, TestimonialViewSet, owner_dashboard_summary,
 )
 
 router = DefaultRouter()
@@ -15,7 +15,7 @@ router.register("customers", CustomerViewSet, basename="customer")
 router.register("coupons", CouponViewSet, basename="coupon")
 router.register("banners", BannerViewSet, basename="banner")
 router.register("faqs", FAQViewSet, basename="faq")
-router.register("testimonials", TestimonialViewSet, basename="testimonial")
+router.register("testimonials", TestimonialViewSet, basename="testimonial")\nrouter.register("reviews", ProductReviewViewSet, basename="review")
 router.register("contact-messages", ContactMessageViewSet, basename="contact-message")
 router.register("newsletter-subscribers", NewsletterViewSet, basename="newsletter-subscriber")
 router.register("store-settings", StoreSettingsViewSet, basename="store-settings")
