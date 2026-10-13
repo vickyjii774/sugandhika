@@ -2,7 +2,7 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 from .views import CategoryViewSet, ProductViewSet, catalog_summary
 from .business_views import (
-    AuditLogViewSet, BannerViewSet, ContactMessageViewSet, CouponViewSet,
+    AuditLogViewSet, BannerViewSet, ContactMessageViewSet, CouponViewSet, CustomerViewSet,
     FAQViewSet, NewsletterViewSet, OrderViewSet, StoreSettingsViewSet,
     TestimonialViewSet, owner_dashboard_summary,
 )
@@ -11,6 +11,7 @@ router = DefaultRouter()
 router.register("categories", CategoryViewSet, basename="category")
 router.register("products", ProductViewSet, basename="product")
 router.register("orders", OrderViewSet, basename="order")
+router.register("customers", CustomerViewSet, basename="customer")
 router.register("coupons", CouponViewSet, basename="coupon")
 router.register("banners", BannerViewSet, basename="banner")
 router.register("faqs", FAQViewSet, basename="faq")
