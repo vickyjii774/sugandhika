@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Sugandhika Owner Login</title>
+<style>
+*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:#edf3e9;color:#18251c;font:14px/1.5 system-ui,sans-serif}.login{width:min(430px,calc(100% - 32px));background:white;border:1px solid #dfe8dc;border-radius:20px;padding:34px;box-shadow:0 18px 60px #173d2714}.brand{color:#2e6038;font-size:12px;text-transform:uppercase;letter-spacing:2px;font-weight:800}.login h1{font-size:27px;margin:10px 0 6px}.muted{color:#68766b}.field{margin-top:18px}.field label{display:block;font-weight:700;font-size:12px;margin-bottom:6px}.field input{width:100%;padding:12px;border:1px solid #d5e0d2;border-radius:9px;font:inherit}.btn{width:100%;margin-top:22px;background:#2e6038;color:white;border:0;border-radius:9px;padding:12px;font-weight:800;cursor:pointer}.errorlist{color:#a73e35;padding-left:18px}.note{margin-top:20px;font-size:11px;color:#68766b}
+</style></head>
+<body><main class="login"><div class="brand">Sugandhika · Owner access</div><h1>Welcome back</h1><p class="muted">Sign in to manage your store securely.</p>
+<form method="post">{% csrf_token %}{{ form.non_field_errors }}
+<div class="field"><label for="{{ form.username.id_for_label }}">Owner username</label>{{ form.username }}</div>
+<div class="field"><label for="{{ form.password.id_for_label }}">Password</label>{{ form.password }}</div>
+<input type="hidden" name="next" value="{{ next }}">
+<button class="btn" type="submit">Sign in to dashboard</button></form>
+<p class="note">Owner superuser access only. Customer and staff accounts cannot enter this workspace.</p></main></body></html>
