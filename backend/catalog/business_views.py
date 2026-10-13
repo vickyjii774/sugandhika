@@ -121,6 +121,29 @@ class CouponViewSet(OwnerOnlyViewSet):
         write_audit(self.request, "coupon_updated", "coupon", instance.pk, {"code": instance.code})
 
 
+
+class ProductReviewViewSet(viewsets.ModelViewSet):
+    serializer_class = ProductReviewSerializer
+    queryset = ProductReview.objects.select_related("product").all()
+    permission_classes = (PublicReadOwnerWrite,)
+    http_method_names = ("get", "post", "patch", "delete", "head", "options")
+
+    def get_permissions(self):
+        # Anyone may submit a review, but new reviews remain hidden until owner approval.
+        if self.request.method == "POST":
+            return [AllowAny()]
+        return [permission() for permission in self.permission_classes]
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        if not is_owner(self.request.user):
+            return qs.filter(is_approved=True, product__is_active=True)
+        return qs
+
+    def perform_create(self, serializer):
+        serializer.save(is_approved=bool(is_owner(self.request.user)))
+
+
 class BannerViewSet(viewsets.ModelViewSet):
     queryset = Banner.objects.all()
     serializer_class = BannerSerializer
