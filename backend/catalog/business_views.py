@@ -210,7 +210,11 @@ class StoreSettingsViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         if not is_owner(request.user):
             return Response({"detail": "Owner access required."}, status=403)
-        instance, _ = StoreSettings.objects.update_or_create(pk=1, defaults=request.data)
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        defaults = dict(serializer.validated_data)
+        defaults.pop("id", None)
+        instance, _ = StoreSettings.objects.update_or_create(pk=1, defaults=defaults)
         write_audit(request, "store_settings_updated", "store_settings", 1)
         return Response(self.get_serializer(instance).data, status=status.HTTP_200_OK)
 
