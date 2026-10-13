@@ -6,14 +6,19 @@
 <div class="panel"><div class="panel-head"><h2>{{ object_list|length }} record{{ object_list|length|pluralize }}</h2><form class="search" method="get"><input name="q" value="{{ query }}" placeholder="Search {{ resource.title|lower }}…"><button class="btn secondary" type="submit">Search</button></form></div>
 <div class="table-wrap"><table><thead><tr><th>Record</th><th>Details</th><th>Actions</th></tr></thead><tbody>
 {% for object in object_list %}<tr><td><strong>{{ object }}</strong><br><span class="muted">#{{ object.pk }}</span></td><td>
-{% if object.order_number %}{{ object.customer_name }} · Rs. {{ object.total_amount|floatformat:2 }}<br><span class="muted">{{ object.payment_method }} / {{ object.payment_status }} / {{ object.status }}</span>
-{% elif object.email %}{{ object.email }}{% if object.is_read != None %} · {% if object.is_read %}Read{% else %}Unread{% endif %}{% endif %}
-{% elif object.price != None %}Rs. {{ object.price|floatformat:2 }} · Stock: {{ object.stock }}{% if object.is_active %} · Active{% else %} · Hidden{% endif %}
-{% elif object.rating != None %}Rating: {{ object.rating }}{% if object.is_approved != None %} · {% if object.is_approved %}Approved{% else %}Awaiting approval{% endif %}{% endif %}
-{% elif object.code %}{{ object.discount_type }} · {{ object.discount_value }} · {% if object.is_active %}Active{% else %}Inactive{% endif %}
-{% elif object.is_active != None %}{% if object.is_active %}Active{% else %}Inactive{% endif %}
-{% elif object.is_published != None %}{% if object.is_published %}Published{% else %}Hidden{% endif %}
-{% else %}<span class="muted">Created / managed record</span>{% endif %}
+{% if resource_key == "orders" %}{{ object.customer_name }} · Rs. {{ object.total_amount|floatformat:2 }}<br><span class="muted">{{ object.payment_method }} / {{ object.payment_status }} / {{ object.status }}</span>
+{% elif resource_key == "customers" %}{{ object.email }} · {% if object.is_active %}Active{% else %}Inactive{% endif %}
+{% elif resource_key == "products" %}Rs. {{ object.price|floatformat:2 }} · Stock: {{ object.stock }} · {% if object.is_active %}Active{% else %}Hidden{% endif %}
+{% elif resource_key == "reviews" %}{{ object.product.name }} · Rating: {{ object.rating }} · {% if object.is_approved %}Approved{% else %}Awaiting approval{% endif %}
+{% elif resource_key == "coupons" %}{{ object.discount_type }} · {{ object.discount_value }} · {% if object.is_active %}Active{% else %}Inactive{% endif %}
+{% elif resource_key == "contact-messages" %}{{ object.email }} · {% if object.is_read %}Read{% else %}Unread{% endif %}
+{% elif resource_key == "newsletter-subscribers" %}{% if object.is_active %}Active{% else %}Unsubscribed{% endif %}
+{% elif resource_key == "categories" %}{% if object.is_active %}Active{% else %}Hidden{% endif %}
+{% elif resource_key == "banners" %}{% if object.is_active %}Active{% else %}Hidden{% endif %}
+{% elif resource_key == "faqs" %}{% if object.is_published %}Published{% else %}Hidden{% endif %}
+{% elif resource_key == "testimonials" %}{% if object.is_featured %}Featured{% else %}Not featured{% endif %}
+{% elif resource_key == "product-images" %}{{ object.product.name }} · {% if object.is_primary %}Primary image{% else %}Additional image{% endif %}
+{% else %}<span class="muted">Record details</span>{% endif %}
 </td><td><div class="actions">{% if can_edit %}<a class="btn secondary" href="{% url 'owner-resource-action' resource_key object.pk 'edit' %}">Edit</a>{% endif %}{% if can_delete %}<a class="btn danger" href="{% url 'owner-resource-action' resource_key object.pk 'delete' %}">Delete</a>{% endif %}</div></td></tr>
 {% empty %}<tr><td colspan="3" class="empty">Nothing here yet. {% if can_create %}Add your first record to get started.{% endif %}</td></tr>{% endfor %}
 </tbody></table></div></div>
