@@ -113,6 +113,7 @@ def manage_resource(request, resource, pk=None, action=None):
         if not config["delete"] or obj is None:
             return HttpResponseForbidden("Delete is not allowed for this resource.")
         if request.method == "POST":
+            AuditLog.objects.create(actor=request.user, action=f"{resource}_deleted", entity_type=resource, entity_id=str(obj.pk), details={"label": str(obj)})
             obj.delete()
             return redirect("owner-resource-list", resource=resource)
         return render(request, "catalog/owner_delete.html", {"resource": config, "resource_key": resource, "object": obj})
@@ -126,6 +127,7 @@ def manage_resource(request, resource, pk=None, action=None):
         form = form_class(request.POST or None, instance=obj)
         if request.method == "POST" and form.is_valid():
             saved = form.save()
+            AuditLog.objects.create(actor=request.user, action=f"{resource}_{action}", entity_type=resource, entity_id=str(saved.pk), details={"label": str(saved)})
             if resource == "coupons":
                 saved.code = saved.code.strip().upper()
                 saved.save(update_fields=["code"])
