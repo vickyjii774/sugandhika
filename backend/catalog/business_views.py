@@ -1,6 +1,7 @@
 from datetime import timedelta
 from decimal import Decimal
 
+from django.contrib.auth import get_user_model
 from django.db.models import Count, Sum
 from django.utils import timezone
 from rest_framework import filters, status, viewsets
@@ -10,11 +11,11 @@ from rest_framework.response import Response
 
 from .models import (
     AuditLog, Banner, ContactMessage, Coupon, FAQ, NewsletterSubscriber,
-    Order, StoreSettings, Testimonial,
+    Order, Product, StoreSettings, Testimonial,
 )
 from .permissions import PublicReadOwnerWrite
 from .business_serializers import (
-    AuditLogSerializer, BannerSerializer, ContactMessageSerializer, CouponSerializer,
+    AuditLogSerializer, BannerSerializer, ContactMessageSerializer, CouponSerializer, CustomerSerializer,
     FAQSerializer, NewsletterSubscriberSerializer, OrderSerializer, StoreSettingsSerializer,
     TestimonialSerializer,
 )
@@ -90,6 +91,21 @@ class OrderViewSet(OwnerOnlyViewSet):
         order.save()
         write_audit(request, "order_status_changed", "order", order.pk, {"status": new_status})
         return Response(self.get_serializer(order).data)
+
+
+class CustomerViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = CustomerSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def initial(self, request, *args, **kwargs):
+        super().initial(request, *args, **kwargs)
+        if not is_owner(request.user):
+            from rest_framework.exceptions import PermissionDenied
+            raise PermissionDenied("Owner dashboard access is restricted to the store owner.")
+
+    def get_queryset(self):
+        User = get_user_model()
+        return User.objects.filter(is_staff=False, is_superuser=False).annotate(orders_count=Count("sugandhika_orders")).order_by("-date_joined")
 
 
 class CouponViewSet(OwnerOnlyViewSet):
@@ -222,7 +238,7 @@ def owner_dashboard_summary(request):
     recent = Order.objects.filter(created_at__gte=timezone.now() - timedelta(days=30))
     sales = Order.objects.filter(payment_status=Order.PaymentStatus.VERIFIED, status__in=[Order.Status.PROCESSING, Order.Status.SHIPPED, Order.Status.DELIVERED])
     low_stock = list(
-        __import__("catalog.models", fromlist=["Product"]).Product.objects.filter(is_active=True, stock__lte=5)
+        Product.objects.filter(is_active=True, stock__lte=5)
         .values("id", "name", "stock").order_by("stock", "name")[:10]
     )
     return Response({
