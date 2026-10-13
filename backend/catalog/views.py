@@ -19,7 +19,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         qs = super().get_queryset()
-        if self.request.method in ("GET", "HEAD", "OPTIONS") and not (self.request.user.is_authenticated and (self.request.user.is_staff or self.request.user.is_superuser)):
+        if self.request.method in ("GET", "HEAD", "OPTIONS") and not (self.request.user.is_authenticated and self.request.user.is_superuser):
             return qs.filter(is_active=True)
         return qs
 
