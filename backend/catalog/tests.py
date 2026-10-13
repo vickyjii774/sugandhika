@@ -174,3 +174,51 @@ class PrismaImportCommandTests(TestCase):
         user = get_user_model().objects.get(email="customer-import@example.com")
         self.assertFalse(user.has_usable_password())
         self.assertFalse(user.is_superuser)
+
+
+class StagingOwnerBootstrapTests(TestCase):
+    def test_bootstrap_creates_superuser_from_environment(self):
+        from unittest.mock import patch
+        from django.core.management import call_command
+
+        env = {
+            "DJANGO_OWNER_BOOTSTRAP_USERNAME": "staging-owner",
+            "DJANGO_OWNER_BOOTSTRAP_EMAIL": "staging-owner@example.com",
+            "DJANGO_OWNER_BOOTSTRAP_PASSWORD": "a-long-test-password-123",
+        }
+        with patch.dict("os.environ", env):
+            call_command("bootstrap_owner")
+        owner = get_user_model().objects.get(username="staging-owner")
+        self.assertTrue(owner.is_superuser)
+        self.assertTrue(owner.check_password(env["DJANGO_OWNER_BOOTSTRAP_PASSWORD"]))
+
+    def test_bootstrap_refuses_to_elevate_existing_non_superuser(self):
+        from unittest.mock import patch
+        from django.core.management import call_command, CommandError
+
+        get_user_model().objects.create_user(
+            username="existing-customer", email="existing@example.com", password="customer-password"
+        )
+        env = {
+            "DJANGO_OWNER_BOOTSTRAP_USERNAME": "existing-customer",
+            "DJANGO_OWNER_BOOTSTRAP_EMAIL": "existing@example.com",
+            "DJANGO_OWNER_BOOTSTRAP_PASSWORD": "a-long-test-password-123",
+        }
+        with patch.dict("os.environ", env):
+            with self.assertRaises(CommandError):
+                call_command("bootstrap_owner")
+        self.assertFalse(get_user_model().objects.get(username="existing-customer").is_superuser)
+
+    def test_bootstrap_requires_long_password(self):
+        from unittest.mock import patch
+        from django.core.management import call_command, CommandError
+
+        env = {
+            "DJANGO_OWNER_BOOTSTRAP_USERNAME": "short-pass-owner",
+            "DJANGO_OWNER_BOOTSTRAP_EMAIL": "short@example.com",
+            "DJANGO_OWNER_BOOTSTRAP_PASSWORD": "short",
+        }
+        with patch.dict("os.environ", env):
+            with self.assertRaises(CommandError):
+                call_command("bootstrap_owner")
+        self.assertFalse(get_user_model().objects.filter(username="short-pass-owner").exists())
