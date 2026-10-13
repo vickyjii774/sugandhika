@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Sugandhika Owner{% endblock %}</title>
+  <style>
+    :root{--green:#2e6038;--green2:#447d4c;--ink:#18251c;--muted:#68766b;--paper:#f4f7f2;--line:#e2e9df;--white:#fff;--gold:#d7a94b}
+    *{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:14px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    a{color:var(--green);text-decoration:none}a:hover{text-decoration:underline}.shell{min-height:100vh;display:grid;grid-template-columns:245px 1fr}
+    .sidebar{background:#173d27;color:#eef7ec;padding:26px 16px;display:flex;flex-direction:column;gap:24px}.brand{padding:0 12px}.brand strong{display:block;font-size:21px;letter-spacing:.2px}.brand small{color:#b9d0bd}
+    .nav{display:grid;gap:5px}.nav a{display:block;padding:9px 12px;border-radius:9px;color:#d8e9da;font-size:13px}.nav a:hover{background:#285638;text-decoration:none;color:#fff}.nav .section{padding:12px 12px 3px;color:#8eb49a;font-size:10px;text-transform:uppercase;letter-spacing:1.4px}
+    .sidebar-foot{margin-top:auto;padding:0 12px;color:#b9d0bd;font-size:12px}.logout button{border:1px solid #6c9476;background:transparent;color:#fff;border-radius:8px;padding:8px 12px;cursor:pointer}
+    .main{min-width:0}.topbar{height:72px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 32px}.topbar strong{font-size:13px}.topbar span{color:var(--muted);font-size:12px}
+    .content{padding:30px;max-width:1500px;margin:0 auto}.page-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:24px}.page-head h1{margin:0 0 5px;font-size:26px;letter-spacing:-.6px}.muted{color:var(--muted)}.eyebrow{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--green2);font-weight:800}
+    .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.card{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:20px;box-shadow:0 3px 12px #193d2708}.metric-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:700}.metric{font-size:29px;font-weight:800;letter-spacing:-1px;margin-top:8px}.metric-note{font-size:12px;color:var(--muted);margin-top:4px}
+    .panel{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-top:20px}.panel-head{padding:17px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}.panel-head h2{font-size:15px;margin:0}.panel-body{padding:18px 20px}
+    .resource-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.resource-link{display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid var(--line);padding:13px 14px;border-radius:10px;background:#fff;font-weight:650}.resource-link:hover{border-color:#9cb99d;background:#fafff8;text-decoration:none}
+    .btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:9px;padding:10px 14px;background:var(--green);color:#fff;font-weight:700;font-size:12px;cursor:pointer}.btn:hover{background:var(--green2);color:#fff;text-decoration:none}.btn.secondary{background:#edf4eb;color:var(--green)}.btn.danger{background:#a73e35}
+    .table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;white-space:nowrap}th,td{padding:13px 15px;text-align:left;border-bottom:1px solid #edf1eb;font-size:12px}th{background:#f8faf7;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.9px}tr:last-child td{border-bottom:0}.pill{display:inline-block;padding:4px 8px;background:#edf4eb;color:var(--green);border-radius:99px;font-size:10px;font-weight:800}
+    .search{display:flex;gap:8px}.search input{min-width:180px}.form-card{max-width:850px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:24px}.form-card p{margin:0 0 17px}.form-card label{display:block;font-size:12px;font-weight:750;margin-bottom:6px}.form-card input,.form-card select,.form-card textarea,.search input{width:100%;border:1px solid #d6e0d4;border-radius:8px;padding:10px 11px;background:#fff;font:inherit}.form-card textarea{min-height:100px}.form-card input[type=checkbox]{width:auto}.helptext{display:block;color:var(--muted);font-size:11px;margin-top:5px}.errorlist{color:#a73e35;padding-left:18px}.actions{display:flex;gap:8px;align-items:center}.empty{padding:28px;color:var(--muted);text-align:center}
+    @media(max-width:1000px){.shell{grid-template-columns:205px 1fr}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.resource-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.content{padding:22px}}
+    @media(max-width:700px){.shell{display:block}.sidebar{padding:16px;gap:14px}.nav{display:flex;overflow:auto}.nav .section{display:none}.nav a{white-space:nowrap}.sidebar-foot{display:none}.topbar{height:56px;padding:0 18px}.content{padding:16px}.grid{gap:9px}.card{padding:14px}.metric{font-size:24px}.resource-grid{grid-template-columns:1fr}.page-head h1{font-size:22px}.form-card{padding:16px}}
+  </style>
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand"><strong>Sugandhika</strong><small>Store owner workspace</small></div>
+    <nav class="nav">
+      <a href="{% url 'owner-dashboard' %}">◈ &nbsp; Overview</a>
+      <div class="section">Store operations</div>
+      <a href="{% url 'owner-resource-list' 'orders' %}">▤ &nbsp; Orders & payments</a>
+      <a href="{% url 'owner-resource-list' 'products' %}">▣ &nbsp; Products</a>
+      <a href="{% url 'owner-resource-list' 'categories' %}">▦ &nbsp; Categories</a>
+      <a href="{% url 'owner-resource-list' 'customers' %}">♙ &nbsp; Customers</a>
+      <a href="{% url 'owner-resource-list' 'coupons' %}">◇ &nbsp; Promotions</a>
+      <div class="section">Website content</div>
+      <a href="{% url 'owner-resource-list' 'banners' %}">▧ &nbsp; Homepage banners</a>
+      <a href="{% url 'owner-resource-list' 'faqs' %}">? &nbsp; FAQs</a>
+      <a href="{% url 'owner-resource-list' 'testimonials' %}">☆ &nbsp; Testimonials</a>
+      <a href="{% url 'owner-resource-list' 'reviews' %}">✧ &nbsp; Product reviews</a>
+      <div class="section">Store settings</div>
+      <a href="{% url 'owner-resource-list' 'store-settings' %}">⚙ &nbsp; Store settings</a>
+      <a href="{% url 'owner-resource-list' 'contact-messages' %}">✉ &nbsp; Contact messages</a>
+      <a href="{% url 'owner-resource-list' 'newsletter-subscribers' %}">◎ &nbsp; Newsletter</a>
+      <a href="{% url 'owner-resource-list' 'product-images' %}">▧ &nbsp; Product images</a>
+    </nav>
+    <div class="sidebar-foot">Private owner access<br><br>
+      <form class="logout" method="post" action="{% url 'owner-logout' %}">{% csrf_token %}<button type="submit">Sign out ↗</button></form>
+    </div>
+  </aside>
+  <main class="main">
+    <header class="topbar"><strong>{% block breadcrumb %}Owner overview{% endblock %}</strong><span>Signed in as {{ request.user.email|default:request.user.username }}</span></header>
+    <div class="content">{% block content %}{% endblock %}</div>
+  </main>
+</div>
+</body>
+</html>
