@@ -92,3 +92,12 @@ class CustomerSerializer(serializers.Serializer):
     is_active = serializers.BooleanField(read_only=True)
     date_joined = serializers.DateTimeField(read_only=True)
     orders_count = serializers.IntegerField(read_only=True)
+
+
+class ProductReviewSerializer(serializers.ModelSerializer):
+    product_name = serializers.CharField(source="product.name", read_only=True)
+
+    class Meta:
+        model = ProductReview
+        fields = ("id", "product", "product_name", "reviewer_name", "reviewer_email", "rating", "comment", "is_approved", "created_at", "updated_at")
+        read_only_fields = ("id", "created_at", "updated_at")
