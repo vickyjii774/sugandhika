@@ -1,10 +1,10 @@
-# Sugandhika Django API (migration scaffold)
+# Sugandhika Django API (migration in progress)
 
-This backend is being introduced alongside the existing Next.js storefront. It is **not yet wired into the live storefront** and does not replace the current production database.
+The Django API is being introduced alongside the current Next.js storefront. It is **not connected to the live storefront** and does not replace or migrate the production database. Keep production on the current application until the migration checklist is complete and tested.
 
 ## Requirements
 - Python 3.11+
-- PostgreSQL for production; SQLite is configured as a local development default.
+- PostgreSQL for production; SQLite is the local development default.
 
 ## Run locally
 ```bash
@@ -12,20 +12,44 @@ python -m venv .venv
 # Windows: .venv\\Scripts\\activate
 # macOS/Linux: source .venv/bin/activate
 pip install -r requirements.txt
-copy .env.example .env  # Windows; on macOS/Linux use cp
+copy .env.example .env
 python manage.py makemigrations catalog
 python manage.py migrate
 python manage.py createsuperuser
 python manage.py runserver
 ```
 
-API base URL: `http://127.0.0.1:8000/api/`
+Set a strong unique `DJANGO_SECRET_KEY` in the local environment. Create the owner with `createsuperuser`; owner endpoints only allow Django staff/superusers. Do not use demo credentials or commit secrets.
+
+## Endpoints
+Base URL: `http://127.0.0.1:8000/api/`
+
 - `health/` — service health
-- `catalog/summary/` — public counts
-- `categories/` — category list/detail
-- `products/` — product list/detail by slug; supports search, ordering, category and featured filters
+- `auth/token/`, `auth/token/refresh/` — JWT login/refresh (Django username/password)
+- `catalog/summary/` — public catalog counts
+- `categories/`, `products/` — public active catalog read; authenticated owner/staff writes
+- `banners/`, `faqs/`, `testimonials/` — public active content; owner/staff management
+- `store-settings/` — public read; owner/staff updates
+- `contact-messages/` — public submit; owner/staff list and mark read
+- `newsletter-subscribers/` — public subscribe; owner/staff list/manage
+- `owner/dashboard/` — owner-only operational metrics and recent orders
+- `orders/` — owner-only order management and search
+- `orders/{id}/update-status/` — owner-only fulfilment status change
+- `orders/{id}/verify-payment/` — owner-only Fonepay verification/rejection/refund status action
+- `customers/` — owner-only customer directory (limited profile fields and order counts)
+- `coupons/` — owner-only promotions
+- `audit-logs/` — owner-only audit history
 
-Public users can read active catalog entries. Only authenticated Django staff/superusers can create, update, or delete catalog records. Use a strong owner password and keep `DJANGO_SECRET_KEY` private.
+For endpoints that use numeric IDs, use the ID returned by the API. Product details use the product slug.
 
-## Migration status
-This is the first migration slice: environment, Django/DRF setup, and catalog models/endpoints. Orders, customer auth, payments/Fonepay verification, coupons, website content, media storage, custom owner dashboard, data import, and production deployment are not implemented yet. Do not point the live storefront at this API until the remaining flows and data migration have been tested.
+## Current scope and limitations
+This branch contains Django configuration, catalog models/API, order/payment metadata models, owner-only business APIs, content/settings endpoints, audit logging, and starter permission tests. It still needs local validation and additional work:
+- Create and review generated migrations; run Django checks and automated tests.
+- Add safe checkout/order creation with server-side price/stock validation and inventory transactions.
+- Connect the existing storefront and owner dashboard to Django instead of Prisma/NextAuth.
+- Complete media upload/storage, customer authentication/profile endpoints, order history, return workflow, email/notification handling, reporting charts, and Fonepay reconciliation.
+- Import existing production data safely and verify record counts and relationships.
+- Configure production secrets, database, CORS/CSRF, HTTPS, backups, monitoring, and deployment.
+- Test the entire customer and owner workflows in staging before production cutover.
+
+Do not deploy this API as the production source of truth yet. Once cut over, avoid running Prisma and Django as independent writers for orders or stock.
