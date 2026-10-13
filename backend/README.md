@@ -19,7 +19,7 @@ python manage.py createsuperuser
 python manage.py runserver
 ```
 
-Set a strong unique `DJANGO_SECRET_KEY` in the local environment. Create the owner with `createsuperuser`; owner endpoints only allow Django staff/superusers. Do not use demo credentials or commit secrets.
+Set a strong unique `DJANGO_SECRET_KEY` in the local environment. Create the owner with `createsuperuser`; owner endpoints only allow Django superuser. Do not use demo credentials or commit secrets.
 
 ## Endpoints
 Base URL: `http://127.0.0.1:8000/api/`
@@ -27,7 +27,7 @@ Base URL: `http://127.0.0.1:8000/api/`
 - `health/` — service health
 - `auth/token/`, `auth/token/refresh/` — JWT login/refresh (Django username/password)
 - `catalog/summary/` — public catalog counts
-- `categories/`, `products/` — public active catalog read; authenticated owner/staff writes
+- `categories/`, `products/` — public active catalog read; authenticated owner writes
 - `banners/`, `faqs/`, `testimonials/` — public active content; owner/staff management
 - `store-settings/` — public read; owner/staff updates
 - `contact-messages/` — public submit; owner/staff list and mark read
