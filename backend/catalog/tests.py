@@ -222,3 +222,14 @@ class StagingOwnerBootstrapTests(TestCase):
             with self.assertRaises(CommandError):
                 call_command("bootstrap_owner")
         self.assertFalse(get_user_model().objects.filter(username="short-pass-owner").exists())
+
+    def test_bootstrap_is_safe_after_bootstrap_secrets_are_removed(self):
+        from unittest.mock import patch
+        from django.core.management import call_command
+
+        get_user_model().objects.create_superuser(
+            username="already-bootstrapped", email="already@example.com", password="long-test-password-123"
+        )
+        with patch.dict("os.environ", {}, clear=True):
+            call_command("bootstrap_owner")
+        self.assertEqual(get_user_model().objects.filter(is_superuser=True).count(), 1)
