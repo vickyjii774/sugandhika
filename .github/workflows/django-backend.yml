@@ -36,3 +36,5 @@ jobs:
         run: python manage.py check
       - name: Run API tests
         run: python manage.py test catalog --verbosity 2
+      - name: Build staging Docker image
+        run: docker build --tag sugandhika-django-staging:ci .
