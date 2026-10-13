@@ -10,7 +10,7 @@ from django.utils import timezone
 from django.forms import modelform_factory
 
 from .models import (
-    Banner, Category, ContactMessage, Coupon, FAQ, NewsletterSubscriber, Order,
+    AuditLog, Banner, Category, ContactMessage, Coupon, FAQ, NewsletterSubscriber, Order,
     Product, ProductImage, ProductReview, StoreSettings, Testimonial,
 )
 
@@ -115,7 +115,7 @@ def manage_resource(request, resource, pk=None, action=None):
         if request.method == "POST":
             obj.delete()
             return redirect("owner-resource-list", resource=resource)
-        return render(request, "catalog/owner_delete.html", {"resource": config, "object": obj})
+        return render(request, "catalog/owner_delete.html", {"resource": config, "resource_key": resource, "object": obj})
 
     if action in ("new", "edit"):
         if action == "new" and not config["create"]:
@@ -131,7 +131,7 @@ def manage_resource(request, resource, pk=None, action=None):
                 saved.save(update_fields=["code"])
             return redirect("owner-resource-list", resource=resource)
         return render(request, "catalog/owner_form.html", {
-            "resource": config, "form": form, "object": obj, "action": action,
+            "resource": config, "resource_key": resource, "form": form, "object": obj, "action": action,
         })
 
     if action is not None:
