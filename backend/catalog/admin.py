@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import (
     AuditLog, Banner, Category, ContactMessage, Coupon, FAQ, NewsletterSubscriber,
-    Order, OrderItem, Product, ProductImage, StoreSettings, Testimonial,
+    Order, OrderItem, Product, ProductImage, ProductReview, StoreSettings, Testimonial,
 )
 
 
@@ -91,3 +91,10 @@ class AuditLogAdmin(admin.ModelAdmin):
     list_filter = ("action", "entity_type", "created_at")
     search_fields = ("action", "entity_type", "entity_id")
     readonly_fields = ("actor", "action", "entity_type", "entity_id", "details", "created_at")
+
+
+@admin.register(ProductReview)
+class ProductReviewAdmin(admin.ModelAdmin):
+    list_display = ("reviewer_name", "product", "rating", "is_approved", "created_at")
+    list_filter = ("is_approved", "rating", "created_at")
+    search_fields = ("reviewer_name", "reviewer_email", "product__name", "comment")
