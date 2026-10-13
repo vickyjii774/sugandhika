@@ -7,8 +7,7 @@ services:
     branch: feat/django-backend-migration
     dockerfilePath: ./backend/Dockerfile
     dockerContext: ./backend
-    dockerCommand: "sh -c 'python manage.py migrate --noinput && gunicorn config.wsgi:application --bind 0.0.0.0:${PORT:-10000} --workers 2 --timeout 60'"
-    initialDeployHook: python manage.py bootstrap_owner
+    dockerCommand: "sh -c 'python manage.py migrate --noinput && python manage.py bootstrap_owner && gunicorn config.wsgi:application --bind 0.0.0.0:${PORT:-10000} --workers 2 --timeout 60'"
     healthCheckPath: /api/health/
     autoDeployTrigger: 'off'
     envVars:
