@@ -364,5 +364,5 @@ class Command(BaseCommand):
         self.stdout.write(json.dumps({"processed": result, "verified": actual}, indent=2, sort_keys=True))
         self.stdout.write(json.dumps(result, indent=2, sort_keys=True))
         self.stdout.write("Customer accounts were created with unusable passwords. Set up and test a secure password-reset flow before customer login cutover.")
-        self.stdout.write("Imported Prisma ADMIN roles were not promoted to Django superusers. Create the actual owner separately with createsuperuser.")
+        self.stdout.write("Imported Prisma ADMIN roles were not promoted to Django superusers. Create the staging owner separately with the secure bootstrap_owner hook or createsuperuser.")
         self.stdout.write("Review timestamps and financial totals against the source export before any production cutover.")
