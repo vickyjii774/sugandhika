@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from rest_framework.test import APIClient
 
-from .models import Category, Product
+from .models import Category, Product, ProductReview
 
 
 class CatalogPermissionTests(TestCase):
@@ -43,3 +43,16 @@ class CatalogPermissionTests(TestCase):
         response = self.client.get("/api/owner/dashboard/")
         self.assertEqual(response.status_code, 200)
         self.assertIn("orders_total", response.data)
+
+    def test_public_review_requires_owner_approval(self):
+        response = self.client.post("/api/reviews/", {
+            "product": self.product.pk,
+            "reviewer_name": "Test Customer",
+            "reviewer_email": "reviewer@example.com",
+            "rating": 5,
+            "comment": "A test review",
+            "is_approved": True,
+        }, format="json")
+        self.assertEqual(response.status_code, 201)
+        review = ProductReview.objects.get(pk=response.data["id"])
+        self.assertFalse(review.is_approved)
