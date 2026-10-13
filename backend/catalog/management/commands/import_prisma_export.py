@@ -329,7 +329,39 @@ class Command(BaseCommand):
                 )
                 result["store_settings"] = 1
 
-        self.stdout.write(self.style.SUCCESS("Import transaction committed."))
+            # Verify source-key coverage inside the transaction. Any mismatch aborts and rolls back.
+            source_emails = {str(row.get("email", "")).strip().lower() for row in data["users"] if row.get("email")}
+            source_category_slugs = {row["slug"] for row in data["categories"]}
+            source_product_slugs = {row["slug"] for row in data["products"]}
+            source_order_numbers = {row["orderNumber"] for row in data["orders"]}
+            source_coupon_codes = {str(row["code"]).upper().strip() for row in data["coupons"]}
+            expected = {
+                "users": len(source_emails),
+                "categories": len(source_category_slugs),
+                "products": len(source_product_slugs),
+                "orders": len(source_order_numbers),
+                "order_items": sum(len(row.get("items") or []) for row in data["orders"]),
+                "product_images": sum(len(row.get("images") or []) for row in data["products"]),
+                "coupons": len(source_coupon_codes),
+            }
+            actual = {
+                "users": User.objects.filter(email__in=source_emails).count(),
+                "categories": Category.objects.filter(slug__in=source_category_slugs).count(),
+                "products": Product.objects.filter(slug__in=source_product_slugs).count(),
+                "orders": Order.objects.filter(order_number__in=source_order_numbers).count(),
+                "order_items": OrderItem.objects.filter(order__order_number__in=source_order_numbers).count(),
+                "product_images": ProductImage.objects.filter(product__slug__in=source_product_slugs).count(),
+                "coupons": Coupon.objects.filter(code__in=source_coupon_codes).count(),
+            }
+            mismatches = {
+                key: {"expected": expected[key], "actual": actual[key]}
+                for key in expected if expected[key] != actual[key]
+            }
+            if mismatches:
+                raise CommandError("Post-import verification failed; transaction rolled back: " + json.dumps(mismatches, sort_keys=True))
+
+        self.stdout.write(self.style.SUCCESS("Import transaction committed and key counts verified."))
+        self.stdout.write(json.dumps({"processed": result, "verified": actual}, indent=2, sort_keys=True))
         self.stdout.write(json.dumps(result, indent=2, sort_keys=True))
         self.stdout.write("Customer accounts were created with unusable passwords. Set up and test a secure password-reset flow before customer login cutover.")
         self.stdout.write("Imported Prisma ADMIN roles were not promoted to Django superusers. Create the actual owner separately with createsuperuser.")
