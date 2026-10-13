@@ -1,6 +1,6 @@
 {% extends "catalog/owner_base.html" %}
 {% block title %}{% if action == "new" %}Add{% else %}Edit{% endif %} {{ resource.title }} · Sugandhika{% endblock %}
-{% block breadcrumb %}<a href="{% url 'owner-resource-list' resource.model_name|default:resource.title|slugify %}">{{ resource.title }}</a> / {% if action == "new" %}New record{% else %}Edit record{% endif %}{% endblock %}
+{% block breadcrumb %}<a href="{% url 'owner-resource-list' resource_key %}">{{ resource.title }}</a> / {% if action == "new" %}New record{% else %}Edit record{% endif %}{% endblock %}
 {% block content %}
 <div class="page-head"><div><div class="eyebrow">{{ resource.title }}</div><h1>{% if action == "new" %}Add new record{% else %}Edit record{% endif %}</h1><div class="muted">Changes are saved directly to the Django database.</div></div><a class="btn secondary" href="javascript:history.back()">← Back</a></div>
 <form method="post" class="form-card">{% csrf_token %}{{ form.non_field_errors }}{{ form.as_p }}
