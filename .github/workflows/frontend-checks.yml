@@ -9,6 +9,7 @@ on:
       - "package.json"
       - "package-lock.json"
       - "prisma/**"
+      - "scripts/**"
       - "tsconfig.json"
       - ".github/workflows/frontend-checks.yml"
   push:
