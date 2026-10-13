@@ -1,0 +1,28 @@
+{% extends "catalog/owner_base.html" %}
+{% block title %}Owner Overview · Sugandhika{% endblock %}
+{% block breadcrumb %}Store overview{% endblock %}
+{% block content %}
+<div class="page-head"><div><div class="eyebrow">Your business at a glance</div><h1>Good to see you, {{ request.user.first_name|default:"Owner" }}</h1><div class="muted">Monitor orders, payments, inventory and your storefront from one place.</div></div><a class="btn" href="{% url 'owner-resource-list' 'orders' %}">Manage orders →</a></div>
+<div class="grid">
+  <div class="card"><div class="metric-label">Verified sales</div><div class="metric">Rs. {{ sales_total|floatformat:2 }}</div><div class="metric-note">Verified paid orders</div></div>
+  <div class="card"><div class="metric-label">Total orders</div><div class="metric">{{ orders_total }}</div><div class="metric-note">{{ orders_pending }} awaiting processing</div></div>
+  <div class="card"><div class="metric-label">Fonepay pending</div><div class="metric">{{ payments_pending }}</div><div class="metric-note">Need payment review</div></div>
+  <div class="card"><div class="metric-label">Active products</div><div class="metric">{{ products_total }}</div><div class="metric-note">{{ customers_total }} customer accounts</div></div>
+</div>
+<div class="panel"><div class="panel-head"><h2>Recent orders</h2><a href="{% url 'owner-resource-list' 'orders' %}">View all →</a></div>
+<div class="table-wrap"><table><thead><tr><th>Order</th><th>Customer</th><th>Amount</th><th>Payment</th><th>Fulfilment</th><th>Placed</th><th></th></tr></thead><tbody>
+{% for order in recent_orders %}<tr><td><strong>{{ order.order_number }}</strong></td><td>{{ order.customer_name }}<br><span class="muted">{{ order.customer_phone }}</span></td><td>Rs. {{ order.total_amount|floatformat:2 }}</td><td><span class="pill">{{ order.payment_status }}</span><br><span class="muted">{{ order.payment_method }}</span></td><td>{{ order.status }}</td><td>{{ order.created_at|date:"d M Y" }}</td><td><a href="{% url 'owner-resource-action' 'orders' order.pk 'edit' %}">Open</a></td></tr>
+{% empty %}<tr><td colspan="7" class="empty">No orders yet.</td></tr>{% endfor %}
+</tbody></table></div></div>
+<div class="panel"><div class="panel-head"><h2>Inventory alerts</h2><a href="{% url 'owner-resource-list' 'products' %}">Manage products →</a></div>
+<div class="table-wrap"><table><thead><tr><th>Product</th><th>Stock remaining</th><th>Status</th><th></th></tr></thead><tbody>
+{% for product in low_stock %}<tr><td>{{ product.name }}</td><td>{{ product.stock }}</td><td><span class="pill">Low stock</span></td><td><a href="{% url 'owner-resource-action' 'products' product.pk 'edit' %}">Restock</a></td></tr>
+{% empty %}<tr><td colspan="4" class="empty">No low-stock products. Inventory looks healthy.</td></tr>{% endfor %}
+</tbody></table></div></div>
+<div class="panel"><div class="panel-head"><h2>Needs your attention</h2></div><div class="panel-body"><div class="resource-grid">
+<a class="resource-link" href="{% url 'owner-resource-list' 'contact-messages' %}"><span>Unread messages</span><span class="pill">{{ unread_messages }}</span></a>
+<a class="resource-link" href="{% url 'owner-resource-list' 'reviews' %}"><span>Reviews awaiting approval</span><span class="pill">{{ pending_reviews }}</span></a>
+<a class="resource-link" href="{% url 'owner-resource-list' 'store-settings' %}"><span>Shipping, payments & policies</span><span>→</span></a>
+</div></div></div>
+<div class="panel"><div class="panel-head"><h2>Manage your store</h2><span class="muted">Choose a workspace</span></div><div class="panel-body"><div class="resource-grid">{% for label, key in resources %}<a class="resource-link" href="{% url 'owner-resource-list' key %}"><span>{{ label }}</span><span>→</span></a>{% endfor %}</div></div></div>
+{% endblock %}
