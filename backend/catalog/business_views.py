@@ -22,7 +22,7 @@ from .business_serializers import (
 
 
 def is_owner(user):
-    return bool(user and user.is_authenticated and (user.is_superuser or user.is_staff))
+    return bool(user and user.is_authenticated and user.is_superuser)
 
 
 def write_audit(request, action_name, entity_type, entity_id="", details=None):
@@ -63,6 +63,8 @@ class OrderViewSet(OwnerOnlyViewSet):
         decision = request.data.get("decision")
         if decision not in ("verify", "reject", "refund"):
             return Response({"detail": "decision must be verify, reject, or refund."}, status=400)
+        if decision in ("verify", "reject") and order.payment_method != Order.PaymentMethod.FONEPAY_QR:
+            return Response({"detail": "Only Fonepay QR orders can be verified or rejected here."}, status=400)
         status_map = {
             "verify": Order.PaymentStatus.VERIFIED,
             "reject": Order.PaymentStatus.REJECTED,
@@ -71,8 +73,6 @@ class OrderViewSet(OwnerOnlyViewSet):
         order.payment_status = status_map[decision]
         if decision == "verify" and order.status == Order.Status.PENDING:
             order.status = Order.Status.PROCESSING
-        if decision == "refund":
-            order.status = Order.Status.RETURNED
         order.internal_note = request.data.get("note", order.internal_note)
         order.save()
         write_audit(request, f"payment_{decision}", "order", order.pk, {"order_number": order.order_number})
@@ -233,8 +233,6 @@ def owner_dashboard_summary(request):
     if not is_owner(request.user):
         from rest_framework.exceptions import PermissionDenied
         raise PermissionDenied("Owner dashboard access is restricted to the store owner.")
-    today = timezone.localdate()
-    start_today = timezone.make_aware(timezone.datetime.combine(today, timezone.datetime.min.time()))
     recent = Order.objects.filter(created_at__gte=timezone.now() - timedelta(days=30))
     sales = Order.objects.filter(payment_status=Order.PaymentStatus.VERIFIED, status__in=[Order.Status.PROCESSING, Order.Status.SHIPPED, Order.Status.DELIVERED])
     low_stock = list(
