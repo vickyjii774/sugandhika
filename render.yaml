@@ -7,6 +7,8 @@ services:
     branch: feat/django-backend-migration
     dockerfilePath: ./backend/Dockerfile
     dockerContext: ./backend
+    dockerCommand: "sh -c 'python manage.py migrate --noinput && gunicorn config.wsgi:application --bind 0.0.0.0:${PORT:-10000} --workers 2 --timeout 60'"
+    initialDeployHook: python manage.py bootstrap_owner
     healthCheckPath: /api/health/
     autoDeployTrigger: off
     envVars:
@@ -26,6 +28,12 @@ services:
         value: http://localhost:3000
       - key: CSRF_TRUSTED_ORIGINS
         value: https://sugandhika-django-staging.onrender.com
+      - key: DJANGO_OWNER_BOOTSTRAP_USERNAME
+        sync: false
+      - key: DJANGO_OWNER_BOOTSTRAP_EMAIL
+        sync: false
+      - key: DJANGO_OWNER_BOOTSTRAP_PASSWORD
+        sync: false
 
 databases:
   - name: sugandhika-staging-db
