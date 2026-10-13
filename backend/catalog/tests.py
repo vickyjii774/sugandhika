@@ -100,3 +100,77 @@ class OwnerDashboardPageTests(TestCase):
             self.assertEqual(response.status_code, 200, msg=f"Resource page failed: {resource}")
         edit_response = self.client.get(f"/owner/manage/products/{product.pk}/edit/")
         self.assertEqual(edit_response.status_code, 200)
+
+
+class PrismaImportCommandTests(TestCase):
+    def _export_payload(self):
+        return {
+            "format": "sugandhika-prisma-export",
+            "version": 1,
+            "counts": {"users": 1, "categories": 1, "products": 1, "orders": 1},
+            "users": [{
+                "id": "legacy-user-1", "name": "Test Customer", "email": "customer-import@example.com",
+                "phone": "9800000000", "role": "CUSTOMER",
+            }],
+            "categories": [{
+                "id": "legacy-category-1", "name": "Herbal Sticks", "slug": "herbal-sticks",
+                "description": "Test category", "image": "", "sortOrder": 1,
+            }],
+            "products": [{
+                "id": "legacy-product-1", "name": "Herbal Repellent", "slug": "herbal-repellent",
+                "description": "Test product", "shortDescription": "Test", "price": 350,
+                "compareAtPrice": 450, "stock": 12, "categoryId": "legacy-category-1",
+                "category": {"id": "legacy-category-1", "slug": "herbal-sticks"},
+                "isFeatured": True, "isActive": True, "tags": "herbal,mosquito",
+                "images": [{"url": "https://example.com/product.jpg", "isPrimary": True, "sortOrder": 0}],
+            }],
+            "orders": [{
+                "id": "legacy-order-1", "orderNumber": "SUG-TEST-1001",
+                "userId": "legacy-user-1",
+                "user": {"id": "legacy-user-1", "name": "Test Customer", "email": "customer-import@example.com", "phone": "9800000000"},
+                "shippingAddress": "{\\"fullName\\": \\"Test Customer\\", \\"phone\\": \\"9800000000\\"}",
+                "totalAmount": 350, "discountAmount": 0, "shippingFee": 0, "finalAmount": 350,
+                "couponCode": None, "paymentMethod": "COD", "paymentStatus": "PENDING",
+                "orderStatus": "PENDING", "transactionId": None, "paymentScreenshot": None,
+                "notes": None, "createdAt": "2026-01-01T00:00:00.000Z",
+                "items": [{
+                    "id": "legacy-item-1", "productId": "legacy-product-1",
+                    "product": {"id": "legacy-product-1", "slug": "herbal-repellent"},
+                    "title": "Herbal Repellent", "price": 350, "quantity": 1, "image": None,
+                }],
+            }],
+            "coupons": [], "reviews": [], "banners": [], "faqs": [], "testimonials": [],
+            "contactMessages": [], "newsletterSubscribers": [], "websiteSettings": None,
+        }
+
+    def _run_import(self, dry_run=False):
+        import json
+        import os
+        import tempfile
+        from django.core.management import call_command
+
+        handle, path = tempfile.mkstemp(suffix=".json")
+        try:
+            with os.fdopen(handle, "w", encoding="utf-8") as file:
+                json.dump(self._export_payload(), file)
+            call_command("import_prisma_export", path, **({"dry_run": True} if dry_run else {}))
+        finally:
+            os.unlink(path)
+
+    def test_dry_run_validates_export_without_writing(self):
+        self._run_import(dry_run=True)
+        self.assertFalse(Category.objects.filter(slug="herbal-sticks").exists())
+        self.assertFalse(Product.objects.filter(slug="herbal-repellent").exists())
+
+    def test_import_is_idempotent_and_customer_password_is_unusable(self):
+        from django.contrib.auth import get_user_model
+
+        self._run_import()
+        self._run_import()
+        self.assertEqual(Category.objects.filter(slug="herbal-sticks").count(), 1)
+        self.assertEqual(Product.objects.filter(slug="herbal-repellent").count(), 1)
+        self.assertEqual(Order.objects.filter(order_number="SUG-TEST-1001").count(), 1)
+        self.assertEqual(OrderItem.objects.filter(order__order_number="SUG-TEST-1001").count(), 1)
+        user = get_user_model().objects.get(email="customer-import@example.com")
+        self.assertFalse(user.has_usable_password())
+        self.assertFalse(user.is_superuser)
