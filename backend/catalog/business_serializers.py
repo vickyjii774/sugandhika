@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import (
     AuditLog, Banner, ContactMessage, Coupon, FAQ, NewsletterSubscriber,
-    Order, OrderItem, StoreSettings, Testimonial,
+    Order, OrderItem, ProductReview, StoreSettings, Testimonial,
 )
 
 
