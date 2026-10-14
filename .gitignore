@@ -29,3 +29,6 @@ pnpm-debug.log*
 # OS files
 .DS_Store
 Thumbs.db
+
+# Private migration exports can contain customer and order data
+sugandhika-prisma-export*.json

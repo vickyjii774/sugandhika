@@ -42,10 +42,10 @@ npm install
 ```
 
 ### 2. Environment Variables
-Check `.env` for database and NextAuth configuration:
+Copy `.env.example` to `.env` and configure unique environment-specific secrets:
 ```env
 DATABASE_URL="file:./dev.db"
-NEXTAUTH_SECRET="sugandhika-secret-key-production-ready-eco-luxury-2026"
+NEXTAUTH_SECRET="REPLACE_WITH_A_UNIQUE_RANDOM_SECRET"
 NEXTAUTH_URL="http://localhost:3000"
 ```
 
@@ -65,5 +65,7 @@ Visit `http://localhost:3000` in your browser.
 https://sugandhika-beryl.vercel.app/
 
 ### Credentials
-- **Admin**: `admin@sugandhika.com` / `admin123`
-- **Customer**: `customer@sugandhika.com` / `user123`
+Create local test accounts through the application or seed script. Do not use demo credentials in production. Set a unique `NEXTAUTH_SECRET` in every environment; the application no longer relies on a committed fallback secret.
+
+### Django migration (in progress)
+The Django backend and owner-only dashboard are being introduced in parallel. See [`backend/README.md`](backend/README.md) and [`docs/DJANGO_FRONTEND_CUTOVER.md`](docs/DJANGO_FRONTEND_CUTOVER.md) for staging setup and the cutover checklist. The live storefront remains on Prisma until data, customer authentication, checkout, inventory, and media are migrated and tested together.
