@@ -1,7 +1,9 @@
 from django.contrib import admin
 from .models import (
-    AuditLog, Banner, Category, ContactMessage, Coupon, FAQ, NewsletterSubscriber,
-    Order, OrderItem, Product, ProductImage, ProductReview, StoreSettings, Testimonial,
+    Address, AuditLog, Banner, Cart, CartItem, Category, ContactMessage,
+    Coupon, CustomerProfile, FAQ, NewsletterSubscriber,
+    Order, OrderItem, Product, ProductImage, ProductReview,
+    ReturnRequest, ShippingMethod, StoreSettings, Testimonial, Wishlist,
 )
 
 
@@ -98,3 +100,50 @@ class ProductReviewAdmin(admin.ModelAdmin):
     list_display = ("reviewer_name", "product", "rating", "is_approved", "created_at")
     list_filter = ("is_approved", "rating", "created_at")
     search_fields = ("reviewer_name", "reviewer_email", "product__name", "comment")
+
+
+@admin.register(CustomerProfile)
+class CustomerProfileAdmin(admin.ModelAdmin):
+    list_display = ("user", "phone", "newsletter_opted_in", "created_at")
+    search_fields = ("user__email", "user__username", "phone")
+
+
+@admin.register(Address)
+class AddressAdmin(admin.ModelAdmin):
+    list_display = ("full_name", "user", "city", "country", "is_default")
+    list_filter = ("country", "is_default")
+    search_fields = ("full_name", "user__email", "city", "street")
+
+
+class CartItemInline(admin.TabularInline):
+    model = CartItem
+    extra = 0
+    raw_id_fields = ("product",)
+
+
+@admin.register(Cart)
+class CartAdmin(admin.ModelAdmin):
+    list_display = ("user", "created_at", "updated_at")
+    search_fields = ("user__email",)
+    inlines = (CartItemInline,)
+
+
+@admin.register(Wishlist)
+class WishlistAdmin(admin.ModelAdmin):
+    list_display = ("user", "product", "added_at")
+    search_fields = ("user__email", "product__name")
+    raw_id_fields = ("user", "product")
+
+
+@admin.register(ShippingMethod)
+class ShippingMethodAdmin(admin.ModelAdmin):
+    list_display = ("name", "fee", "free_above", "is_active", "sort_order")
+    list_filter = ("is_active",)
+
+
+@admin.register(ReturnRequest)
+class ReturnRequestAdmin(admin.ModelAdmin):
+    list_display = ("order", "customer", "status", "created_at")
+    list_filter = ("status", "created_at")
+    search_fields = ("order__order_number", "customer__email", "reason")
+    readonly_fields = ("order", "customer", "reason", "created_at")
