@@ -179,7 +179,7 @@ export async function getUserOrders(userId: string) {
 }
 
 export async function getOrderDetails(orderId: string, userId?: string) {
-  const where: any = { id: orderId };
+  const where: any = { OR: [{ id: orderId }, { orderNumber: orderId }] };
   if (userId) where.userId = userId;
 
   const order = await prisma.order.findFirst({
