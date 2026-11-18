@@ -1,71 +1,115 @@
-# Sugandhika - Pure Eco-Friendly Fragrance & Organic Mosquito Solutions
+# 🌿 Sugandhika — Pure Eco Fragrance
 
-Sugandhika is a production-ready, full-stack e-commerce application built with **Next.js 15 (App Router)**, **TypeScript**, **Tailwind CSS**, **Prisma ORM**, **SQLite**, and **Auth.js / NextAuth**.
-
-## Key Features
-
-### Storefront
-- **Home Page**: Hero banner carousel, category grid, featured products, brand story, testimonials, and FAQ accordion.
-- **Shop Catalog**: Full search, category filter, price range bounds, sorting, pagination, and active filter chips.
-- **Product Details Page**: Multi-image preview, rating summary, quantity selector, stock availability, add to cart, wishlist toggle, customer reviews section, and related products carousel.
-- **Cart & Wishlist**: LocalStorage sync, drawer view, cart page with subtotal and free shipping thresholds.
-- **Checkout & Fonepay QR**: Supports Cash On Delivery (COD) and Fonepay QR payment scan with Transaction ID input & payment screenshot receipt upload.
-- **Customer Dashboard**: Track order history, address book management, and user profile updates.
-
-### Admin Dashboard (`/admin`)
-- **Metrics Overview**: Real-time sales statistics, pending Fonepay payment counts, and Recharts monthly revenue chart.
-- **Products CRUD**: Add/Edit product details, price, compare price, inventory stock, images, and category assignments.
-- **Categories CRUD**: Manage store product lines.
-- **Orders & Payments**: Verify Fonepay transaction ID & receipt screenshot, approve/reject payment verification, and update order fulfillment status.
-- **Coupons Management**: Create percentage or fixed discount promo codes.
-- **Store Settings**: Upload official Fonepay Merchant QR Code image, update store contact info, and set free shipping thresholds.
+> Natural, premium, and eco-friendly herbal fragrance products from the heart of Nepal.
 
 ---
 
-## Tech Stack
+## 📦 Project Structure
 
-- **Framework**: Next.js 15 (App Router with Server Actions)
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS + Custom Eco Luxury Theme (`#7CB342`, `#2E7D32`)
-- **Database**: SQLite with Prisma ORM (20 Models & Relations)
-- **Authentication**: Auth.js / NextAuth credentials provider & JWT sessions
-- **Charts**: Recharts
-- **Notifications**: Sonner
+```
+sugandhika/
+├── frontend/          # React + Vite + Tailwind CSS
+├── backend/           # Node.js + Express + Prisma
+├── docs/              # Documentation
+├── _legacy/           # Archived legacy code (Next.js + Django)
+└── package.json       # Root monorepo scripts
+```
 
----
+## 🚀 Quick Start
 
-## Getting Started
+### Prerequisites
+- Node.js ≥ 18.0.0
+- npm ≥ 9.0.0
 
 ### 1. Install Dependencies
 ```bash
-npm install
+npm run install:all
 ```
 
-### 2. Environment Variables
-Copy `.env.example` to `.env` and configure unique environment-specific secrets:
-```env
-DATABASE_URL="file:./dev.db"
-NEXTAUTH_SECRET="REPLACE_WITH_A_UNIQUE_RANDOM_SECRET"
-NEXTAUTH_URL="http://localhost:3000"
-```
-
-### 3. Database Migration & Seed
+### 2. Configure Environment Variables
 ```bash
+# Backend
+cp backend/.env.example backend/.env
+# Edit backend/.env with your Neon PostgreSQL URL, Supabase keys, JWT secret
+
+# Frontend
+cp frontend/.env.example frontend/.env
+# Edit frontend/.env with your backend URL
+```
+
+### 3. Set Up Database
+```bash
+# Push schema to Neon PostgreSQL
 npm run prisma:push
+
+# Seed with initial data
 npm run prisma:seed
 ```
 
-### 4. Run Development Server
+### 4. Start Development
 ```bash
 npm run dev
 ```
+- Frontend: http://localhost:5173
+- Backend API: http://localhost:5000/api
+- Admin: http://localhost:5173/admin
 
-Visit `http://localhost:3000` in your browser.
+---
 
-https://sugandhika-beryl.vercel.app/
+## 🔑 Default Admin Credentials
 
-### Credentials
-Create local test accounts through the application or seed script. Do not use demo credentials in production. Set a unique `NEXTAUTH_SECRET` in every environment; the application no longer relies on a committed fallback secret.
+After seeding the database:
+- **Email:** admin@sugandhika.com
+- **Password:** Admin@1234
 
-### Django migration (in progress)
-The Django backend and owner-only dashboard are being introduced in parallel. See [`backend/README.md`](backend/README.md) and [`docs/DJANGO_FRONTEND_CUTOVER.md`](docs/DJANGO_FRONTEND_CUTOVER.md) for staging setup and the cutover checklist. The live storefront remains on Prisma until data, customer authentication, checkout, inventory, and media are migrated and tested together.
+> ⚠️ **Change this password immediately after first login!**
+
+---
+
+## 🛠 Technology Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Frontend | React.js + Vite + React Router |
+| Styling | Tailwind CSS + Lucide React |
+| Backend | Node.js + Express.js |
+| Database | Neon PostgreSQL + Prisma ORM |
+| Image Storage | Supabase Storage |
+| Auth | JWT + bcrypt |
+| Frontend Hosting | Vercel Hobby |
+| Backend Hosting | Render Free |
+
+## 📂 Available Scripts
+
+```bash
+npm run install:all    # Install all dependencies
+npm run dev            # Run frontend + backend together
+npm run dev:frontend   # Frontend only (port 5173)
+npm run dev:backend    # Backend only (port 5000)
+npm run build          # Build frontend for production
+npm run prisma:push    # Sync schema to database
+npm run prisma:seed    # Seed database with initial data
+npm run prisma:migrate # Run migrations in production
+```
+
+## 📚 Documentation
+
+- [Deployment Guide](docs/DEPLOYMENT.md)
+- [Database Guide](docs/DATABASE.md)
+- [Admin Guide](docs/ADMIN_GUIDE.md)
+
+## 💰 Hosting Cost
+
+**Target: NPR 0/month**
+
+| Service | Plan | Cost |
+|---------|------|------|
+| Vercel | Hobby | Free |
+| Render | Free | Free |
+| Neon PostgreSQL | Free | Free |
+| Supabase Storage | Free | Free |
+| GitHub | Free | Free |
+
+---
+
+Made with 💚 for Sugandhika, Nepal
