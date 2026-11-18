@@ -12,7 +12,7 @@ const app = express();
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 
 // ── CORS ──────────────────────────────────────────────────────────────────────
-const allowedOrigins = config.corsOrigins.split(',').map((o) => o.trim());
+const allowedOrigins = (config.cors?.origin || 'http://localhost:5173').split(',').map((o) => o.trim());
 app.use(
   cors({
     origin: (origin, callback) => {

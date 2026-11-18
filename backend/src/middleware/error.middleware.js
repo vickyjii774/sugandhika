@@ -1,6 +1,16 @@
 import { config } from '../config/env.js';
 
 /**
+ * 404 Not Found handler — call after all routes.
+ */
+export const notFound = (req, res) => {
+  res.status(404).json({
+    success: false,
+    message: `Route ${req.method} ${req.originalUrl} not found.`,
+  });
+};
+
+/**
  * Global Express error handler.
  * Catches errors forwarded via next(error).
  */
@@ -43,3 +53,4 @@ export const errorHandler = (err, req, res, next) => {
     ...(config.isDev && { stack: err.stack }),
   });
 };
+

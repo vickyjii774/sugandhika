@@ -7,11 +7,13 @@ const globalForPrisma = global;
 const prisma =
   globalForPrisma.prisma ??
   new PrismaClient({
-    log: config.isDev ? ['query', 'error', 'warn'] : ['error'],
+    log: config.isDev ? ['error', 'warn'] : ['error'],
   });
 
 if (config.isDev) {
   globalForPrisma.prisma = prisma;
 }
 
+// Export both named and default so all import styles work
+export { prisma };
 export default prisma;

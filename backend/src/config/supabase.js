@@ -1,11 +1,13 @@
 import { createClient } from '@supabase/supabase-js';
 import { config } from './env.js';
 
-if (!config.supabaseUrl || !config.supabaseServiceRoleKey) {
+const supabaseUrl = config.supabase?.url || process.env.SUPABASE_URL || 'https://placeholder.supabase.co';
+const supabaseKey = config.supabase?.serviceRoleKey || process.env.SUPABASE_SERVICE_ROLE_KEY || 'placeholder-key';
+
+if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
   console.warn('⚠️  Supabase credentials not configured. Image uploads will fail.');
 }
 
-export const supabase = createClient(
-  config.supabaseUrl || 'https://placeholder.supabase.co',
-  config.supabaseServiceRoleKey || 'placeholder-key'
-);
+export const supabase = createClient(supabaseUrl, supabaseKey);
+
+export default supabase;

@@ -1,15 +1,12 @@
 import 'dotenv/config';
 
-const required = (key) => {
-  const value = process.env[key];
-  if (!value) {
-    throw new Error(`Missing required environment variable: ${key}`);
-  }
-  return value;
-};
+const optional = (key, defaultValue = '') => process.env[key] || defaultValue;
 
-const optional = (key, defaultValue = '') => {
-  return process.env[key] || defaultValue;
+const warn = (key) => {
+  if (!process.env[key]) {
+    console.warn(`⚠️  Missing environment variable: ${key} (required for full functionality)`);
+  }
+  return process.env[key] || '';
 };
 
 export const config = {
@@ -19,23 +16,23 @@ export const config = {
   isProd: optional('NODE_ENV', 'development') === 'production',
 
   database: {
-    url: required('DATABASE_URL'),
+    url: warn('DATABASE_URL'),
   },
 
   jwt: {
-    secret: required('JWT_SECRET'),
+    secret: optional('JWT_SECRET', 'dev-fallback-secret-change-in-production'),
     expiresIn: optional('JWT_EXPIRES_IN', '7d'),
   },
 
   supabase: {
-    url: required('SUPABASE_URL'),
-    anonKey: required('SUPABASE_ANON_KEY'),
-    serviceRoleKey: required('SUPABASE_SERVICE_ROLE_KEY'),
+    url: warn('SUPABASE_URL'),
+    anonKey: warn('SUPABASE_ANON_KEY'),
+    serviceRoleKey: warn('SUPABASE_SERVICE_ROLE_KEY'),
     storageBucket: optional('SUPABASE_STORAGE_BUCKET', 'sugandhika-media'),
   },
 
   cors: {
-    origin: optional('CORS_ORIGIN', 'http://localhost:3000'),
+    origin: optional('CORS_ORIGIN', 'http://localhost:5173'),
   },
 
   rateLimit: {

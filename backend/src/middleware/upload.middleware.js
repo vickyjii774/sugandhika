@@ -31,4 +31,5 @@ const upload = multer({
   },
 });
 
+export { upload };
 export default upload;
