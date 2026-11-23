@@ -298,7 +298,7 @@ export default function HomePage() {
                 className="bg-brand-cream rounded-2xl p-7 flex flex-col gap-4 hover:shadow-md transition-shadow"
               >
                 <div className="w-12 h-12 rounded-xl bg-brand-dark/10 flex items-center justify-center">
-                  <Icon className="w-6 h-6 text-brand-dark" />
+                  {imageUrl ? <img src={imageUrl} alt="" className="w-full h-full object-cover rounded-xl" /> : <Icon className="w-6 h-6 text-brand-dark" />}
                 </div>
                 <div>
                   <h3 className="font-bold text-brand-dark text-lg mb-1">{title}</h3>
