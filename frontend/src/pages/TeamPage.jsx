@@ -42,7 +42,7 @@ export default function TeamPage() {
               <div key={member.id} className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden hover:shadow-md transition-shadow">
                 <div className="p-6 flex flex-col items-center text-center">
                   <div className="w-28 h-28 rounded-full overflow-hidden bg-brand-cream border-4 border-brand/20 mb-4 shrink-0">
-                    {member.photo ? (
+                    {member.imageUrl ? (
                       <img src={member.photo} alt={member.name} className="w-full h-full object-cover" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
@@ -51,7 +51,7 @@ export default function TeamPage() {
                     )}
                   </div>
                   <h3 className="text-lg font-bold text-gray-900">{member.name}</h3>
-                  <p className="text-brand text-sm font-medium mt-0.5">{member.role}</p>
+                  <p className="text-brand text-sm font-medium mt-0.5">{member.designation}</p>
                   {member.bio && <p className="text-gray-500 text-sm mt-3 leading-relaxed line-clamp-4">{member.bio}</p>}
                   <div className="flex gap-3 mt-4">
                     {member.email && (
