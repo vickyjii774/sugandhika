@@ -97,6 +97,7 @@ router.post('/gallery/albums', isAdmin, upload.single('cover'), gallery.createAl
 router.put('/gallery/albums/:id', isAdmin, upload.single('cover'), gallery.updateAlbum);
 router.delete('/gallery/albums/:id', isAdmin, gallery.deleteAlbum);
 router.post('/gallery/albums/:id/images', isAdmin, upload.array('images', 20), gallery.uploadImages);
+router.post('/gallery/albums/:id/images/url', isAdmin, gallery.addImageByUrl);
 router.put('/gallery/albums/:id/reorder', isAdmin, gallery.reorderImages);
 router.delete('/gallery/images/:id', isAdmin, gallery.deleteImage);
 
