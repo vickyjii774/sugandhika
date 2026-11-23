@@ -14,11 +14,11 @@ export async function getSettings(_req, res, next) {
     const contact = await prisma.contactInformation.findUnique({ where: { id: 'main' } });
     return sendSuccess(res, {
       ...settings,
-      phone: contact?.phone || settings.phone,
-      whatsapp: contact?.whatsapp || settings.whatsapp,
-      email: contact?.email || settings.email,
-      address: contact?.address || settings.address,
-      businessHours: contact?.businessHours || '',
+      phone: contact?.phone ?? settings.phone,
+      whatsapp: contact?.whatsapp ?? settings.whatsapp,
+      email: contact?.email ?? settings.email,
+      address: contact?.address ?? settings.address,
+      businessHours: contact?.businessHours ?? '',
     });
   } catch (err) { next(err); }
 }
