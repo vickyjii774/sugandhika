@@ -1,49 +1,33 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { settingsService } from '../services/api.service.js';
 
 const SettingsContext = createContext(null);
+const DEFAULTS = { siteName: 'Sugandhika', tagline: 'Pure Eco Fragrance', phone: '', email: '', address: '', whatsapp: '', facebookUrl: '', instagramUrl: '', youtubeUrl: '' };
 
 export function SettingsProvider({ children }) {
-  const [settings, setSettings] = useState(null);
+  const [settings, setSettings] = useState(DEFAULTS);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    async function fetchSettings() {
-      try {
-        const result = await settingsService.get();
-        if (result.success) {
-          setSettings(result.data);
-        }
-      } catch (err) {
-        setError(err.message);
-        // Use defaults on error
-        setSettings({
-          siteName: 'Sugandhika',
-          tagline: 'Pure Eco Fragrance',
-          phone: '',
-          email: '',
-          address: '',
-          whatsappNumber: '',
-          socialLinks: {},
-        });
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    fetchSettings();
+  const refreshSettings = useCallback(async () => {
+    try {
+      const result = await settingsService.get();
+      if (result.success) setSettings({ ...DEFAULTS, ...(result.data || {}) });
+      setError(null);
+    } catch (err) {
+      setError(err.message);
+    } finally { setIsLoading(false); }
   }, []);
 
-  const updateSettings = (newSettings) => {
-    setSettings((prev) => ({ ...prev, ...newSettings }));
-  };
+  useEffect(() => {
+    refreshSettings();
+    const onUpdate = () => refreshSettings();
+    window.addEventListener('sugandhika:settings-updated', onUpdate);
+    return () => window.removeEventListener('sugandhika:settings-updated', onUpdate);
+  }, [refreshSettings]);
 
-  return (
-    <SettingsContext.Provider value={{ settings, isLoading, error, updateSettings }}>
-      {children}
-    </SettingsContext.Provider>
-  );
+  const updateSettings = (newSettings) => setSettings(prev => ({ ...prev, ...newSettings }));
+  return <SettingsContext.Provider value={{ settings, isLoading, error, updateSettings, refreshSettings }}>{children}</SettingsContext.Provider>;
 }
 
 export function useSettings() {
@@ -51,5 +35,4 @@ export function useSettings() {
   if (!ctx) throw new Error('useSettings must be used within SettingsProvider');
   return ctx;
 }
-
 export default SettingsContext;
