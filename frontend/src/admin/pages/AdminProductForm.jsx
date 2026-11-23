@@ -134,7 +134,7 @@ export default function AdminProductForm() {
         await productsService.update(id, payload);
       } else {
         const res = await productsService.create(payload);
-        productId = res?.data?.product?._id ?? res?.data?._id;
+        productId = res?.data?.product?.id ?? res?.data?.id;
       }
 
       // Upload image if selected
