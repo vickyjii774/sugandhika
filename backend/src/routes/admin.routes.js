@@ -66,6 +66,8 @@ router.delete('/categories/:id', isAdmin, categories.deleteCategory);
 
 // ── Products ──────────────────────────────────────────────────────────────────
 router.get('/products', isEditor, products.getAllProducts);
+router.get('/products/:id', isEditor, products.getProductById);
+router.patch('/products/:id/featured', isAdmin, products.toggleFeatured);
 router.post('/products', isAdmin, upload.single('mainImage'), products.createProduct);
 router.put('/products/:id/publish', isAdmin, products.togglePublish);
 router.post('/products/:id/images', isAdmin, upload.array('images', 10), products.uploadProductImages);
@@ -79,6 +81,9 @@ router.post('/about/image', isAdmin, upload.single('image'), about.uploadAboutIm
 
 // ── Team ──────────────────────────────────────────────────────────────────────
 router.get('/team', isEditor, team.getAllTeam);
+router.get('/team/:id', isEditor, team.getTeamMemberById);
+router.patch('/team/:id/featured', isAdmin, team.toggleTeamFeatured);
+router.patch('/team/:id/publish', isAdmin, team.toggleTeamPublish);
 router.post('/team', isAdmin, upload.single('image'), team.createMember);
 router.put('/team/reorder', isAdmin, team.reorderTeam);
 router.put('/team/:id', isAdmin, upload.single('image'), team.updateMember);
@@ -86,6 +91,7 @@ router.delete('/team/:id', isAdmin, team.deleteMember);
 
 // ── Gallery ───────────────────────────────────────────────────────────────────
 router.get('/gallery/albums', isEditor, gallery.getAllAlbums);
+router.get('/gallery/albums/:id', isEditor, gallery.getAlbumById);
 router.post('/gallery/albums', isAdmin, upload.single('cover'), gallery.createAlbum);
 router.put('/gallery/albums/:id', isAdmin, upload.single('cover'), gallery.updateAlbum);
 router.delete('/gallery/albums/:id', isAdmin, gallery.deleteAlbum);
@@ -95,6 +101,9 @@ router.delete('/gallery/images/:id', isAdmin, gallery.deleteImage);
 
 // ── FAQ ───────────────────────────────────────────────────────────────────────
 router.get('/faq', isEditor, faq.getAllFAQs);
+router.get('/faq/:id', isEditor, faq.getFAQById);
+router.patch('/faq/:id/featured', isAdmin, faq.toggleFAQFeatured);
+router.patch('/faq/:id/publish', isAdmin, faq.toggleFAQPublish);
 router.post('/faq', isAdmin, faq.createFAQ);
 router.put('/faq/reorder', isAdmin, faq.reorderFAQs);
 router.put('/faq/:id', isAdmin, faq.updateFAQ);
@@ -109,10 +118,12 @@ router.delete('/faq-categories/:id', isAdmin, faq.deleteFAQCategory);
 router.put('/contact', isAdmin, contact.updateContactInfo);
 
 // ── SEO ───────────────────────────────────────────────────────────────────────
+router.get('/seo', isAdmin, seo.getAllSEO);
 router.put('/seo/:pageKey', isAdmin, seo.updateSEO);
 
 // ── Users (Super Admin only) ──────────────────────────────────────────────────
 router.get('/users', isSuperAdmin, users.getAllUsers);
+router.get('/users/:id', isSuperAdmin, users.getUserById);
 router.post('/users', isSuperAdmin, users.createUser);
 router.put('/users/:id', isSuperAdmin, users.updateUser);
 router.delete('/users/:id', isSuperAdmin, users.deleteUser);
