@@ -7,7 +7,7 @@ import ImageUpload from '../../components/ui/ImageUpload.jsx';
 import LoadingSpinner from '../../components/ui/LoadingSpinner.jsx';
 import useToast from '../../hooks/useToast.js';
 
-const EMPTY_ALBUM_FORM = { name: '', description: '', slug: '' };
+const EMPTY_ALBUM_FORM = { title: '', description: '' };
 
 function slugify(str) {
   return str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
@@ -56,21 +56,21 @@ export default function AdminGallery() {
   useEffect(() => { fetchAlbums(); }, [fetchAlbums]);
 
   const toggleExpand = async (album) => {
-    if (expandedAlbum === album._id) {
+    if (expandedAlbum === album.id) {
       setExpandedAlbum(null);
       return;
     }
-    setExpandedAlbum(album._id);
-    if (!albumImages[album._id]) {
-      setLoadingImages((prev) => ({ ...prev, [album._id]: true }));
+    setExpandedAlbum(album.id);
+    if (!albumImages[album.id]) {
+      setLoadingImages((prev) => ({ ...prev, [album.id]: true }));
       try {
-        const res = await galleryService.getAlbumById(album._id);
+        const res = await galleryService.getAlbumById(album.id);
         const data = res?.data?.album ?? res?.data;
-        setAlbumImages((prev) => ({ ...prev, [album._id]: data?.images ?? [] }));
+        setAlbumImages((prev) => ({ ...prev, [album.id]: data?.images ?? [] }));
       } catch {
         toast.error('Failed to load images.');
       } finally {
-        setLoadingImages((prev) => ({ ...prev, [album._id]: false }));
+        setLoadingImages((prev) => ({ ...prev, [album.id]: false }));
       }
     }
   };
@@ -86,9 +86,9 @@ export default function AdminGallery() {
 
   const openEditAlbum = (album) => {
     setEditAlbum(album);
-    setAlbumForm({ name: album.name ?? '', description: album.description ?? '', slug: album.slug ?? '' });
+    setAlbumForm({ title: album.title ?? '', description: album.description ?? '' });
     setCoverFile(null);
-    setCoverPreview(album.cover ?? album.coverImage ?? '');
+    setCoverPreview(album.coverImageUrl ?? '');
     setSlugEdited(true);
     setAlbumModalOpen(true);
   };
@@ -97,7 +97,7 @@ export default function AdminGallery() {
     const { name, value } = e.target;
     setAlbumForm((prev) => {
       const updated = { ...prev, [name]: value };
-      if (name === 'name' && !slugEdited) updated.slug = slugify(value);
+      if (name === 'title' && !slugEdited) updated.slug = slugify(value);
       return updated;
     });
   };
@@ -106,17 +106,17 @@ export default function AdminGallery() {
     if (!albumForm.name) { toast.error('Album name is required.'); return; }
     setSavingAlbum(true);
     try {
-      let albumId = editAlbum?._id;
-      const payload = { name: albumForm.name, description: albumForm.description, slug: albumForm.slug || slugify(albumForm.name) };
+      let albumId = editAlbum?.id;
+      const payload = { title: albumForm.title, description: albumForm.description };
       if (editAlbum) {
-        await galleryService.updateAlbum(editAlbum._id, payload);
+        await galleryService.updateAlbum(editAlbum.id, payload);
       } else {
         const res = await galleryService.createAlbum(payload);
-        albumId = res?.data?.album?._id ?? res?.data?._id;
+        albumId = res?.data?.id;
       }
       if (coverFile && albumId) {
         const fd = new FormData();
-        fd.append('cover', coverFile);
+        fd.append('image', coverFile);
         await galleryService.uploadCover(albumId, fd);
       }
       toast.success(editAlbum ? 'Album updated!' : 'Album created!');
@@ -133,7 +133,7 @@ export default function AdminGallery() {
   const handleDeleteAlbum = async () => {
     if (!confirmDeleteAlbum) return;
     try {
-      await galleryService.deleteAlbum(confirmDeleteAlbum._id);
+      await galleryService.deleteAlbum(confirmDeleteAlbum.id);
       toast.success('Album deleted.');
       setConfirmDeleteAlbum(null);
       if (expandedAlbum === confirmDeleteAlbum._id) setExpandedAlbum(null);
@@ -155,7 +155,7 @@ export default function AdminGallery() {
     try {
       const fd = new FormData();
       uploadFiles.forEach((f) => fd.append('images', f));
-      await galleryService.uploadImages(uploadAlbum._id, fd);
+      await galleryService.uploadImages(uploadAlbum.id, fd);
       toast.success('Images uploaded!');
       setUploadModalOpen(false);
       setAlbumImages((prev) => { const n = { ...prev }; delete n[uploadAlbum._id]; return n; });
@@ -180,7 +180,7 @@ export default function AdminGallery() {
       setAlbumImages((prev) => ({
         ...prev,
         [confirmDeleteImage.albumId]: (prev[confirmDeleteImage.albumId] ?? []).filter(
-          (img) => (img._id ?? img.id) !== confirmDeleteImage.imageId
+          (img) => img.id !== confirmDeleteImage.imageId
         ),
       }));
       setConfirmDeleteImage(null);
@@ -207,20 +207,20 @@ export default function AdminGallery() {
       ) : (
         <div className="space-y-3">
           {albums.map((album) => (
-            <div key={album._id} className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+            <div key={album.id} className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
               {/* Album Header Row */}
               <div className="flex items-center gap-4 p-4">
-                {album.cover ?? album.coverImage ? (
-                  <img src={album.cover ?? album.coverImage} alt={album.name} className="w-14 h-14 rounded-lg object-cover border border-gray-200 flex-shrink-0" />
+                {album.coverImageUrl ? (
+                  <img src={album.cover ?? album.coverImage} alt={album.title} className="w-14 h-14 rounded-lg object-cover border border-gray-200 flex-shrink-0" />
                 ) : (
                   <div className="w-14 h-14 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0 border border-gray-200">
                     <ImageIcon className="w-6 h-6 text-gray-400" />
                   </div>
                 )}
                 <div className="flex-1 min-w-0">
-                  <div className="font-semibold text-gray-900">{album.name}</div>
+                  <div className="font-semibold text-gray-900">{album.title}</div>
                   <div className="text-xs text-gray-400 mt-0.5">
-                    {album.imageCount ?? album.images?.length ?? 0} images
+                    {album._count?.images ?? 0} images
                     {album.isPublished === false && (
                       <span className="ml-2 bg-yellow-100 text-yellow-700 px-1.5 py-0.5 rounded text-xs">Draft</span>
                     )}
@@ -237,7 +237,7 @@ export default function AdminGallery() {
                     <Trash2 className="w-4 h-4" />
                   </button>
                   <button onClick={() => toggleExpand(album)} className="text-gray-400 hover:text-gray-700 transition ml-1">
-                    {expandedAlbum === album._id ? <ChevronDown className="w-5 h-5" /> : <ChevronRight className="w-5 h-5" />}
+                    {expandedAlbum === album.id ? <ChevronDown className="w-5 h-5" /> : <ChevronRight className="w-5 h-5" />}
                   </button>
                 </div>
               </div>
@@ -245,20 +245,20 @@ export default function AdminGallery() {
               {/* Expanded Images */}
               {expandedAlbum === album._id && (
                 <div className="border-t border-gray-100 p-4">
-                  {loadingImages[album._id] ? (
+                  {loadingImages[album.id] ? (
                     <div className="flex justify-center py-6"><LoadingSpinner /></div>
-                  ) : (albumImages[album._id] ?? []).length === 0 ? (
+                  ) : (albumImages[album.id] ?? []).length === 0 ? (
                     <p className="text-center text-gray-400 text-sm py-6">No images in this album.</p>
                   ) : (
                     <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
                       {(albumImages[album._id] ?? []).map((img) => {
-                        const imgId = img._id ?? img.id;
+                        const imgId = img.id;
                         const imgUrl = img.url ?? img.src ?? img;
                         return (
                           <div key={imgId} className="relative group aspect-square">
                             <img src={imgUrl} alt="" className="w-full h-full object-cover rounded-lg border border-gray-200" />
                             <button
-                              onClick={() => setConfirmDeleteImage({ albumId: album._id, imageId: imgId })}
+                              onClick={() => setConfirmDeleteImage({ albumId: album.id, imageId: imgId })}
                               className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition"
                               title="Delete image"
                             >
@@ -281,7 +281,7 @@ export default function AdminGallery() {
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Album Name <span className="text-red-500">*</span></label>
-            <input name="name" value={albumForm.name} onChange={handleAlbumFormChange} className={inputClass} placeholder="Album name" />
+            <input name="title" value={albumForm.title} onChange={handleAlbumFormChange} className={inputClass} placeholder="Album name" />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Slug</label>
@@ -311,7 +311,7 @@ export default function AdminGallery() {
       </Modal>
 
       {/* Upload Images Modal */}
-      <Modal isOpen={uploadModalOpen} onClose={() => setUploadModalOpen(false)} title={`Upload Images to "${uploadAlbum?.name}"`} size="md">
+      <Modal isOpen={uploadModalOpen} onClose={() => setUploadModalOpen(false)} title={`Upload Images to "${uploadAlbum?.title}"`} size="md">
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Select Images</label>
@@ -340,7 +340,7 @@ export default function AdminGallery() {
       <ConfirmDialog
         isOpen={!!confirmDeleteAlbum}
         title="Delete Album"
-        message={`Delete album "${confirmDeleteAlbum?.name}" and all its images?`}
+        message={`Delete album "${confirmDeleteAlbum?.title}" and all its images?`}
         confirmLabel="Delete"
         onConfirm={handleDeleteAlbum}
         onCancel={() => setConfirmDeleteAlbum(null)}
