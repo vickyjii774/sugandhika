@@ -3,10 +3,11 @@ import { useSettings } from '../../hooks/useSettings.js';
 export default function FloatingWhatsApp() {
   const { settings } = useSettings();
   const phone = settings?.whatsapp || settings?.phone || '';
+  if (!phone) return null;
 
   return (
     <a
-      href={`https://wa.me/${phone.replace(/[^\\d]/g, '')}`}
+      href={`https://wa.me/${phone.replace(/[^\d]/g, '')}`}
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Chat on WhatsApp"
