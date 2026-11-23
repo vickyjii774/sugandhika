@@ -47,6 +47,7 @@ export default function AdminCategories() {
     setForm(EMPTY_FORM);
     setImageFile(null);
     setImagePreview('');
+    setImageUrl('');
     setSlugEdited(false);
     setModalOpen(true);
   };
@@ -56,6 +57,7 @@ export default function AdminCategories() {
     setForm({ name: cat.name ?? '', slug: cat.slug ?? '', description: cat.description ?? '' });
     setImageFile(null);
     setImagePreview(cat.imageUrl ?? '');
+    setImageUrl(cat.imageUrl ?? '');
     setSlugEdited(true);
     setModalOpen(true);
   };
@@ -81,7 +83,7 @@ export default function AdminCategories() {
     setSaving(true);
     try {
       let catId = editTarget?.id;
-      const payload = { name: form.name, slug: form.slug || slugify(form.name), description: form.description };
+      const payload = { name: form.name, slug: form.slug || slugify(form.name), description: form.description, imageUrl: imageUrl || undefined };
       if (editTarget) {
         await categoriesService.update(editTarget.id, payload);
       } else {
