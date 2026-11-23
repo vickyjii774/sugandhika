@@ -17,7 +17,7 @@ export default function AdminBanners() {
   const toast = useToast();
   const [banners, setBanners] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [editing, setEditing] = useState(null);
+  const [editing, setEditing] = useState(undefined);
   const [form, setForm] = useState(EMPTY_BANNER);
   const [imageFile, setImageFile] = useState(null);
   const [saving, setSaving] = useState(false);
