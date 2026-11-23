@@ -104,3 +104,42 @@ export async function deleteFAQCategory(req, res, next) {
     return sendSuccess(res, null, 'Category deleted');
   } catch (err) { next(err); }
 }
+
+
+/** GET /api/admin/faq/:id */
+export async function getFAQById(req, res, next) {
+  try {
+    const faq = await prisma.fAQ.findUnique({
+      where: { id: req.params.id },
+      include: { category: true },
+    });
+    if (!faq) return sendError(res, 'FAQ not found', 404);
+    return sendSuccess(res, faq);
+  } catch (err) { next(err); }
+}
+
+/** PATCH /api/admin/faq/:id/featured */
+export async function toggleFAQFeatured(req, res, next) {
+  try {
+    const existing = await prisma.fAQ.findUnique({ where: { id: req.params.id } });
+    if (!existing) return sendError(res, 'FAQ not found', 404);
+    const faq = await prisma.fAQ.update({
+      where: { id: req.params.id },
+      data: { isFeatured: !existing.isFeatured },
+    });
+    return sendSuccess(res, faq, 'FAQ featured status updated');
+  } catch (err) { next(err); }
+}
+
+/** PATCH /api/admin/faq/:id/publish */
+export async function toggleFAQPublish(req, res, next) {
+  try {
+    const existing = await prisma.fAQ.findUnique({ where: { id: req.params.id } });
+    if (!existing) return sendError(res, 'FAQ not found', 404);
+    const faq = await prisma.fAQ.update({
+      where: { id: req.params.id },
+      data: { isPublished: !existing.isPublished },
+    });
+    return sendSuccess(res, faq, 'FAQ publishing status updated');
+  } catch (err) { next(err); }
+}
