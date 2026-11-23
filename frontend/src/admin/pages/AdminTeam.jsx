@@ -9,7 +9,7 @@ import useToast from '../../hooks/useToast.js';
 
 const EMPTY_FORM = {
   name: '',
-  role: '',
+  designation: '',
   bio: '',
   email: '',
   phone: '',
@@ -57,7 +57,7 @@ export default function AdminTeam() {
     setEditTarget(member);
     setForm({
       name: member.name ?? '',
-      role: member.role ?? '',
+      designation: member.designation ?? '',
       bio: member.bio ?? '',
       email: member.email ?? '',
       phone: member.phone ?? '',
@@ -66,7 +66,7 @@ export default function AdminTeam() {
       isPublished: member.isPublished ?? true,
     });
     setPhotoFile(null);
-    setPhotoPreview(member.photo ?? '');
+    setPhotoPreview(member.imageUrl ?? '');
     setModalOpen(true);
   };
 
@@ -79,10 +79,10 @@ export default function AdminTeam() {
     if (!form.name) { toast.error('Name is required.'); return; }
     setSaving(true);
     try {
-      let memberId = editTarget?._id;
+      let memberId = editTarget?.id;
       const payload = {
         name: form.name,
-        role: form.role,
+        designation: form.designation,
         bio: form.bio,
         email: form.email,
         phone: form.phone,
@@ -91,14 +91,14 @@ export default function AdminTeam() {
         isPublished: form.isPublished,
       };
       if (editTarget) {
-        await teamService.update(editTarget._id, payload);
+        await teamService.update(editTarget.id, payload);
       } else {
         const res = await teamService.create(payload);
-        memberId = res?.data?.member?._id ?? res?.data?._id;
+        memberId = res?.data?.id;
       }
       if (photoFile && memberId) {
         const fd = new FormData();
-        fd.append('photo', photoFile);
+        fd.append('image', photoFile);
         await teamService.uploadPhoto(memberId, fd);
       }
       toast.success(editTarget ? 'Member updated!' : 'Member added!');
@@ -114,7 +114,7 @@ export default function AdminTeam() {
   const handleDelete = async () => {
     if (!confirmDelete) return;
     try {
-      await teamService.delete(confirmDelete._id);
+      await teamService.delete(confirmDelete.id);
       toast.success('Member deleted.');
       setConfirmDelete(null);
       fetchMembers();
@@ -124,7 +124,7 @@ export default function AdminTeam() {
   };
 
   const handleReorder = async (member, direction) => {
-    const idx = members.findIndex((m) => m._id === member._id);
+    const idx = members.findIndex((m) => m.id === member._id);
     const swapIdx = direction === 'up' ? idx - 1 : idx + 1;
     if (swapIdx < 0 || swapIdx >= members.length) return;
     const newMembers = [...members];
@@ -185,9 +185,9 @@ export default function AdminTeam() {
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {members.map((m, idx) => (
-                  <tr key={m._id} className="hover:bg-gray-50 transition">
+                  <tr key={m.id} className="hover:bg-gray-50 transition">
                     <td className="px-4 py-3">
-                      {m.photo ? (
+                      {m.imageUrl ? (
                         <img src={m.photo} alt={m.name} className="w-10 h-10 rounded-full object-cover border border-gray-200" />
                       ) : (
                         <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 text-xs font-semibold border border-gray-200">
@@ -196,7 +196,7 @@ export default function AdminTeam() {
                       )}
                     </td>
                     <td className="px-4 py-3 font-medium text-gray-900">{m.name}</td>
-                    <td className="px-4 py-3 text-gray-600">{m.role}</td>
+                    <td className="px-4 py-3 text-gray-600">{m.designation}</td>
                     <td className="px-4 py-3 text-center">
                       <button onClick={() => handleToggleFeatured(m)} className={`transition ${m.isFeatured ? 'text-brand-gold' : 'text-gray-300'} hover:text-brand-gold`} title="Toggle featured">
                         <Star className="w-4 h-4" fill={m.isFeatured ? 'currentColor' : 'none'} />
@@ -244,7 +244,7 @@ export default function AdminTeam() {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
-            <input name="role" value={form.role} onChange={handleChange} className={inputClass} placeholder="e.g. Co-founder" />
+            <input name="designation" value={form.designation} onChange={handleChange} className={inputClass} placeholder="e.g. Co-founder" />
           </div>
           <div className="sm:col-span-2">
             <label className="block text-sm font-medium text-gray-700 mb-1">Bio</label>
