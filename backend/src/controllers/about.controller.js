@@ -7,6 +7,7 @@ const normaliseContent = (body = {}) => {
     return typeof body.content === 'string' ? JSON.parse(body.content) : body.content;
   }
   return {
+    subtitle: body.subtitle ?? '',
     story: body.story ?? '',
     mission: body.mission ?? '',
     vision: body.vision ?? '',
