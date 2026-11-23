@@ -262,7 +262,7 @@ export default function HomePage() {
                   className="group bg-white rounded-2xl p-6 text-center shadow-sm hover:shadow-md border border-transparent hover:border-brand-light transition-all"
                 >
                   <div className="w-14 h-14 rounded-full bg-brand-cream flex items-center justify-center mx-auto mb-4 group-hover:bg-brand-light/20 transition-colors">
-                    <Leaf className="w-7 h-7 text-brand" />
+                    {cat.imageUrl ? <img src={cat.imageUrl} alt={cat.name} className="w-full h-full object-cover rounded-full" /> : <Leaf className="w-7 h-7 text-brand" />}
                   </div>
                   <h3 className="font-bold text-brand-dark group-hover:text-brand transition-colors text-sm">
                     {cat.name}
