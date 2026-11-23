@@ -213,7 +213,7 @@ export default function HomePage() {
           ) : products.length > 0 ? (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
               {products.map((p) => (
-                <ProductCard key={p.id || p.id} product={p} />
+                <ProductCard key={p.id} product={p} />
               ))}
             </div>
           ) : (
@@ -250,7 +250,7 @@ export default function HomePage() {
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5">
               {categories.map((cat) => (
                 <Link
-                  key={cat.id || cat.id}
+                  key={cat.id}
                   to={`/products?category=${cat.slug}`}
                   className="group bg-white rounded-2xl p-6 text-center shadow-sm hover:shadow-md border border-transparent hover:border-brand-light transition-all"
                 >
@@ -363,7 +363,7 @@ export default function HomePage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-7">
               {team.map((member) => (
                 <div
-                  key={member.id || member.id}
+                  key={member.id}
                   className="bg-white rounded-2xl p-7 text-center shadow-sm hover:shadow-md transition-shadow"
                 >
                   <div className="w-20 h-20 rounded-full overflow-hidden mx-auto mb-4 bg-brand-light/20 border-4 border-brand-cream">
