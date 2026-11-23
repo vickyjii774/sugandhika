@@ -7,9 +7,9 @@ import useToast from '../../hooks/useToast.js';
 import { Plus, Trash2, Eye, EyeOff, Pencil, X, Save } from 'lucide-react';
 
 const EMPTY_BANNER = {
-  heading: '', subtitle: '', description: '',
-  button1Label: 'Shop Now', button1Url: '/products',
-  button2Label: 'Contact Us', button2Url: '/contact',
+  title: '', subtitle: '', description: '',
+  buttonLabel: 'Shop Now', buttonUrl: '/products',
+  secondButtonLabel: 'Contact Us', secondButtonUrl: '/contact',
   isActive: true,
 };
 
@@ -17,7 +17,7 @@ export default function AdminBanners() {
   const toast = useToast();
   const [banners, setBanners] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [editing, setEditing] = useState(null);
+  const [editing, setEditing] = useState(undefined);
   const [form, setForm] = useState(EMPTY_BANNER);
   const [imageFile, setImageFile] = useState(null);
   const [saving, setSaving] = useState(false);
@@ -26,10 +26,9 @@ export default function AdminBanners() {
 
   const load = () => {
     setLoading(true);
-    homepageService.getAll()
+    homepageService.getBanners()
       .then(res => {
-        const data = res.data;
-        const b = data?.banners || data?.hero?.banners || [];
+        const b = res?.data ?? [];
         setBanners(Array.isArray(b) ? b : []);
       })
       .catch(() => toast.error('Failed to load banners.'))
@@ -44,7 +43,7 @@ export default function AdminBanners() {
 
   const handleSave = async (e) => {
     e.preventDefault();
-    if (!form.heading) { toast.error('Heading is required.'); return; }
+    if (!form.title) { toast.error('Heading is required.'); return; }
     setSaving(true);
     try {
       let saved;
@@ -55,7 +54,7 @@ export default function AdminBanners() {
       }
       if (imageFile && saved?.data?.id) {
         const fd = new FormData(); fd.append('image', imageFile);
-        await homepageService.uploadBannerImage(fd);
+        await homepageService.updateBanner(saved.data.id, fd);
       }
       toast.success('Banner saved!');
       closeForm();
@@ -109,15 +108,15 @@ export default function AdminBanners() {
           ) : (
             banners.map(banner => (
               <div key={banner.id} className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-                {banner.backgroundImage && (
+                {banner.imageUrl && (
                   <div className="h-24 bg-brand-cream overflow-hidden">
-                    <img src={banner.backgroundImage} alt="" className="w-full h-full object-cover opacity-80" />
+                    <img src={banner.imageUrl} alt="" className="w-full h-full object-cover opacity-80" />
                   </div>
                 )}
                 <div className="p-4">
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <h3 className="font-semibold text-gray-900 line-clamp-1">{banner.heading}</h3>
+                      <h3 className="font-semibold text-gray-900 line-clamp-1">{banner.title}</h3>
                       {banner.subtitle && <p className="text-xs text-gray-500 mt-0.5 line-clamp-1">{banner.subtitle}</p>}
                     </div>
                     <span className={`shrink-0 px-2 py-0.5 rounded-full text-xs font-medium ${banner.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
@@ -156,7 +155,7 @@ export default function AdminBanners() {
           <form onSubmit={handleSave} className="space-y-4">
             <div>
               <label className={labelClass}>Heading <span className="text-red-500">*</span></label>
-              <input value={form.heading} onChange={e => setForm(f => ({ ...f, heading: e.target.value }))} className={inputClass} placeholder="Pure Nature, Pure Sugandhika" />
+              <input value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} className={inputClass} placeholder="Pure Nature, Pure Sugandhika" />
             </div>
             <div>
               <label className={labelClass}>Subtitle</label>
@@ -169,24 +168,24 @@ export default function AdminBanners() {
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className={labelClass}>Button 1 Label</label>
-                <input value={form.button1Label} onChange={e => setForm(f => ({ ...f, button1Label: e.target.value }))} className={inputClass} />
+                <input value={form.buttonLabel} onChange={e => setForm(f => ({ ...f, buttonLabel: e.target.value }))} className={inputClass} />
               </div>
               <div>
                 <label className={labelClass}>Button 1 URL</label>
-                <input value={form.button1Url} onChange={e => setForm(f => ({ ...f, button1Url: e.target.value }))} className={inputClass} />
+                <input value={form.buttonUrl} onChange={e => setForm(f => ({ ...f, buttonUrl: e.target.value }))} className={inputClass} />
               </div>
               <div>
                 <label className={labelClass}>Button 2 Label</label>
-                <input value={form.button2Label} onChange={e => setForm(f => ({ ...f, button2Label: e.target.value }))} className={inputClass} />
+                <input value={form.secondButtonLabel} onChange={e => setForm(f => ({ ...f, secondButtonLabel: e.target.value }))} className={inputClass} />
               </div>
               <div>
                 <label className={labelClass}>Button 2 URL</label>
-                <input value={form.button2Url} onChange={e => setForm(f => ({ ...f, button2Url: e.target.value }))} className={inputClass} />
+                <input value={form.secondButtonUrl} onChange={e => setForm(f => ({ ...f, secondButtonUrl: e.target.value }))} className={inputClass} />
               </div>
             </div>
             <div>
               <label className={labelClass}>Background Image</label>
-              <ImageUpload value={form.backgroundImage} onChange={setImageFile} label="Upload background image" />
+              <ImageUpload preview={editing?.imageUrl ?? ''} onFileSelect={(file) => setImageFile(file)} label="Upload banner image" />
             </div>
             <label className="flex items-center gap-2 cursor-pointer">
               <input type="checkbox" checked={form.isActive} onChange={e => setForm(f => ({ ...f, isActive: e.target.checked }))}

@@ -10,9 +10,9 @@ import EmptyState from '../components/ui/EmptyState.jsx';
 const SORT_OPTIONS = [
   { value: 'featured', label: 'Featured' },
   { value: 'newest', label: 'Newest First' },
-  { value: 'price_asc', label: 'Price: Low to High' },
-  { value: 'price_desc', label: 'Price: High to Low' },
-  { value: 'name_asc', label: 'Name: A to Z' },
+  { value: 'price-asc', label: 'Price: Low to High' },
+  { value: 'price-desc', label: 'Price: High to Low' },
+  
 ];
 
 export default function ProductsPage() {
@@ -50,14 +50,16 @@ export default function ProductsPage() {
     const params = { page: currentPage, limit: 12 };
     if (currentCategory) params.category = currentCategory;
     if (currentSearch) params.search = currentSearch;
-    if (currentSort) params.sort = currentSort;
+    if (currentSort === 'featured') params.featured = 'true';
+    else if (currentSort) params.sort = currentSort;
 
     productsService.getAll(params)
       .then(res => {
         const data = res.data || {};
-        setProducts(data.products || data || []);
-        setTotalPages(data.totalPages || 1);
-        setTotalCount(data.total || 0);
+        setProducts(Array.isArray(data.products) ? data.products : []);
+        const total = Number(data.total || 0);
+        setTotalCount(total);
+        setTotalPages(Math.max(1, Math.ceil(total / 12)));
       })
       .catch(() => setError('Failed to load products.'))
       .finally(() => setLoading(false));

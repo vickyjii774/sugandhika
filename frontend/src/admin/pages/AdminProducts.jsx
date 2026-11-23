@@ -54,9 +54,9 @@ export default function AdminProducts() {
     setActionLoading((prev) => ({ ...prev, [id]: val }));
 
   const handleTogglePublish = async (product) => {
-    setAction(product._id, true);
+    setAction(product.id, true);
     try {
-      await productsService.togglePublish(product._id);
+      await productsService.togglePublish(product.id);
       toast.success(
         product.isPublished ? 'Product unpublished.' : 'Product published.'
       );
@@ -64,14 +64,14 @@ export default function AdminProducts() {
     } catch {
       toast.error('Failed to toggle publish status.');
     } finally {
-      setAction(product._id, false);
+      setAction(product.id, false);
     }
   };
 
   const handleToggleFeatured = async (product) => {
-    setAction(product._id + '_feat', true);
+    setAction(product.id + '_feat', true);
     try {
-      await productsService.toggleFeatured(product._id);
+      await productsService.toggleFeatured(product.id);
       toast.success(
         product.isFeatured ? 'Removed from featured.' : 'Marked as featured.'
       );
@@ -79,14 +79,14 @@ export default function AdminProducts() {
     } catch {
       toast.error('Failed to toggle featured status.');
     } finally {
-      setAction(product._id + '_feat', false);
+      setAction(product.id + '_feat', false);
     }
   };
 
   const handleDelete = async () => {
     if (!confirmDelete) return;
     try {
-      await productsService.delete(confirmDelete._id);
+      await productsService.delete(confirmDelete.id);
       toast.success('Product deleted.');
       setConfirmDelete(null);
       fetchProducts();
@@ -165,7 +165,7 @@ export default function AdminProducts() {
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {products.map((p) => (
-                  <tr key={p._id} className="hover:bg-gray-50 transition">
+                  <tr key={p.id} className="hover:bg-gray-50 transition">
                     <td className="px-4 py-3">
                       {p.mainImage ? (
                         <img
@@ -184,7 +184,7 @@ export default function AdminProducts() {
                       {p.sku && <div className="text-xs text-gray-400">{p.sku}</div>}
                     </td>
                     <td className="px-4 py-3 text-gray-600">
-                      {p.category?.name ?? p.categoryName ?? '—'}
+                      {p.category?.name ?? '—'}
                     </td>
                     <td className="px-4 py-3 text-right">
                       <div className="font-medium">
@@ -197,12 +197,12 @@ export default function AdminProducts() {
                       )}
                     </td>
                     <td className="px-4 py-3 text-right text-gray-600">
-                      {p.stock ?? '—'}
+                      {p.stockQty ?? '—'}
                     </td>
                     <td className="px-4 py-3 text-center">
                       <button
                         onClick={() => handleToggleFeatured(p)}
-                        disabled={!!actionLoading[p._id + '_feat']}
+                        disabled={!!actionLoading[p.id + '_feat']}
                         title={p.isFeatured ? 'Remove from featured' : 'Mark featured'}
                         className={`transition ${p.isFeatured ? 'text-brand-gold' : 'text-gray-300'} hover:text-brand-gold disabled:opacity-50`}
                       >
@@ -212,7 +212,7 @@ export default function AdminProducts() {
                     <td className="px-4 py-3 text-center">
                       <button
                         onClick={() => handleTogglePublish(p)}
-                        disabled={!!actionLoading[p._id]}
+                        disabled={!!actionLoading[p.id]}
                         title={p.isPublished ? 'Unpublish' : 'Publish'}
                         className={`transition ${p.isPublished ? 'text-brand' : 'text-gray-400'} hover:text-brand-dark disabled:opacity-50`}
                       >
@@ -222,7 +222,7 @@ export default function AdminProducts() {
                     <td className="px-4 py-3 text-center">
                       <div className="flex items-center justify-center gap-2">
                         <button
-                          onClick={() => navigate(`/admin/products/${p._id}`)}
+                          onClick={() => navigate(`/admin/products/${p.id}/edit`)}
                           className="text-brand hover:text-brand-dark transition"
                           title="Edit"
                         >

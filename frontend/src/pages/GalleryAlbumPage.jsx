@@ -29,7 +29,7 @@ export default function GalleryAlbumPage() {
   );
 
   const images = album.images || [];
-  const lightboxImages = images.map(img => ({ url: img.url || img, alt: img.caption || album.name }));
+  const lightboxImages = images.map(img => ({ url: img.url || img, alt: img.caption || album.title }));
 
   return (
     <div className="min-h-screen bg-gray-50">

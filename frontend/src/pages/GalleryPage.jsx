@@ -44,8 +44,8 @@ export default function GalleryPage() {
                 className="group bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden hover:shadow-lg transition-all duration-300"
               >
                 <div className="aspect-video bg-brand-cream overflow-hidden">
-                  {album.coverImage ? (
-                    <img src={album.coverImage} alt={album.name}
+                  {album.coverImageUrl ? (
+                    <img src={album.coverImageUrl} alt={album.title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
@@ -54,7 +54,7 @@ export default function GalleryPage() {
                   )}
                 </div>
                 <div className="p-4">
-                  <h3 className="font-bold text-gray-900 group-hover:text-brand transition-colors">{album.name}</h3>
+                  <h3 className="font-bold text-gray-900 group-hover:text-brand transition-colors">{album.title}</h3>
                   {album.description && <p className="text-sm text-gray-500 mt-1 line-clamp-2">{album.description}</p>}
                   {album._count?.images != null && (
                     <p className="text-xs text-gray-400 mt-2">{album._count.images} photos</p>

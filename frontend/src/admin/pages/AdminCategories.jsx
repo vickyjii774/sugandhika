@@ -54,7 +54,7 @@ export default function AdminCategories() {
     setEditTarget(cat);
     setForm({ name: cat.name ?? '', slug: cat.slug ?? '', description: cat.description ?? '' });
     setImageFile(null);
-    setImagePreview(cat.image ?? '');
+    setImagePreview(cat.imageUrl ?? '');
     setSlugEdited(true);
     setModalOpen(true);
   };
@@ -79,13 +79,13 @@ export default function AdminCategories() {
     if (!form.name) { toast.error('Name is required.'); return; }
     setSaving(true);
     try {
-      let catId = editTarget?._id;
+      let catId = editTarget?.id;
       const payload = { name: form.name, slug: form.slug || slugify(form.name), description: form.description };
       if (editTarget) {
-        await categoriesService.update(editTarget._id, payload);
+        await categoriesService.update(editTarget.id, payload);
       } else {
         const res = await categoriesService.create(payload);
-        catId = res?.data?.category?._id ?? res?.data?._id;
+        catId = res?.data?.id;
       }
       if (imageFile && catId) {
         const fd = new FormData();
@@ -105,7 +105,7 @@ export default function AdminCategories() {
   const handleDelete = async () => {
     if (!confirmDelete) return;
     try {
-      await categoriesService.delete(confirmDelete._id);
+      await categoriesService.delete(confirmDelete.id);
       toast.success('Category deleted.');
       setConfirmDelete(null);
       fetchCategories();
@@ -148,10 +148,10 @@ export default function AdminCategories() {
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {categories.map((cat) => (
-                  <tr key={cat._id} className="hover:bg-gray-50 transition">
+                  <tr key={cat.id} className="hover:bg-gray-50 transition">
                     <td className="px-4 py-3">
-                      {cat.image ? (
-                        <img src={cat.image} alt={cat.name} className="w-10 h-10 rounded object-cover border border-gray-200" />
+                      {cat.imageUrl ? (
+                        <img src={cat.imageUrl} alt={cat.name} className="w-10 h-10 rounded object-cover border border-gray-200" />
                       ) : (
                         <div className="w-10 h-10 rounded bg-gray-100 flex items-center justify-center border border-gray-200">
                           <ImageIcon className="w-4 h-4 text-gray-400" />
@@ -160,7 +160,7 @@ export default function AdminCategories() {
                     </td>
                     <td className="px-4 py-3 font-medium text-gray-900">{cat.name}</td>
                     <td className="px-4 py-3 text-gray-500 font-mono text-xs">{cat.slug}</td>
-                    <td className="px-4 py-3 text-right text-gray-600">{cat.productCount ?? '—'}</td>
+                    <td className="px-4 py-3 text-right text-gray-600">{cat._count?.products ?? '—'}</td>
                     <td className="px-4 py-3 text-right text-gray-600">{cat.sortOrder ?? cat.order ?? '—'}</td>
                     <td className="px-4 py-3 text-center">
                       <div className="flex items-center justify-center gap-2">
