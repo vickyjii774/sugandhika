@@ -6,14 +6,11 @@ import { Eye, EyeOff, ChevronUp, ChevronDown, ExternalLink } from 'lucide-react'
 import { Link } from 'react-router-dom';
 
 const SECTION_LINKS = {
-  banners: '/admin/banners',
-  features: '/admin/features',
-  products: '/admin/products',
-  categories: '/admin/categories',
-  team: '/admin/team',
-  gallery: '/admin/gallery',
-  faq: '/admin/faq',
-  about: '/admin/about',
+  'hero': '/admin/banners', 'promo-banner': '/admin/banners',
+  'featured-products': '/admin/products', 'categories': '/admin/categories',
+  'why-choose': '/admin/features', 'about-preview': '/admin/about',
+  'team-preview': '/admin/team', 'gallery-preview': '/admin/gallery',
+  'faq-preview': '/admin/faq', 'brand-intro': '/admin/about',
 };
 
 export default function AdminHomepage() {
@@ -93,14 +90,14 @@ export default function AdminHomepage() {
                 </div>
 
                 <div className="flex-1">
-                  <p className="font-medium text-gray-900 capitalize">{section.sectionKey?.replace(/_/g, ' ') || section.title}</p>
-                  {section.title && section.sectionKey !== section.title && (
+                  <p className="font-medium text-gray-900 capitalize">{section.sectionKey?.replace(/[-_]/g, ' ') || section.title}</p>
+                  {section.subtitle && <p className="text-xs text-gray-500 mt-1">{section.subtitle}</p>}\n                  {section.title && section.sectionKey !== section.title && (
                     <p className="text-xs text-gray-500">{section.title}</p>
                   )}
                 </div>
 
                 {SECTION_LINKS[section.sectionKey] && (
-                  <Link to={SECTION_LINKS[section.section]} className="text-xs text-brand hover:text-brand-dark flex items-center gap-1">
+                  <Link to={SECTION_LINKS[section.sectionKey]} className="text-xs text-brand hover:text-brand-dark flex items-center gap-1">
                     <ExternalLink className="w-3.5 h-3.5" />Edit Content
                   </Link>
                 )}
