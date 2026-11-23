@@ -1,5 +1,5 @@
 import Router from 'express';
-import { authLimiter, generalLimiter } from '../middleware/rateLimiter.middleware.js';
+import { generalLimiter } from '../middleware/rateLimiter.middleware.js';
 import authRoutes from './auth.routes.js';
 import publicRoutes from './public.routes.js';
 import adminRoutes from './admin.routes.js';
@@ -17,7 +17,7 @@ router.get('/health', (_req, res) => {
 });
 
 // ── Mount Routes ──────────────────────────────────────────────────────────────
-router.use('/auth', authLimiter, authRoutes);
+router.use('/auth', authRoutes);
 router.use('/', generalLimiter, publicRoutes);
 router.use('/admin', generalLimiter, adminRoutes);
 
