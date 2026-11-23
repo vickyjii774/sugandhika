@@ -103,7 +103,6 @@ export default function AdminSettings() {
 
     try {
       await settingsService.update({ ...general, ...social, logo: branding.logoUrl || undefined, favicon: branding.faviconUrl || undefined });
-      window.dispatchEvent(new Event('sugandhika:settings-updated'));
 
       if (logoFile) {
         const fd = new FormData();
@@ -117,6 +116,7 @@ export default function AdminSettings() {
         await settingsService.uploadFavicon(fd);
       }
 
+      window.dispatchEvent(new Event('sugandhika:settings-updated'));
       toast.success('Settings saved!');
     } catch {
       toast.error('Failed to save settings.');
