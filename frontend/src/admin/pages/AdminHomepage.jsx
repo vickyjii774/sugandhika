@@ -91,7 +91,8 @@ export default function AdminHomepage() {
 
                 <div className="flex-1">
                   <p className="font-medium text-gray-900 capitalize">{section.sectionKey?.replace(/[-_]/g, ' ') || section.title}</p>
-                  {section.subtitle && <p className="text-xs text-gray-500 mt-1">{section.subtitle}</p>}\n                  {section.title && section.sectionKey !== section.title && (
+                  {section.subtitle && <p className="text-xs text-gray-500 mt-1">{section.subtitle}</p>}
+                  {section.title && section.sectionKey !== section.title && (
                     <p className="text-xs text-gray-500">{section.title}</p>
                   )}
                 </div>
