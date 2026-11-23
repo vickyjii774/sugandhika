@@ -26,10 +26,10 @@ export default function AdminSettings() {
   });
 
   const [social, setSocial] = useState({
-    facebook: '',
-    instagram: '',
-    youtube: '',
-    tiktok: ''
+    facebookUrl: '',
+    instagramUrl: '',
+    youtubeUrl: '',
+    twitterUrl: ''
   });
 
   const [contact, setContact] = useState({
@@ -37,7 +37,7 @@ export default function AdminSettings() {
     email: '',
     whatsapp: '',
     address: '',
-    business_hours: ''
+    businessHours: ''
   });
 
   const [branding, setBranding] = useState({
@@ -72,15 +72,15 @@ export default function AdminSettings() {
         });
 
         setSocial({
-          facebook: s.facebook || '',
-          instagram: s.instagram || '',
-          youtube: s.youtube || '',
-          tiktok: s.tiktok || ''
+          facebookUrl: s.facebookUrl || '',
+          instagramUrl: s.instagramUrl || '',
+          youtubeUrl: s.youtubeUrl || '',
+          twitterUrl: s.twitterUrl || ''
         });
 
         setBranding({
-          logoUrl: s.logoUrl || '',
-          faviconUrl: s.faviconUrl || ''
+          logoUrl: s.logo || s.logoUrl || '',
+          faviconUrl: s.favicon || s.faviconUrl || ''
         });
 
         const c = cRes.data || {};
@@ -90,7 +90,7 @@ export default function AdminSettings() {
           email: c.email || '',
           whatsapp: c.whatsapp || '',
           address: c.address || '',
-          business_hours: c.business_hours || ''
+          businessHours: c.businessHours || ''
         });
       })
       .catch(() => toast.error('Failed to load settings.'))
@@ -102,20 +102,18 @@ export default function AdminSettings() {
     setSaving('general');
 
     try {
-      await settingsService.update({
-        ...general,
-        ...social
-      });
+      await settingsService.update({ ...general, ...social });
+      window.dispatchEvent(new Event('sugandhika:settings-updated'));
 
       if (logoFile) {
         const fd = new FormData();
-        fd.append('logo', logoFile);
+        fd.append('image', logoFile);
         await settingsService.uploadLogo(fd);
       }
 
       if (faviconFile) {
         const fd = new FormData();
-        fd.append('favicon', faviconFile);
+        fd.append('image', faviconFile);
         await settingsService.uploadFavicon(fd);
       }
 
@@ -133,6 +131,7 @@ export default function AdminSettings() {
 
     try {
       await contactService.update(contact);
+      window.dispatchEvent(new Event('sugandhika:settings-updated'));
       toast.success('Contact information saved!');
     } catch {
       toast.error('Failed to save contact information.');
@@ -293,10 +292,10 @@ export default function AdminSettings() {
         </h3>
 
         {[
-          ['facebook', 'Facebook URL'],
-          ['instagram', 'Instagram URL'],
-          ['youtube', 'YouTube URL'],
-          ['tiktok', 'TikTok URL']
+          ['facebookUrl', 'Facebook URL'],
+          ['instagramUrl', 'Instagram URL'],
+          ['youtubeUrl', 'YouTube URL'],
+          ['twitterUrl', 'X / Twitter URL']
         ].map(([key, label]) => (
           <div key={key}>
             <label className={labelClass}>{label}</label>
@@ -364,7 +363,7 @@ export default function AdminSettings() {
           ['email', 'Email', 'email'],
           ['whatsapp', 'WhatsApp Number', 'text'],
           ['address', 'Address', 'text'],
-          ['business_hours', 'Business Hours', 'text']
+          ['businessHours', 'Business Hours', 'text']
         ].map(([key, label, type]) => (
           <div key={key}>
             <label className={labelClass}>{label}</label>
