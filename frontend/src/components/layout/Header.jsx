@@ -34,7 +34,7 @@ export default function Header() {
   const whatsappNumber = settings?.whatsapp || settings?.phone || '';
   const renderNav = (mobile = false) => navItems.map(item => (
     <NavLink key={item.id || item.url} to={item.url} end={item.url === '/'}
-      onClick={mobile ? () => setMobileOpen(false) : undefined}
+      onClick={() => { window.scrollTo({ top: 0, behavior: 'smooth' }); if (mobile) setMobileOpen(false); }}
       className={({ isActive }) => mobile
         ? `block px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${isActive ? 'bg-brand-cream text-brand-dark font-semibold' : 'text-gray-700 hover:bg-brand-cream'}`
         : `transition-colors hover:text-brand-dark ${isActive ? 'text-brand-dark font-semibold' : 'text-gray-600'}`}>
