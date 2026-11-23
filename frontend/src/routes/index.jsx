@@ -1,4 +1,5 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+
+import { Routes, Route } from 'react-router-dom';
 import PublicLayout from '../layouts/PublicLayout.jsx';
 import AdminLayout from '../layouts/AdminLayout.jsx';
 
@@ -12,8 +13,6 @@ import GalleryPage from '../pages/GalleryPage.jsx';
 import GalleryAlbumPage from '../pages/GalleryAlbumPage.jsx';
 import FAQPage from '../pages/FAQPage.jsx';
 import ContactPage from '../pages/ContactPage.jsx';
-import WishlistPage from '../pages/WishlistPage.jsx';
-import CartPage from '../pages/CartPage.jsx';
 import NotFoundPage from '../pages/NotFoundPage.jsx';
 
 // Admin Pages
@@ -49,15 +48,20 @@ export default function AppRoutes() {
         <Route path="/gallery/:slug" element={<GalleryAlbumPage />} />
         <Route path="/faq" element={<FAQPage />} />
         <Route path="/contact" element={<ContactPage />} />
-        <Route path="/wishlist" element={<WishlistPage />} />
-        <Route path="/cart" element={<CartPage />} />
       </Route>
 
-      {/* Admin Login (no layout) */}
+      {/* Admin Login */}
       <Route path="/admin/login" element={<AdminLogin />} />
 
       {/* Protected Admin Routes */}
-      <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
+      <Route
+        path="/admin"
+        element={
+          <AdminRoute>
+            <AdminLayout />
+          </AdminRoute>
+        }
+      >
         <Route index element={<AdminDashboard />} />
         <Route path="homepage" element={<AdminHomepage />} />
         <Route path="banners" element={<AdminBanners />} />

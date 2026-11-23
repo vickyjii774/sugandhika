@@ -1,12 +1,15 @@
-const API_URL = import.meta.env.VITE_API_URL || '/api';
+
+const API_URL = (import.meta.env.VITE_API_URL || '/api').replace(/\/+$/, '');
 
 async function request(method, endpoint, data = null, token = null) {
-  const headers = {
-    'Content-Type': 'application/json',
-  };
+  const headers = {};
+
+  if (data !== null && method !== 'GET') {
+    headers['Content-Type'] = 'application/json';
+  }
 
   if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
+    headers.Authorization = `Bearer ${token}`;
   }
 
   const config = {
@@ -14,48 +17,76 @@ async function request(method, endpoint, data = null, token = null) {
     headers,
   };
 
-  if (data && method !== 'GET') {
+  if (data !== null && method !== 'GET') {
     config.body = JSON.stringify(data);
   }
 
+  const url = `${API_URL}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
+
+  let response;
+
   try {
-    const response = await fetch(`${API_URL}${endpoint}`, config);
-    const result = await response.json();
-
-    if (!response.ok) {
-      throw new Error(result.message || `HTTP error! status: ${response.status}`);
-    }
-
-    return result;
+    response = await fetch(url, config);
   } catch (error) {
-    throw error;
+    throw new Error(
+      `Cannot connect to the backend. Check API URL: ${API_URL}`
+    );
   }
+
+  const contentType = response.headers.get('content-type') || '';
+
+  let result;
+
+  if (contentType.includes('application/json')) {
+    result = await response.json();
+  } else {
+    const text = await response.text();
+    result = { message: text || 'Server returned an invalid response.' };
+  }
+
+  if (!response.ok) {
+    throw new Error(
+      result?.message || `Request failed with status ${response.status}`
+    );
+  }
+
+  return result;
 }
 
 async function upload(endpoint, formData, token = null) {
   const headers = {};
 
   if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
+    headers.Authorization = `Bearer ${token}`;
   }
 
+  const url = `${API_URL}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
+
+  let response;
+
   try {
-    const response = await fetch(`${API_URL}${endpoint}`, {
+    response = await fetch(url, {
       method: 'POST',
       headers,
       body: formData,
     });
-
-    const result = await response.json();
-
-    if (!response.ok) {
-      throw new Error(result.message || `Upload failed! status: ${response.status}`);
-    }
-
-    return result;
   } catch (error) {
-    throw error;
+    throw new Error('Cannot connect to the backend while uploading.');
   }
+
+  const contentType = response.headers.get('content-type') || '';
+
+  const result = contentType.includes('application/json')
+    ? await response.json()
+    : { message: await response.text() };
+
+  if (!response.ok) {
+    throw new Error(
+      result?.message || `Upload failed with status ${response.status}`
+    );
+  }
+
+  return result;
 }
 
 export const api = {
