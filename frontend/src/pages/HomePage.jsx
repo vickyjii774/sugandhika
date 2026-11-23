@@ -70,6 +70,8 @@ export default function HomePage() {
   const [banners, setBanners] = useState([]);
   const [homeFeatures, setHomeFeatures] = useState(WHY_FEATURES);
   const [aboutContent, setAboutContent] = useState(null);
+  const [sectionVisibility, setSectionVisibility] = useState({});
+  const isSectionEnabled = (key) => sectionVisibility[key] !== false;
   const [loading, setLoading] = useState({
     products: true,
     categories: true,
@@ -79,7 +81,7 @@ export default function HomePage() {
   });
 
   useEffect(() => {
-    homepageService.getAll().then((res) => setBanners(Array.isArray(res?.data?.banners) ? res.data.banners : [])).catch(() => setBanners([]));
+    homepageService.getAll().then((res) => { const data = res?.data || {}; setBanners(Array.isArray(data.banners) ? data.banners : []); setSectionVisibility(Object.fromEntries((data.sections || []).map(section => [section.sectionKey, section.isEnabled]))); }).catch(() => setBanners([]));
     featuresService.getPublic().then((res) => { if (Array.isArray(res?.data) && res.data.length) setHomeFeatures(res.data.map(item => ({ icon: FEATURE_ICON_MAP[item.icon] || Leaf, title: item.title, desc: item.description, imageUrl: item.imageUrl }))); }).catch(() => {});
     aboutService.get().then((res) => setAboutContent(res?.data?.content || res?.data || {})).catch(() => {});
 
@@ -117,7 +119,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen">
       {/* ── 1. HERO ───────────────────────────────────────────── */}
-      <section className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-brand-dark via-brand to-brand-light overflow-hidden">
+      <section className={"relative min-h-screen flex items-center justify-center bg-gradient-to-br from-brand-dark via-brand to-brand-light overflow-hidden " + (isSectionEnabled("hero") ? "" : "hidden")}>
         {banners[0]?.imageUrl && <img src={banners[0].imageUrl} alt="" className="absolute inset-0 w-full h-full object-cover opacity-25" />}
         {/* Subtle pattern overlay */}
         <div
@@ -166,7 +168,7 @@ export default function HomePage() {
       </section>
 
       {/* ── 2. BRAND INTRO ───────────────────────────────────── */}
-      <section className="bg-brand-cream py-20">
+      <section className={"bg-brand-cream py-20 " + (isSectionEnabled("brand-intro") ? "" : "hidden")}>
         <div className="max-w-6xl mx-auto px-4 grid md:grid-cols-2 gap-12 items-center">
           <div>
             <div className="inline-flex items-center gap-2 text-brand text-sm font-semibold uppercase tracking-widest mb-4">
@@ -202,7 +204,7 @@ export default function HomePage() {
       </section>
 
       {/* ── 3. FEATURED PRODUCTS ─────────────────────────────── */}
-      <section className="bg-white py-20">
+      <section className={"bg-white py-20 " + (isSectionEnabled("featured-products") ? "" : "hidden")}>
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-12">
             <span className="text-brand text-sm font-semibold uppercase tracking-widest">
@@ -238,7 +240,7 @@ export default function HomePage() {
       </section>
 
       {/* ── 4. CATEGORIES ────────────────────────────────────── */}
-      <section className="bg-brand-cream py-20">
+      <section className={"bg-brand-cream py-20 " + (isSectionEnabled("categories") ? "" : "hidden")}>
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-12">
             <span className="text-brand text-sm font-semibold uppercase tracking-widest">
@@ -278,7 +280,7 @@ export default function HomePage() {
       </section>
 
       {/* ── 5. WHY CHOOSE US ─────────────────────────────────── */}
-      <section className="bg-white py-20">
+      <section className={"bg-white py-20 " + (isSectionEnabled("why-choose") ? "" : "hidden")}>
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-12">
             <span className="text-brand text-sm font-semibold uppercase tracking-widest">
@@ -309,7 +311,7 @@ export default function HomePage() {
       </section>
 
       {/* ── 6. ABOUT PREVIEW ─────────────────────────────────── */}
-      <section className="bg-gradient-to-br from-brand-dark to-brand py-20">
+      <section className={"bg-gradient-to-br from-brand-dark to-brand py-20 " + (isSectionEnabled("about-preview") ? "" : "hidden")}>
         <div className="max-w-6xl mx-auto px-4 grid md:grid-cols-2 gap-12 items-center text-white">
           <div>
             <div className="inline-flex items-center gap-2 text-brand-gold text-sm font-semibold uppercase tracking-widest mb-4">
@@ -351,7 +353,7 @@ export default function HomePage() {
       </section>
 
       {/* ── 7. TEAM PREVIEW ──────────────────────────────────── */}
-      <section className="bg-brand-cream py-20">
+      <section className={"bg-brand-cream py-20 " + (isSectionEnabled("team-preview") ? "" : "hidden")}>
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-12">
             <span className="text-brand text-sm font-semibold uppercase tracking-widest">
@@ -411,7 +413,7 @@ export default function HomePage() {
       </section>
 
       {/* ── 8. GALLERY PREVIEW ───────────────────────────────── */}
-      <section className="bg-white py-20">
+      <section className={"bg-white py-20 " + (isSectionEnabled("gallery-preview") ? "" : "hidden")}>
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-12">
             <span className="text-brand text-sm font-semibold uppercase tracking-widest">
@@ -459,7 +461,7 @@ export default function HomePage() {
       </section>
 
       {/* ── 9. FAQ PREVIEW ───────────────────────────────────── */}
-      <section className="bg-brand-cream py-20">
+      <section className={"bg-brand-cream py-20 " + (isSectionEnabled("faq-preview") ? "" : "hidden")}>
         <div className="max-w-3xl mx-auto px-4">
           <div className="text-center mb-12">
             <span className="text-brand text-sm font-semibold uppercase tracking-widest">
@@ -493,7 +495,7 @@ export default function HomePage() {
       </section>
 
       {/* ── 10. WHATSAPP CTA ─────────────────────────────────── */}
-      <section className="bg-green-600 py-16">
+      <section className={"bg-green-600 py-16 " + (isSectionEnabled("whatsapp-cta") ? "" : "hidden")}>
         <div className="max-w-3xl mx-auto px-4 text-center text-white">
           <div className="flex justify-center mb-5">
             <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center">
