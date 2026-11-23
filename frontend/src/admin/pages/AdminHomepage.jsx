@@ -13,6 +13,20 @@ const SECTION_LINKS = {
   'faq-preview': '/admin/faq', 'brand-intro': '/admin/about',
 };
 
+const SECTION_DESCRIPTIONS = {
+  hero: 'Main opening banner, headline, description and primary calls to action.',
+  'brand-intro': 'Short introduction that explains the Sugandhika brand and its purpose.',
+  'featured-products': 'Highlighted products displayed on the homepage.',
+  categories: 'Product category cards and their images.',
+  'why-choose': 'The benefits and reasons customers should choose Sugandhika.',
+  'promo-banner': 'A secondary promotional banner shown below the feature cards.',
+  'about-preview': 'A short preview of the About Us story.',
+  'team-preview': 'Selected team members displayed on the homepage.',
+  'gallery-preview': 'A preview of selected gallery images or albums.',
+  'faq-preview': 'Frequently asked questions shown on the homepage.',
+  'whatsapp-cta': 'The closing call to action that invites visitors to contact the team on WhatsApp.',
+};
+
 export default function AdminHomepage() {
   const toast = useToast();
   const [sections, setSections] = useState([]);
@@ -91,7 +105,7 @@ export default function AdminHomepage() {
 
                 <div className="flex-1">
                   <p className="font-medium text-gray-900 capitalize">{section.sectionKey?.replace(/[-_]/g, ' ') || section.title}</p>
-                  {section.subtitle && <p className="text-xs text-gray-500 mt-1">{section.subtitle}</p>}
+                  <p className="text-xs text-gray-500 mt-1">{section.subtitle || SECTION_DESCRIPTIONS[section.sectionKey] || 'Homepage content section.'}</p>
                   {section.title && section.sectionKey !== section.title && (
                     <p className="text-xs text-gray-500">{section.title}</p>
                   )}
