@@ -39,22 +39,9 @@ desktop.ini
 *.swp
 *.swo
 
-# Prisma
+# Prisma local database files
 *.db
 *.db-journal
-backend/src/prisma/migrations/*.sql
-
-# Python (legacy backend - kept for reference only)
-_legacy/backend-django/__pycache__/
-_legacy/backend-django/*.pyc
-_legacy/backend-django/*.pyo
-_legacy/backend-django/*.pyd
-_legacy/backend-django/.Python
-_legacy/backend-django/env/
-_legacy/backend-django/venv/
-_legacy/backend-django/*.egg-info/
-_legacy/backend-django/dist/
-_legacy/backend-django/build/
 
 # TypeScript
 *.tsbuildinfo

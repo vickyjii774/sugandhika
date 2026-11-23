@@ -1,115 +1,87 @@
 # 🌿 Sugandhika — Pure Eco Fragrance
 
-> Natural, premium, and eco-friendly herbal fragrance products from the heart of Nepal.
+> Natural, premium, and eco-friendly herbal fragrance products from Nepal.
 
----
-
-## 📦 Project Structure
+## Project structure
 
 ```
 sugandhika/
 ├── frontend/          # React + Vite + Tailwind CSS
 ├── backend/           # Node.js + Express + Prisma
-├── docs/              # Documentation
-├── _legacy/           # Archived legacy code (Next.js + Django)
+├── docs/              # Project and deployment documentation
+├── _legacy/           # Archived legacy application files
 └── package.json       # Root monorepo scripts
 ```
 
-## 🚀 Quick Start
+## Requirements
 
-### Prerequisites
-- Node.js ≥ 18.0.0
-- npm ≥ 9.0.0
+- Node.js 20 or newer
+- npm 9 or newer
+- PostgreSQL database
 
-### 1. Install Dependencies
+## Quick start
+
+Install the frontend and backend dependencies:
+
 ```bash
 npm run install:all
 ```
 
-### 2. Configure Environment Variables
-```bash
-# Backend
-cp backend/.env.example backend/.env
-# Edit backend/.env with your Neon PostgreSQL URL, Supabase keys, JWT secret
+Configure the backend:
 
-# Frontend
-cp frontend/.env.example frontend/.env
-# Edit frontend/.env with your backend URL
+```bash
+cp backend/.env.example backend/.env
 ```
 
-### 3. Set Up Database
-```bash
-# Push schema to Neon PostgreSQL
-npm run prisma:push
+Set at least `DATABASE_URL` and a strong `JWT_SECRET` in `backend/.env`. Configure the frontend API URL in `frontend/.env` using the provided `frontend/.env.example`.
 
-# Seed with initial data
+Set up the database and seed the initial content:
+
+```bash
+npm run prisma:generate --prefix backend
+npm run prisma:push
 npm run prisma:seed
 ```
 
-### 4. Start Development
+Start both applications:
+
 ```bash
 npm run dev
 ```
-- Frontend: http://localhost:5173
+
+- Frontend: http://localhost:3000
 - Backend API: http://localhost:5000/api
-- Admin: http://localhost:5173/admin
+- Admin dashboard: http://localhost:3000/admin
 
----
-
-## 🔑 Default Admin Credentials
-
-After seeding the database:
-- **Email:** admin@sugandhika.com
-- **Password:** Admin@1234
-
-> ⚠️ **Change this password immediately after first login!**
-
----
-
-## 🛠 Technology Stack
+## Technology
 
 | Layer | Technology |
-|-------|-----------|
-| Frontend | React.js + Vite + React Router |
-| Styling | Tailwind CSS + Lucide React |
-| Backend | Node.js + Express.js |
-| Database | Neon PostgreSQL + Prisma ORM |
-| Image Storage | Supabase Storage |
-| Auth | JWT + bcrypt |
-| Frontend Hosting | Vercel Hobby |
-| Backend Hosting | Render Free |
+|---|---|
+| Frontend | React + Vite + React Router |
+| Styling | Tailwind CSS |
+| Backend | Node.js + Express |
+| Database | PostgreSQL + Prisma |
+| Authentication | JWT + bcrypt |
+| Media | Current configured storage provider |
+| Frontend hosting | Vercel or another static host |
+| Backend hosting | Render or another Node.js host |
 
-## 📂 Available Scripts
+## Useful commands
 
 ```bash
-npm run install:all    # Install all dependencies
-npm run dev            # Run frontend + backend together
-npm run dev:frontend   # Frontend only (port 5173)
-npm run dev:backend    # Backend only (port 5000)
-npm run build          # Build frontend for production
-npm run prisma:push    # Sync schema to database
-npm run prisma:seed    # Seed database with initial data
-npm run prisma:migrate # Run migrations in production
+npm run install:all
+npm run dev
+npm run dev:frontend
+npm run dev:backend
+npm run build
+npm run prisma:generate --prefix backend
+npm run prisma:push
+npm run prisma:seed
+npm run prisma:migrate
 ```
 
-## 📚 Documentation
-
-- [Deployment Guide](docs/DEPLOYMENT.md)
-- [Database Guide](docs/DATABASE.md)
-- [Admin Guide](docs/ADMIN_GUIDE.md)
-
-## 💰 Hosting Cost
-
-**Target: NPR 0/month**
-
-| Service | Plan | Cost |
-|---------|------|------|
-| Vercel | Hobby | Free |
-| Render | Free | Free |
-| Neon PostgreSQL | Free | Free |
-| Supabase Storage | Free | Free |
-| GitHub | Free | Free |
+See the `docs/` directory for the admin, database, and deployment guides.
 
 ---
 
-Made with 💚 for Sugandhika, Nepal
+Made with 💚 for Sugandhika, Nepal.

@@ -1,53 +1,19 @@
 services:
   - type: web
-    name: sugandhika-django-staging
-    runtime: docker
+    name: sugandhika-api
+    runtime: node
     plan: free
     region: singapore
-    branch: feat/django-backend-migration
-    dockerfilePath: ./backend/Dockerfile
-    dockerContext: ./backend
-    dockerCommand: "sh -c 'python manage.py migrate --noinput && python manage.py bootstrap_owner && gunicorn config.wsgi:application --bind 0.0.0.0:${PORT:-10000} --workers 2 --timeout 60'"
-    healthCheckPath: /api/health/
-    autoDeployTrigger: 'off'
+    rootDir: backend
+    buildCommand: npm install && npx prisma generate --schema=src/prisma/schema.prisma
+    startCommand: npm start
+    healthCheckPath: /api/health
     envVars:
-      - key: DJANGO_SECRET_KEY
-        generateValue: true
-      - key: DJANGO_DEBUG
-        value: "false"
-      - key: DJANGO_ALLOWED_HOSTS
-        # Add both staging and production backend hostnames here, comma-separated.
-        # Update after production service is created.
-        value: sugandhika-django-staging.onrender.com,sugandhika.onrender.com
-      - key: DJANGO_SECURE_SSL_REDIRECT
-        value: "true"
+      - key: NODE_ENV
+        value: production
       - key: DATABASE_URL
-        fromDatabase:
-          name: sugandhika-staging-db
-          property: connectionString
-      - key: CORS_ALLOWED_ORIGINS
-        # Add the Vercel deployment URL when the frontend switches to Django.
-        # Multiple origins: comma-separated.
-        value: http://localhost:3000,https://sugandhika-beryl.vercel.app
-      - key: CSRF_TRUSTED_ORIGINS
-        value: https://sugandhika-django-staging.onrender.com,https://sugandhika.onrender.com
-      - key: DJANGO_OWNER_BOOTSTRAP_USERNAME
         sync: false
-      - key: DJANGO_OWNER_BOOTSTRAP_EMAIL
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ORIGIN
         sync: false
-      - key: DJANGO_OWNER_BOOTSTRAP_PASSWORD
-        sync: false
-      # Email settings — set these in the Render dashboard, not here.
-      - key: EMAIL_BACKEND
-        value: django.core.mail.backends.console.EmailBackend
-      - key: FRONTEND_URL
-        value: https://sugandhika-beryl.vercel.app
-
-databases:
-  - name: sugandhika-staging-db
-    databaseName: sugandhika_staging
-    user: sugandhika_staging_user
-    plan: free
-    region: singapore
-    postgresMajorVersion: "16"
-    ipAllowList: []
