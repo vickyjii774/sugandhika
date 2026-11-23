@@ -29,7 +29,7 @@ export const uploadFile = async (buffer, mimetype, folder, filename) => {
   const baseName = (filename || uuidv4()).replace(/\\.[^.]+$/, '').replace(/[^a-zA-Z0-9_-]/g, '-');
   const publicId = `${folder}/${baseName || uuidv4()}`;
   const timestamp = Math.floor(Date.now() / 1000);
-  const params = { folder, public_id: publicId, timestamp };
+  const params = { folder, public_id: baseName, timestamp };
   const signature = signParams(params, apiSecret);
 
   const form = new FormData();
@@ -37,7 +37,7 @@ export const uploadFile = async (buffer, mimetype, folder, filename) => {
   form.set('api_key', apiKey);
   form.set('timestamp', String(timestamp));
   form.set('folder', folder);
-  form.set('public_id', publicId);
+  form.set('public_id', baseName);
   form.set('signature', signature);
 
   const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
