@@ -1,4 +1,6 @@
 import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { navigationService } from '../../services/api.service.js';
 import { MapPin, Phone, Mail, Sparkles, Facebook, Instagram, Youtube, ArrowRight } from 'lucide-react';
 import { useSettings } from '../../hooks/useSettings.js';
 
@@ -16,6 +18,8 @@ const productLinks = [
 ];
 export default function Footer() {
   const { settings } = useSettings();
+  const [links, setLinks] = useState(quickLinks);
+  useEffect(() => { navigationService.getPublic().then(res => { const items = Array.isArray(res?.data) ? res.data : []; if (items.length) setLinks(items.map(item => ({ label: item.label, to: item.url }))); }).catch(() => {}); }, []);
   const year = new Date().getFullYear();
   const phone = settings?.phone || '';
   const whatsapp = settings?.whatsapp || phone;
@@ -35,7 +39,7 @@ export default function Footer() {
           </div>
           <div className="flex gap-3 mt-5">{settings?.facebookUrl && <a href={settings.facebookUrl} target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center"><Facebook className="w-4 h-4" /></a>}{settings?.instagramUrl && <a href={settings.instagramUrl} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center"><Instagram className="w-4 h-4" /></a>}{settings?.youtubeUrl && <a href={settings.youtubeUrl} target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center"><Youtube className="w-4 h-4" /></a>}</div>
         </div>
-        <div><h4 className="text-sm font-semibold uppercase tracking-wider mb-5">Quick Links</h4><ul className="space-y-2.5">{quickLinks.map(l => <li key={l.to}><Link to={l.to} className="text-sm text-white/60 hover:text-white flex items-center gap-1.5"><ArrowRight className="w-3 h-3 text-brand-light" />{l.label}</Link></li>)}</ul></div>
+        <div><h4 className="text-sm font-semibold uppercase tracking-wider mb-5">Quick Links</h4><ul className="space-y-2.5">{links.map(l => <li key={l.to}><Link to={l.to} className="text-sm text-white/60 hover:text-white flex items-center gap-1.5"><ArrowRight className="w-3 h-3 text-brand-light" />{l.label}</Link></li>)}</ul></div>
         <div><h4 className="text-sm font-semibold uppercase tracking-wider mb-5">Our Products</h4><ul className="space-y-2.5">{productLinks.map(l => <li key={l.to}><Link to={l.to} className="text-sm text-white/60 hover:text-white flex items-center gap-1.5"><ArrowRight className="w-3 h-3 text-brand-light" />{l.label}</Link></li>)}</ul></div>
         <div><h4 className="text-sm font-semibold uppercase tracking-wider mb-5">Order via WhatsApp</h4><p className="text-sm text-white/60 mb-4">Contact us directly to place an order or ask a question.</p>{whatsapp && <a href={`https://wa.me/${whatsapp.replace(/[^\d]/g, '')}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-5 py-3 bg-green-500 hover:bg-green-600 text-white text-sm font-semibold rounded-xl">💬 Order on WhatsApp</a>}</div>
       </div>
