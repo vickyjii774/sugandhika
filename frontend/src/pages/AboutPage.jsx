@@ -17,13 +17,26 @@ const DEFAULT_MISSION = 'To deliver premium-quality natural herbal products that
 const DEFAULT_VISION = "To become Nepal's most trusted natural wellness brand, recognized globally for our commitment to quality, purity, and sustainable botanical practices.";
 const DEFAULT_QUALITY = "At Sugandhika, quality is non-negotiable. Every batch of our products undergoes rigorous testing to ensure purity, potency, and safety.";
 
+// Older/admin content can store rich text as { title, description } rather than a string.
+const renderableText = (value) => {
+  if (typeof value === 'string' || typeof value === 'number') return String(value);
+  if (Array.isArray(value)) return value.map(item => renderableText(item)).filter(Boolean).join('\\n\\n');
+  if (value && typeof value === 'object') {
+    return [value.title, value.description, value.text, value.content]
+      .filter(item => typeof item === 'string' || typeof item === 'number')
+      .map(String).join('\\n\\n');
+  }
+  return '';
+};
+
 export default function AboutPage() {
   const [about, setAbout] = useState(null);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     aboutService.get().then(res => setAbout(res?.data || {})).catch(() => setAbout({})).finally(() => setLoading(false));
   }, []);
-  const content = about?.content || about || {};
+  const rawContent = about?.content || about || {};
+  const content = Object.fromEntries(Object.entries(rawContent).map(([key, value]) => [key, renderableText(value)]));
   const sections = [
     { icon: Leaf, title: 'Our Story', text: content.story || DEFAULT_STORY },
     { icon: Eye, title: 'Our Mission', text: content.mission || DEFAULT_MISSION },
@@ -34,7 +47,7 @@ export default function AboutPage() {
       <section className="bg-gradient-to-br from-brand-dark to-brand py-16 sm:py-20 text-white text-center px-4">
         <div className="max-w-3xl mx-auto">
           <div className="inline-flex items-center gap-2 text-brand-gold text-sm font-semibold uppercase tracking-widest mb-4"><Leaf className="w-4 h-4" /> Our Story</div>
-          <h1 className="text-4xl sm:text-5xl font-bold mb-4">{about?.title || 'About Sugandhika'}</h1>
+          <h1 className="text-4xl sm:text-5xl font-bold mb-4">{renderableText(about?.title) || 'About Sugandhika'}</h1>
           <p className="text-white/70 text-lg sm:text-xl max-w-2xl mx-auto leading-relaxed">{content.subtitle || 'Discover the people, purpose and values behind Sugandhika.'}</p>
           <nav className="mt-6 text-sm text-brand-cream/60"><Link to="/" className="hover:text-white">Home</Link><span className="mx-2">/</span><span className="text-white">About Us</span></nav>
         </div>
