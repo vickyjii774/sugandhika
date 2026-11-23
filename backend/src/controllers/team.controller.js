@@ -85,3 +85,39 @@ export async function reorderTeam(req, res, next) {
     return sendSuccess(res, null, 'Team reordered');
   } catch (err) { next(err); }
 }
+
+
+/** GET /api/admin/team/:id */
+export async function getTeamMemberById(req, res, next) {
+  try {
+    const member = await prisma.teamMember.findUnique({ where: { id: req.params.id } });
+    if (!member) return sendError(res, 'Team member not found', 404);
+    return sendSuccess(res, member);
+  } catch (err) { next(err); }
+}
+
+/** PATCH /api/admin/team/:id/featured */
+export async function toggleTeamFeatured(req, res, next) {
+  try {
+    const existing = await prisma.teamMember.findUnique({ where: { id: req.params.id } });
+    if (!existing) return sendError(res, 'Team member not found', 404);
+    const member = await prisma.teamMember.update({
+      where: { id: req.params.id },
+      data: { isFeatured: !existing.isFeatured },
+    });
+    return sendSuccess(res, member, 'Team featured status updated');
+  } catch (err) { next(err); }
+}
+
+/** PATCH /api/admin/team/:id/publish */
+export async function toggleTeamPublish(req, res, next) {
+  try {
+    const existing = await prisma.teamMember.findUnique({ where: { id: req.params.id } });
+    if (!existing) return sendError(res, 'Team member not found', 404);
+    const member = await prisma.teamMember.update({
+      where: { id: req.params.id },
+      data: { isPublished: !existing.isPublished },
+    });
+    return sendSuccess(res, member, 'Team publishing status updated');
+  } catch (err) { next(err); }
+}
