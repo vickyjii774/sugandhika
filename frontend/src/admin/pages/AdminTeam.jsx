@@ -188,7 +188,7 @@ export default function AdminTeam() {
                   <tr key={m.id} className="hover:bg-gray-50 transition">
                     <td className="px-4 py-3">
                       {m.imageUrl ? (
-                        <img src={m.photo} alt={m.name} className="w-10 h-10 rounded-full object-cover border border-gray-200" />
+                        <img src={m.imageUrl} alt={m.name} className="w-10 h-10 rounded-full object-cover border border-gray-200" />
                       ) : (
                         <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 text-xs font-semibold border border-gray-200">
                           {m.name?.charAt(0) ?? '?'}
