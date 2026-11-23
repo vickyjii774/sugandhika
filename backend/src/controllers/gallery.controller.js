@@ -120,7 +120,7 @@ export async function uploadImages(req, res, next) {
 export async function addImageByUrl(req, res, next) {
   try {
     const { url, title, description } = req.body;
-    if (!url || !/^https?:\\/\\//i.test(url)) return sendError(res, 'A valid http(s) image URL is required', 400);
+    if (!url || !/^https?:\/\//i.test(url)) return sendError(res, 'A valid http(s) image URL is required', 400);
     const image = await prisma.galleryImage.create({ data: { albumId: req.params.id, url, title, description } });
     return sendSuccess(res, image, 'Image URL added', 201);
   } catch (err) { next(err); }
