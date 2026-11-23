@@ -22,6 +22,7 @@ export default function AdminCategories() {
   const [form, setForm] = useState(EMPTY_FORM);
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
   const [saving, setSaving] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(null);
   const [slugEdited, setSlugEdited] = useState(false);
@@ -202,7 +203,8 @@ export default function AdminCategories() {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Image</label>
-            <ImageUpload preview={imagePreview} onFileSelect={(f, p) => { setImageFile(f); setImagePreview(p); }} label="Upload category image" />
+            <ImageUpload preview={imagePreview} onFileSelect={(f, p) => { setImageFile(f); setImagePreview(p || ''); if (f) setImageUrl(''); }} label="Upload category image" />
+            <input type="url" value={imageUrl} onChange={e => { setImageUrl(e.target.value); setImagePreview(e.target.value); setImageFile(null); }} placeholder="Or paste image URL (https://...)" className={inputClass + ' mt-3'} />
           </div>
           <div className="flex justify-end gap-3 pt-2">
             <button onClick={() => setModalOpen(false)} className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200 transition">Cancel</button>
