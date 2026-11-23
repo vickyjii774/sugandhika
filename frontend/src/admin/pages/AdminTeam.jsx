@@ -124,15 +124,15 @@ export default function AdminTeam() {
   };
 
   const handleReorder = async (member, direction) => {
-    const idx = members.findIndex((m) => m.id === member._id);
+    const idx = members.findIndex((m) => m.id === member.id);
     const swapIdx = direction === 'up' ? idx - 1 : idx + 1;
     if (swapIdx < 0 || swapIdx >= members.length) return;
     const newMembers = [...members];
     [newMembers[idx], newMembers[swapIdx]] = [newMembers[swapIdx], newMembers[idx]];
     setMembers(newMembers);
     try {
-      const ids = newMembers.map((m) => m._id);
-      await teamService.reorder(ids);
+      const items = newMembers.map((m, sortOrder) => ({ id: m.id, sortOrder }));
+      await teamService.reorder({ items });
     } catch {
       toast.error('Failed to reorder.');
       fetchMembers();
@@ -141,14 +141,14 @@ export default function AdminTeam() {
 
   const handleToggleFeatured = async (member) => {
     try {
-      await teamService.toggleFeatured(member._id);
+      await teamService.toggleFeatured(member.id);
       fetchMembers();
     } catch { toast.error('Failed to update.'); }
   };
 
   const handleTogglePublish = async (member) => {
     try {
-      await teamService.togglePublish(member._id);
+      await teamService.togglePublish(member.id);
       fetchMembers();
     } catch { toast.error('Failed to update.'); }
   };
