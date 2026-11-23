@@ -11,6 +11,9 @@ import {
   ArrowRight,
   Users,
   Package,
+  Sprout,
+  ShieldCheck,
+  Mountain,
 } from 'lucide-react';
 import {
   productsService,
@@ -59,7 +62,7 @@ const WHY_FEATURES = [
   },
 ];
 
-const FEATURE_ICON_MAP = { Leaf, Shield, Heart, Star, Award, Sparkles };
+const FEATURE_ICON_MAP = { Leaf, Shield, Heart, Star, Award, Sparkles, Sprout, ShieldCheck, Mountain };
 
 export default function HomePage() {
   const [products, setProducts] = useState([]);
