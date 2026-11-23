@@ -313,6 +313,20 @@ export default function HomePage() {
         </div>
       </section>
 
+      {banners[1] && isSectionEnabled('promo-banner') && (
+        <section className="bg-brand-dark text-white py-14 sm:py-16">
+          <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div>
+              {banners[1].subtitle && <p className="text-brand-gold text-sm font-semibold uppercase tracking-widest mb-3">{banners[1].subtitle}</p>}
+              <h2 className="text-3xl sm:text-4xl font-bold mb-4">{banners[1].title}</h2>
+              {banners[1].description && <p className="text-white/75 leading-relaxed">{banners[1].description}</p>}
+              {banners[1].buttonLabel && <Link to={banners[1].buttonUrl || '/products'} className="inline-flex mt-6 px-6 py-3 rounded-lg bg-brand-gold text-brand-dark font-semibold">{banners[1].buttonLabel}</Link>}
+            </div>
+            {banners[1].imageUrl && <img src={banners[1].imageUrl} alt={banners[1].title} className="w-full max-h-72 object-cover rounded-2xl" />}
+          </div>
+        </section>
+      )}
+
       {/* ── 6. ABOUT PREVIEW ─────────────────────────────────── */}
       <section className={"bg-gradient-to-br from-brand-dark to-brand py-20 " + (isSectionEnabled("about-preview") ? "" : "hidden")}>
         <div className="max-w-6xl mx-auto px-4 grid md:grid-cols-2 gap-12 items-center text-white">
