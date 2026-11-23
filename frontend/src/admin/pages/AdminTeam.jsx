@@ -27,6 +27,7 @@ export default function AdminTeam() {
   const [form, setForm] = useState(EMPTY_FORM);
   const [photoFile, setPhotoFile] = useState(null);
   const [photoPreview, setPhotoPreview] = useState('');
+  const [photoUrl, setPhotoUrl] = useState('');
   const [saving, setSaving] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(null);
 
@@ -50,6 +51,7 @@ export default function AdminTeam() {
     setForm({ ...EMPTY_FORM, sortOrder: members.length + 1 });
     setPhotoFile(null);
     setPhotoPreview('');
+    setPhotoUrl('');
     setModalOpen(true);
   };
 
@@ -67,6 +69,7 @@ export default function AdminTeam() {
     });
     setPhotoFile(null);
     setPhotoPreview(member.imageUrl ?? '');
+    setPhotoUrl(member.imageUrl ?? '');
     setModalOpen(true);
   };
 
@@ -89,6 +92,7 @@ export default function AdminTeam() {
         sortOrder: form.sortOrder !== '' ? Number(form.sortOrder) : undefined,
         isFeatured: form.isFeatured,
         isPublished: form.isPublished,
+        imageUrl: photoUrl || undefined,
       };
       if (editTarget) {
         await teamService.update(editTarget.id, payload);
@@ -274,7 +278,8 @@ export default function AdminTeam() {
           </div>
           <div className="sm:col-span-2">
             <label className="block text-sm font-medium text-gray-700 mb-2">Photo</label>
-            <ImageUpload preview={photoPreview} onFileSelect={(f, p) => { setPhotoFile(f); setPhotoPreview(p); }} label="Upload photo" />
+            <ImageUpload preview={photoPreview} onFileSelect={(f, p) => { setPhotoFile(f); setPhotoPreview(p || ''); if (f) setPhotoUrl(''); }} label="Upload photo" />
+            <input type="url" value={photoUrl} onChange={e => { setPhotoUrl(e.target.value); setPhotoPreview(e.target.value); setPhotoFile(null); }} placeholder="Or paste photo URL (https://...)" className={inputClass + ' mt-3'} />
           </div>
         </div>
         <div className="flex justify-end gap-3 pt-4 mt-2 border-t border-gray-100">
