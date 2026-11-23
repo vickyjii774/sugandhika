@@ -5,7 +5,7 @@ import { sendSuccess } from '../utils/response.js';
 export async function getHomepageData(_req, res, next) {
   try {
     const [sections, banners, features] = await Promise.all([
-      prisma.homepageSection.findMany({ where: { isEnabled: true }, orderBy: { sortOrder: 'asc' } }),
+      prisma.homepageSection.findMany({ orderBy: { sortOrder: 'asc' } }),
       prisma.banner.findMany({ where: { isActive: true }, orderBy: { sortOrder: 'asc' } }),
       prisma.feature.findMany({ where: { isActive: true }, orderBy: { sortOrder: 'asc' } }),
     ]);
