@@ -27,6 +27,7 @@ export default function AdminGallery() {
   const [albumForm, setAlbumForm] = useState(EMPTY_ALBUM_FORM);
   const [coverFile, setCoverFile] = useState(null);
   const [coverPreview, setCoverPreview] = useState('');
+  const [coverUrl, setCoverUrl] = useState('');
   const [savingAlbum, setSavingAlbum] = useState(false);
   const [slugEdited, setSlugEdited] = useState(false);
 
@@ -34,6 +35,7 @@ export default function AdminGallery() {
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
   const [uploadAlbum, setUploadAlbum] = useState(null);
   const [uploadFiles, setUploadFiles] = useState([]);
+  const [uploadUrls, setUploadUrls] = useState('');
   const [uploading, setUploading] = useState(false);
 
   // Deletes
@@ -80,6 +82,7 @@ export default function AdminGallery() {
     setAlbumForm(EMPTY_ALBUM_FORM);
     setCoverFile(null);
     setCoverPreview('');
+    setCoverUrl('');
     setSlugEdited(false);
     setAlbumModalOpen(true);
   };
@@ -89,6 +92,7 @@ export default function AdminGallery() {
     setAlbumForm({ title: album.title ?? '', description: album.description ?? '', slug: album.slug ?? '' });
     setCoverFile(null);
     setCoverPreview(album.coverImageUrl ?? '');
+    setCoverUrl(album.coverImageUrl ?? '');
     setSlugEdited(true);
     setAlbumModalOpen(true);
   };
@@ -107,7 +111,7 @@ export default function AdminGallery() {
     setSavingAlbum(true);
     try {
       let albumId = editAlbum?.id;
-      const payload = { title: albumForm.title, description: albumForm.description };
+      const payload = { title: albumForm.title, description: albumForm.description, coverImageUrl: coverUrl || undefined };
       if (editAlbum) {
         await galleryService.updateAlbum(editAlbum.id, payload);
       } else {
@@ -146,16 +150,21 @@ export default function AdminGallery() {
   const openUploadImages = (album) => {
     setUploadAlbum(album);
     setUploadFiles([]);
+    setUploadUrls('');
     setUploadModalOpen(true);
   };
 
   const handleUploadImages = async () => {
-    if (!uploadFiles.length || !uploadAlbum) return;
+    if ((!uploadFiles.length && !uploadUrls.trim()) || !uploadAlbum) return;
     setUploading(true);
     try {
       const fd = new FormData();
-      uploadFiles.forEach((f) => fd.append('images', f));
-      await galleryService.uploadImages(uploadAlbum.id, fd);
+      if (uploadFiles.length) {
+        uploadFiles.forEach((f) => fd.append('images', f));
+        await galleryService.uploadImages(uploadAlbum.id, fd);
+      }
+      const urls = uploadUrls.split(/\\r?\\n/).map(url => url.trim()).filter(Boolean);
+      for (const url of urls) await galleryService.addImageUrl(uploadAlbum.id, { url });
       toast.success('Images uploaded!');
       setUploadModalOpen(false);
       setAlbumImages((prev) => { const n = { ...prev }; delete n[uploadAlbum.id]; return n; });
@@ -298,7 +307,8 @@ export default function AdminGallery() {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Cover Image</label>
-            <ImageUpload preview={coverPreview} onFileSelect={(f, p) => { setCoverFile(f); setCoverPreview(p); }} label="Upload cover" />
+            <ImageUpload preview={coverPreview} onFileSelect={(f, p) => { setCoverFile(f); setCoverPreview(p || ''); if (f) setCoverUrl(''); }} label="Upload cover" />
+            <input type="url" value={coverUrl} onChange={e => { setCoverUrl(e.target.value); setCoverPreview(e.target.value); setCoverFile(null); }} placeholder="Or paste cover image URL" className={inputClass + ' mt-3'} />
           </div>
           <div className="flex justify-end gap-3 pt-2">
             <button onClick={() => setAlbumModalOpen(false)} className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200 transition">Cancel</button>
@@ -323,12 +333,16 @@ export default function AdminGallery() {
               className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-brand-cream file:text-brand hover:file:bg-brand hover:file:text-white transition"
             />
           </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Or add image URLs (one per line)</label>
+            <textarea value={uploadUrls} onChange={e => setUploadUrls(e.target.value)} rows={4} placeholder="https://example.com/image-1.jpg&#10;https://example.com/image-2.jpg" className={inputClass} />
+          </div>
           {uploadFiles.length > 0 && (
             <p className="text-sm text-gray-500">{uploadFiles.length} file(s) selected.</p>
           )}
           <div className="flex justify-end gap-3 pt-2">
             <button onClick={() => setUploadModalOpen(false)} className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200 transition">Cancel</button>
-            <button onClick={handleUploadImages} disabled={uploading || uploadFiles.length === 0} className="px-4 py-2 bg-brand text-white rounded-lg text-sm font-medium hover:bg-brand-dark transition disabled:opacity-60 flex items-center gap-2">
+            <button onClick={handleUploadImages} disabled={uploading || (uploadFiles.length === 0 && !uploadUrls.trim())} className="px-4 py-2 bg-brand text-white rounded-lg text-sm font-medium hover:bg-brand-dark transition disabled:opacity-60 flex items-center gap-2">
               {uploading && <LoadingSpinner size="sm" />}
               {uploading ? 'Uploading…' : 'Upload'}
             </button>
