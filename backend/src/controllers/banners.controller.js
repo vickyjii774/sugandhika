@@ -21,9 +21,9 @@ export async function getAllBanners(_req, res, next) {
 /** POST /api/admin/banners */
 export async function createBanner(req, res, next) {
   try {
-    const { title, subtitle, description, buttonLabel, buttonUrl, secondButtonLabel, secondButtonUrl, isActive, sortOrder } = req.body;
+    const { title, subtitle, description, buttonLabel, buttonUrl, secondButtonLabel, secondButtonUrl, isActive, sortOrder, imageUrl: suppliedImageUrl } = req.body;
     if (!title) return sendError(res, 'title is required', 400);
-    let imageUrl, storagePath;
+    let imageUrl = suppliedImageUrl || null, storagePath;
     if (req.file) {
       const result = await uploadFile(req.file.buffer, req.file.mimetype, 'banners', `banner-${Date.now()}`);
       imageUrl = result.url; storagePath = result.path;
@@ -39,10 +39,10 @@ export async function createBanner(req, res, next) {
 export async function updateBanner(req, res, next) {
   try {
     const { id } = req.params;
-    const { title, subtitle, description, buttonLabel, buttonUrl, secondButtonLabel, secondButtonUrl, isActive, sortOrder } = req.body;
+    const { title, subtitle, description, buttonLabel, buttonUrl, secondButtonLabel, secondButtonUrl, isActive, sortOrder, imageUrl: suppliedImageUrl } = req.body;
     const existing = await prisma.banner.findUnique({ where: { id } });
     if (!existing) return sendError(res, 'Banner not found', 404);
-    let imageUrl = existing.imageUrl, storagePath = existing.storagePath;
+    let imageUrl = suppliedImageUrl !== undefined ? suppliedImageUrl : existing.imageUrl, storagePath = existing.storagePath;
     if (req.file) {
       if (storagePath) await deleteFile(storagePath).catch(() => {});
       const result = await uploadFile(req.file.buffer, req.file.mimetype, 'banners', `banner-${Date.now()}`);
