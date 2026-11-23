@@ -165,3 +165,29 @@ export async function deleteProduct(req, res, next) {
     return sendSuccess(res, null, 'Product deleted');
   } catch (err) { next(err); }
 }
+
+
+/** GET /api/admin/products/:id */
+export async function getProductById(req, res, next) {
+  try {
+    const product = await prisma.product.findUnique({
+      where: { id: req.params.id },
+      include: productInclude,
+    });
+    if (!product) return sendError(res, 'Product not found', 404);
+    return sendSuccess(res, product);
+  } catch (err) { next(err); }
+}
+
+/** PATCH /api/admin/products/:id/featured */
+export async function toggleFeatured(req, res, next) {
+  try {
+    const existing = await prisma.product.findUnique({ where: { id: req.params.id } });
+    if (!existing) return sendError(res, 'Product not found', 404);
+    const product = await prisma.product.update({
+      where: { id: req.params.id },
+      data: { isFeatured: !existing.isFeatured },
+    });
+    return sendSuccess(res, product, `Product ${product.isFeatured ? 'featured' : 'unfeatured'}`);
+  } catch (err) { next(err); }
+}
