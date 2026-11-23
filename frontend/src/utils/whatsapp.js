@@ -56,5 +56,5 @@ export function openWhatsApp(phone, message) {
  * Get a default WhatsApp phone from settings or fallback
  */
 export function getWhatsAppPhone(settings) {
-  return settings?.whatsappNumber || settings?.phone || '';
+  return settings?.whatsapp || settings?.phone || '';
 }
