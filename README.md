@@ -21,35 +21,31 @@ sugandhika/
 
 ## Quick start
 
-Install the frontend and backend dependencies:
+Install frontend and backend dependencies:
 
 ```bash
 npm run install:all
 ```
 
-Configure the backend:
+Configure the backend and frontend:
 
 ```bash
 cp backend/.env.example backend/.env
+cp frontend/.env.example frontend/.env
 ```
 
-Set at least `DATABASE_URL` and a strong `JWT_SECRET` in `backend/.env`. Configure the frontend API URL in `frontend/.env` using the provided `frontend/.env.example`.
+Set a real PostgreSQL `DATABASE_URL`, a strong `JWT_SECRET`, and your Cloudinary credentials in `backend/.env`. Never commit that file. Cloudinary is used for product, gallery, banner, team and page image uploads; image URLs and public IDs are stored in PostgreSQL.
 
-Set up the database and seed the initial content:
+Then run:
 
 ```bash
 npm run prisma:generate --prefix backend
 npm run prisma:push
 npm run prisma:seed
-```
-
-Start both applications:
-
-```bash
 npm run dev
 ```
 
-- Frontend: http://localhost:3000
+- Frontend: http://localhost:3000 (Vite may use 3001 if 3000 is occupied)
 - Backend API: http://localhost:5000/api
 - Admin dashboard: http://localhost:3000/admin
 
@@ -62,26 +58,8 @@ npm run dev
 | Backend | Node.js + Express |
 | Database | PostgreSQL + Prisma |
 | Authentication | JWT + bcrypt |
-| Media | Current configured storage provider |
+| Image storage | Cloudinary |
 | Frontend hosting | Vercel or another static host |
 | Backend hosting | Render or another Node.js host |
 
-## Useful commands
-
-```bash
-npm run install:all
-npm run dev
-npm run dev:frontend
-npm run dev:backend
-npm run build
-npm run prisma:generate --prefix backend
-npm run prisma:push
-npm run prisma:seed
-npm run prisma:migrate
-```
-
-See the `docs/` directory for the admin, database, and deployment guides.
-
----
-
-Made with 💚 for Sugandhika, Nepal.
+See `docs/DEPLOYMENT.md` for deployment instructions.

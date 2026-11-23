@@ -1,148 +1,109 @@
 # Deployment Guide — Sugandhika
 
-## Overview
+## Architecture
 
-| Service | URL | Purpose |
-|---------|-----|---------|
-| Frontend | Vercel Hobby | React + Vite SPA |
-| Backend | Render Free | Node.js + Express API |
-| Database | Neon PostgreSQL | Data storage |
-| Media | Supabase Storage | Image files |
-| Repo | GitHub | Version control |
+| Service | Provider | Purpose |
+|---|---|---|
+| Frontend | Vercel | React + Vite SPA |
+| Backend | Render | Node.js + Express API |
+| Database | Neon PostgreSQL | Application data |
+| Image storage | Cloudinary | Product, gallery and CMS images |
+| Source control | GitHub | Repository |
 
----
+## 1. PostgreSQL database
 
-## 1. Neon PostgreSQL Setup (Free Tier)
+1. Create a PostgreSQL database with Neon or another PostgreSQL provider.
+2. Copy its connection string.
+3. Set it as `DATABASE_URL` in the backend environment.
+4. Use a connection string with SSL enabled for hosted environments.
 
-1. Sign up at [neon.tech](https://neon.tech)
-2. Create a new project: "sugandhika"
-3. Create database: "sugandhika_prod"
-4. Copy the connection string (pooled) for `DATABASE_URL`
-5. Copy the direct connection string for migrations
+## 2. Cloudinary image storage
 
-> **Free tier:** 512MB storage, 1 database, 1 branch
+1. Create an account at [cloudinary.com](https://cloudinary.com/).
+2. Open the Cloudinary dashboard.
+3. Copy the Cloud name, API Key and API Secret.
+4. Add these backend environment variables:
 
----
+```
+CLOUDINARY_CLOUD_NAME=<your-cloud-name>
+CLOUDINARY_API_KEY=<your-api-key>
+CLOUDINARY_API_SECRET=<your-api-secret>
+```
 
-## 2. Supabase Storage Setup (Free Tier)
+Keep the API Secret private. Do not put Cloudinary credentials in frontend variables or commit them to Git. The backend uploads images to Cloudinary and stores each secure image URL and public ID in PostgreSQL.
 
-1. Sign up at [supabase.com](https://supabase.com)
-2. Create project: "sugandhika"
-3. Go to Storage → Create bucket: `sugandhika-media`
-4. Set bucket to **Public** (so images are publicly accessible)
-5. Go to Settings → API → Copy:
-   - `Project URL` → `SUPABASE_URL`
-   - `service_role` key → `SUPABASE_SERVICE_ROLE_KEY` (keep private!)
+## 3. Backend deployment (Render)
 
-> **Free tier:** 1GB storage, 2GB transfer/month
+1. Create a Web Service in [Render](https://render.com/) and connect this repository.
+2. Set **Root Directory** to `backend`.
+3. Set **Runtime** to Node.
+4. Set **Build Command** to:
 
----
+```bash
+npm install && npx prisma generate --schema=src/prisma/schema.prisma
+```
 
-## 3. Backend Deployment (Render Free)
+5. Set **Start Command** to `npm start`.
+6. Add these environment variables:
 
-1. Go to [render.com](https://render.com) → New Web Service
-2. Connect your GitHub repository
-3. Configure:
-   - **Name:** sugandhika-backend
-   - **Root directory:** `backend`
-   - **Runtime:** Node
-   - **Build command:** `npm install && npx prisma generate --schema=src/prisma/schema.prisma`
-   - **Start command:** `npm start`
-   - **Plan:** Free
-4. Add environment variables:
-   ```
-   PORT=10000
-   NODE_ENV=production
-   DATABASE_URL=<your-neon-pooled-url>
-   CORS_ORIGINS=https://your-vercel-app.vercel.app
-   JWT_SECRET=<strong-random-secret>
-   JWT_EXPIRES_IN=7d
-   SUPABASE_URL=<your-supabase-url>
-   SUPABASE_SERVICE_ROLE_KEY=<your-service-role-key>
-   SUPABASE_STORAGE_BUCKET=sugandhika-media
-   ```
-5. Deploy
+```
+NODE_ENV=production
+DATABASE_URL=<your-postgresql-connection-string>
+JWT_SECRET=<long-random-secret>
+JWT_EXPIRES_IN=7d
+CLOUDINARY_CLOUD_NAME=<your-cloud-name>
+CLOUDINARY_API_KEY=<your-api-key>
+CLOUDINARY_API_SECRET=<your-api-secret>
+CORS_ORIGIN=https://your-frontend-domain.vercel.app
+MAX_FILE_SIZE_MB=10
+```
 
-> **Note:** Render free services sleep after 15 min of inactivity. First request after sleep takes ~30 seconds.
+Render provides the service port through `PORT`; do not hardcode it.
 
-### Run Database Migrations (after first deploy)
-In Render Shell or locally:
+After deployment, run Prisma migrations (or the project's approved database setup command) against the production database:
+
 ```bash
 npx prisma migrate deploy --schema=src/prisma/schema.prisma
-node src/prisma/seed.js
 ```
 
----
+If this repository is using `prisma db push` rather than committed migrations for the initial setup, run `npx prisma db push --schema=src/prisma/schema.prisma` once instead.
 
-## 4. Frontend Deployment (Vercel)
+## 4. Frontend deployment (Vercel)
 
-1. Go to your existing Vercel project
-2. Update settings:
-   - **Root Directory:** `frontend`
-   - **Build Command:** `npm run build`
-   - **Output Directory:** `dist`
-   - **Framework Preset:** Vite
-3. Add environment variables:
-   ```
-   VITE_API_URL=https://your-render-backend.onrender.com/api
-   ```
-4. Add `frontend/public/_redirects` or Vercel rewrites for SPA routing:
-   - Vercel automatically handles SPA routing via `vercel.json`
-5. Redeploy
+1. Import the GitHub repository into [Vercel](https://vercel.com/).
+2. Set **Root Directory** to `frontend`.
+3. Select Vite.
+4. Set **Build Command** to `npm run build` and **Output Directory** to `dist`.
+5. Add:
 
----
+```
+VITE_API_URL=https://your-render-service.onrender.com/api
+```
 
-## 5. First-Time Admin Setup
+6. Deploy and ensure the backend `CORS_ORIGIN` exactly matches the deployed frontend origin.
 
-After deployment, create the first super admin:
+## 5. Local development
+
+Copy `backend/.env.example` to `backend/.env`, then fill in the database, JWT and Cloudinary values. Configure `frontend/.env` using `frontend/.env.example`.
+
 ```bash
-# In backend directory, with correct DATABASE_URL set:
-node src/prisma/seed.js
+npm run install:all
+npm run prisma:generate --prefix backend
+npm run prisma:push
+npm run dev
 ```
 
-Default credentials:
-- Email: `admin@sugandhika.com`
-- Password: `Admin@1234`
+The frontend runs on port 3000 (or 3001 if 3000 is already occupied); the API runs on port 5000.
 
-**Change this password immediately after first login!**
+## 6. Health check
 
----
-
-## 6. Vercel SPA Routing
-
-Create `frontend/vercel.json`:
-```json
-{
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
-}
+```
+GET https://your-backend-domain/api/health
 ```
 
----
+## 7. Security and operational notes
 
-## 7. Health Check
-
-Backend health check endpoint:
-```
-GET https://your-backend.onrender.com/api/health
-```
-
-Expected response:
-```json
-{
-  "success": true,
-  "message": "Sugandhika API is running",
-  "timestamp": "...",
-  "environment": "production"
-}
-```
-
----
-
-## 8. Free Tier Limits
-
-| Service | Limit | Action if exceeded |
-|---------|-------|-------------------|
-| Neon | 512MB DB | Archive old audit logs |
-| Supabase | 1GB Storage | Compress images before upload |
-| Render | 750 hrs/month | Stays within free if single service |
-| Vercel | 100GB bandwidth | Well within limits for small business |
+- Never commit `backend/.env` or expose database, JWT or Cloudinary secrets in frontend variables.
+- Change any seeded/default admin password immediately.
+- Use HTTPS for deployed frontend and backend.
+- Confirm provider free-tier quotas and commercial-use terms before relying on them for a live business.
