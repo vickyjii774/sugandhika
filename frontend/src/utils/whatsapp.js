@@ -42,7 +42,7 @@ export function openWhatsApp(phone, message) {
     return;
   }
 
-  const cleanPhone = phone.replace(/[^\d+]/g, '');
+  const cleanPhone = phone.replace(/\D/g, '');
   const encoded = encodeURIComponent(message);
 
   window.open(
