@@ -29,15 +29,18 @@ export async function getAllTeam(_req, res, next) {
 /** POST /api/admin/team */
 export async function createMember(req, res, next) {
   try {
-    const { name, designation, department, bio, socialLinks, sortOrder, isPublished, isFeatured, imageUrl: suppliedImageUrl } = req.body;
+    const { name, designation, department, bio, socialLinks, email, phone, sortOrder, isPublished, isFeatured, imageUrl: suppliedImageUrl } = req.body;
     if (!name || !designation) return sendError(res, 'name and designation required', 400);
     let imageUrl = suppliedImageUrl || null, storagePath;
     if (req.file) {
       const r = await uploadFile(req.file.buffer, req.file.mimetype, 'team', `member-${Date.now()}`);
       imageUrl = r.url; storagePath = r.path;
     }
+    const links = socialLinks ? (typeof socialLinks === 'string' ? JSON.parse(socialLinks) : socialLinks) : {};
+    if (email) links.email = email;
+    if (phone) links.phone = phone;
     const member = await prisma.teamMember.create({
-      data: { name, designation, department, bio, imageUrl, storagePath, socialLinks: socialLinks ? JSON.parse(socialLinks) : null, sortOrder: parseInt(sortOrder) || 0, isPublished: isPublished !== false, isFeatured: Boolean(isFeatured) },
+      data: { name, designation, department, bio, imageUrl, storagePath, socialLinks: links, sortOrder: parseInt(sortOrder) || 0, isPublished: isPublished !== false, isFeatured: Boolean(isFeatured) },
     });
     return sendSuccess(res, member, 'Team member created', 201);
   } catch (err) { next(err); }
@@ -49,16 +52,19 @@ export async function updateMember(req, res, next) {
     const { id } = req.params;
     const existing = await prisma.teamMember.findUnique({ where: { id } });
     if (!existing) return sendError(res, 'Team member not found', 404);
-    const { name, designation, department, bio, socialLinks, sortOrder, isPublished, isFeatured, imageUrl: suppliedImageUrl } = req.body;
+    const { name, designation, department, bio, socialLinks, email, phone, sortOrder, isPublished, isFeatured, imageUrl: suppliedImageUrl } = req.body;
     let imageUrl = suppliedImageUrl !== undefined ? suppliedImageUrl : existing.imageUrl, storagePath = existing.storagePath;
     if (req.file) {
       if (storagePath) await deleteFile(storagePath).catch(() => {});
       const r = await uploadFile(req.file.buffer, req.file.mimetype, 'team', `member-${Date.now()}`);
       imageUrl = r.url; storagePath = r.path;
     }
+    const links = socialLinks ? (typeof socialLinks === 'string' ? JSON.parse(socialLinks) : socialLinks) : { ...(existing.socialLinks || {}) };
+    if (email !== undefined) links.email = email;
+    if (phone !== undefined) links.phone = phone;
     const member = await prisma.teamMember.update({
       where: { id },
-      data: { name, designation, department, bio, imageUrl, storagePath, socialLinks: socialLinks ? JSON.parse(socialLinks) : undefined, sortOrder: sortOrder !== undefined ? parseInt(sortOrder) : undefined, isPublished: isPublished !== undefined ? Boolean(isPublished) : undefined, isFeatured: isFeatured !== undefined ? Boolean(isFeatured) : undefined },
+      data: { name, designation, department, bio, imageUrl, storagePath, socialLinks: links, sortOrder: sortOrder !== undefined ? parseInt(sortOrder) : undefined, isPublished: isPublished !== undefined ? Boolean(isPublished) : undefined, isFeatured: isFeatured !== undefined ? Boolean(isFeatured) : undefined },
     });
     return sendSuccess(res, member, 'Member updated');
   } catch (err) { next(err); }
