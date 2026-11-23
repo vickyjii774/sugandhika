@@ -28,8 +28,6 @@ import AdminGallery from '../admin/pages/AdminGallery.jsx';
 import AdminFAQ from '../admin/pages/AdminFAQ.jsx';
 import AdminNavigation from '../admin/pages/AdminNavigation.jsx';
 import AdminSettings from '../admin/pages/AdminSettings.jsx';
-import AdminSEO from '../admin/pages/AdminSEO.jsx';
-import AdminUsers from '../admin/pages/AdminUsers.jsx';
 import AdminBanners from '../admin/pages/AdminBanners.jsx';
 import AdminFeatures from '../admin/pages/AdminFeatures.jsx';
 import AdminRoute from '../admin/components/AdminRoute.jsx';
@@ -76,8 +74,6 @@ export default function AppRoutes() {
         <Route path="faq" element={<AdminFAQ />} />
         <Route path="navigation" element={<AdminNavigation />} />
         <Route path="settings" element={<AdminSettings />} />
-        <Route path="seo" element={<AdminSEO />} />
-        <Route path="users" element={<AdminUsers />} />
       </Route>
 
       {/* 404 */}
