@@ -102,7 +102,7 @@ export default function AdminSettings() {
     setSaving('general');
 
     try {
-      await settingsService.update({ ...general, ...social });
+      await settingsService.update({ ...general, ...social, logo: branding.logoUrl || undefined, favicon: branding.faviconUrl || undefined });
       window.dispatchEvent(new Event('sugandhika:settings-updated'));
 
       if (logoFile) {
@@ -317,21 +317,14 @@ export default function AdminSettings() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           <div>
             <label className={labelClass}>Logo</label>
-            <ImageUpload
-              value={branding.logoUrl}
-              onChange={setLogoFile}
-              label="Upload Logo"
-            />
+            <ImageUpload value={branding.logoUrl} onChange={setLogoFile} label="Upload Logo" />
+            <input type="url" value={branding.logoUrl} onChange={e => { setBranding(b => ({ ...b, logoUrl: e.target.value })); setLogoFile(null); }} placeholder="Or paste logo image URL" className={inputClass + ' mt-2'} />
           </div>
 
           <div>
             <label className={labelClass}>Favicon</label>
-            <ImageUpload
-              value={branding.faviconUrl}
-              onChange={setFaviconFile}
-              label="Upload Favicon"
-              accept="image/x-icon,image/png,image/ico"
-            />
+            <ImageUpload value={branding.faviconUrl} onChange={setFaviconFile} label="Upload Favicon" accept="image/x-icon,image/png,image/ico" />
+            <input type="url" value={branding.faviconUrl} onChange={e => { setBranding(b => ({ ...b, faviconUrl: e.target.value })); setFaviconFile(null); }} placeholder="Or paste favicon image URL" className={inputClass + ' mt-2'} />
           </div>
         </div>
 
