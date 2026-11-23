@@ -111,6 +111,7 @@ export const galleryService = {
     api.uploadPut(`/admin/gallery/albums/${id}`, formData, getToken()),
   uploadImages: (id, formData) =>
     api.upload(`/admin/gallery/albums/${id}/images`, formData, getToken()),
+  addImageUrl: (id, data) => api.post(`/admin/gallery/albums/${id}/images/url`, data, getToken()),
   deleteImage: (_albumId, imageId) =>
     api.delete(`/admin/gallery/images/${imageId}`, getToken()),
   reorderImages: (albumId, data) =>
