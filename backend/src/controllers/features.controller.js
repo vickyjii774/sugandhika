@@ -20,9 +20,9 @@ export async function getAllFeatures(_req, res, next) {
 /** POST /api/admin/features */
 export async function createFeature(req, res, next) {
   try {
-    const { title, description, icon, isActive, sortOrder } = req.body;
+    const { title, description, icon, imageUrl, isActive, sortOrder } = req.body;
     if (!title || !description) return sendError(res, 'title and description required', 400);
-    const feature = await prisma.feature.create({ data: { title, description, icon, isActive: isActive !== false, sortOrder: parseInt(sortOrder) || 0 } });
+    const feature = await prisma.feature.create({ data: { title, description, icon, imageUrl, isActive: isActive !== false, sortOrder: parseInt(sortOrder) || 0 } });
     return sendSuccess(res, feature, 'Feature created', 201);
   } catch (err) { next(err); }
 }
@@ -30,10 +30,10 @@ export async function createFeature(req, res, next) {
 /** PUT /api/admin/features/:id */
 export async function updateFeature(req, res, next) {
   try {
-    const { title, description, icon, isActive, sortOrder } = req.body;
+    const { title, description, icon, imageUrl, isActive, sortOrder } = req.body;
     const feature = await prisma.feature.update({
       where: { id: req.params.id },
-      data: { title, description, icon, isActive: isActive !== undefined ? Boolean(isActive) : undefined, sortOrder: sortOrder !== undefined ? parseInt(sortOrder) : undefined },
+      data: { title, description, icon, imageUrl, isActive: isActive !== undefined ? Boolean(isActive) : undefined, sortOrder: sortOrder !== undefined ? parseInt(sortOrder) : undefined },
     });
     return sendSuccess(res, feature, 'Feature updated');
   } catch (err) { next(err); }
