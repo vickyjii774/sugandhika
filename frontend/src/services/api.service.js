@@ -22,6 +22,7 @@ export const navigationService = {
 
 export const homepageService = {
   getAll: () => api.get('/homepage'),
+  getBanners: () => api.get('/admin/banners', getToken()),
   updateSection: (section, data) =>
     api.put(`/admin/homepage/sections/${section}`, data, getToken()),
   updateBanner: (id, data) => api.put(`/admin/banners/${id}`, data, getToken()),
@@ -49,7 +50,7 @@ export const productsService = {
   update: (id, data) => api.put(`/admin/products/${id}`, data, getToken()),
   delete: (id) => api.delete(`/admin/products/${id}`, getToken()),
   uploadImage: (id, formData) =>
-    api.upload(`/admin/products/${id}/images`, formData, getToken()),
+    api.upload(`/admin/products/${id}/image`, formData, getToken()),
   uploadImages: (id, formData) =>
     api.upload(`/admin/products/${id}/images`, formData, getToken()),
   deleteImage: (id, imageId) =>
@@ -167,4 +168,13 @@ export const usersService = {
 export const seoService = {
   getAll: () => api.get('/admin/seo', getToken()),
   update: (page, data) => api.put(`/admin/seo/${page}`, data, getToken()),
+};
+
+
+export const featuresService = {
+  getAll: () => api.get('/admin/features', getToken()),
+  create: (data) => api.post('/admin/features', data, getToken()),
+  update: (id, data) => api.put(`/admin/features/${id}`, data, getToken()),
+  delete: (id) => api.delete(`/admin/features/${id}`, getToken()),
+  reorder: (data) => api.put('/admin/features/reorder', data, getToken()),
 };
