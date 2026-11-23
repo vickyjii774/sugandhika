@@ -10,12 +10,12 @@ export async function getContactInfo(_req, res, next) {
     ]);
     return sendSuccess(res, {
       id: 'main',
-      phone: info?.phone || settings?.phone || '',
-      whatsapp: info?.whatsapp || settings?.whatsapp || settings?.phone || '',
-      email: info?.email || settings?.email || '',
-      address: info?.address || settings?.address || '',
-      mapUrl: info?.mapUrl || '',
-      businessHours: info?.businessHours || '',
+      phone: info?.phone ?? settings?.phone ?? '',
+      whatsapp: info?.whatsapp ?? settings?.whatsapp ?? settings?.phone ?? '',
+      email: info?.email ?? settings?.email ?? '',
+      address: info?.address ?? settings?.address ?? '',
+      mapUrl: info?.mapUrl ?? '',
+      businessHours: info?.businessHours ?? '',
     });
   } catch (err) { next(err); }
 }
