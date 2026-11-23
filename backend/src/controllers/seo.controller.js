@@ -21,3 +21,12 @@ export async function updateSEO(req, res, next) {
     return sendSuccess(res, seo, 'SEO settings updated');
   } catch (err) { next(err); }
 }
+
+
+/** GET /api/admin/seo */
+export async function getAllSEO(_req, res, next) {
+  try {
+    const settings = await prisma.sEOSetting.findMany({ orderBy: { pageKey: 'asc' } });
+    return sendSuccess(res, settings);
+  } catch (err) { next(err); }
+}
