@@ -86,7 +86,7 @@ export async function createProduct(req, res, next) {
       mainImage = r.url; mainImagePath = r.path;
     }
     const product = await prisma.product.create({
-      data: { name, slug, sku, shortDescription, description, price: parseFloat(price), discountPrice: discountPrice ? parseFloat(discountPrice) : null, categoryId, mainImage, mainImagePath, ingredients, benefits, directions, isFeatured: isFeatured === 'true', isPublished: isPublished === 'true', stockQty: parseInt(stockQty) || 0, availability: availability || 'IN_STOCK', seoTitle, seoDescription },
+      data: { name, slug, sku, shortDescription, description, price: parseFloat(price), discountPrice: discountPrice ? parseFloat(discountPrice) : null, categoryId, mainImage, mainImagePath, ingredients, benefits, directions, isFeatured: isFeatured === 'true' || isFeatured === true, isPublished: isPublished === 'true' || isPublished === true, stockQty: parseInt(stockQty) || 0, availability: availability || 'IN_STOCK', seoTitle, seoDescription },
       include: productInclude,
     });
     return sendSuccess(res, product, 'Product created', 201);
