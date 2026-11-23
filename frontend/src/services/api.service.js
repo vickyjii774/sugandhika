@@ -42,7 +42,7 @@ export const productsService = {
   getFeatured: () => api.get('/products/featured'),
   getRelated: (slug) => api.get(`/products/${slug}/related`),
   adminGetAll: (params = {}) => {
-    const query = new URLSearchParams(params).toString();
+    const query = new URLSearchParams(Object.entries(params).filter(([, value]) => value !== undefined && value !== null && value !== '')).toString();
     return api.get(`/admin/products${query ? `?${query}` : ''}`, getToken());
   },
   getById: (id) => api.get(`/admin/products/${id}`, getToken()),
@@ -120,7 +120,7 @@ export const galleryService = {
 
 export const faqService = {
   getAll: (params = {}) => {
-    const query = new URLSearchParams(params).toString();
+    const query = new URLSearchParams(Object.entries(params).filter(([, value]) => value !== undefined && value !== null && value !== '')).toString();
     return api.get(`/faq${query ? `?${query}` : ''}`);
   },
   getFeatured: () => api.get('/faq/featured'),
