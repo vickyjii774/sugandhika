@@ -20,11 +20,11 @@ const DEFAULT_QUALITY = "At Sugandhika, quality is non-negotiable. Every batch o
 // Older/admin content can store rich text as { title, description } rather than a string.
 const renderableText = (value) => {
   if (typeof value === 'string' || typeof value === 'number') return String(value);
-  if (Array.isArray(value)) return value.map(item => renderableText(item)).filter(Boolean).join('\\n\\n');
+  if (Array.isArray(value)) return value.map(item => renderableText(item)).filter(Boolean).join('\n\n');
   if (value && typeof value === 'object') {
     return [value.title, value.description, value.text, value.content]
       .filter(item => typeof item === 'string' || typeof item === 'number')
-      .map(String).join('\\n\\n');
+      .map(String).join('\n\n');
   }
   return '';
 };
