@@ -10,7 +10,7 @@ const DEFAULT_CONTACT = {
   email: 'info@sugandhika.com',
   address: 'Kathmandu, Nepal',
   whatsapp: '9779801234567',
-  business_hours: 'Sun–Fri: 9am – 6pm',
+  businessHours: 'Sun–Fri: 9am – 6pm',
 };
 
 export default function ContactPage() {
@@ -127,7 +127,7 @@ export default function ContactPage() {
                   { icon: Phone, label: 'Phone', value: contactInfo.phone, href: `tel:${contactInfo.phone}` },
                   { icon: Mail, label: 'Email', value: contactInfo.email, href: `mailto:${contactInfo.email}` },
                   { icon: MapPin, label: 'Address', value: contactInfo.address },
-                  { icon: Clock, label: 'Business Hours', value: contactInfo.business_hours || 'Sun–Fri: 9am – 6pm' },
+                  { icon: Clock, label: 'Business Hours', value: contactInfo.businessHours || 'Sun–Fri: 9am – 6pm' },
                 ].map(({ icon: Icon, label, value, href }) => (
                   <div key={label} className="flex items-start gap-4 bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
                     <div className="w-11 h-11 rounded-full bg-brand-cream flex items-center justify-center shrink-0">
