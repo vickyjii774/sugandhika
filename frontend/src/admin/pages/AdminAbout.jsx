@@ -5,7 +5,7 @@ import ImageUpload from '../../components/ui/ImageUpload.jsx';
 import LoadingSpinner from '../../components/ui/LoadingSpinner.jsx';
 import useToast from '../../hooks/useToast.js';
 
-const EMPTY_FORM = { title: '', story: '', mission: '', vision: '', values: '', qualityCommitment: '', imageUrl: '' };
+const EMPTY_FORM = { title: '', subtitle: '', story: '', mission: '', vision: '', values: '', qualityCommitment: '', imageUrl: '' };
 
 export default function AdminAbout() {
   const toast = useToast();
@@ -20,6 +20,7 @@ export default function AdminAbout() {
       const d = res?.data || {};
       setForm({
         title: d.title || '',
+        subtitle: d.subtitle || d.content?.subtitle || '',
         story: d.story || d.content?.story || '',
         mission: d.mission || d.content?.mission || '',
         vision: d.vision || d.content?.vision || '',
@@ -50,7 +51,7 @@ export default function AdminAbout() {
 
   const inputClass = 'w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand';
   const fields = [
-    ['title', 'Page Title', 'input'], ['story', 'Our Story', 'textarea'],
+    ['title', 'Page Title', 'input'], ['subtitle', 'Introduction / Subtitle', 'textarea'], ['story', 'Our Story', 'textarea'],
     ['mission', 'Mission', 'textarea'], ['vision', 'Vision', 'textarea'],
     ['values', 'Our Values', 'textarea'], ['qualityCommitment', 'Quality Commitment', 'textarea'],
   ];
