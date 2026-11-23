@@ -29,9 +29,9 @@ export async function getAllTeam(_req, res, next) {
 /** POST /api/admin/team */
 export async function createMember(req, res, next) {
   try {
-    const { name, designation, department, bio, socialLinks, sortOrder, isPublished, isFeatured } = req.body;
+    const { name, designation, department, bio, socialLinks, sortOrder, isPublished, isFeatured, imageUrl: suppliedImageUrl } = req.body;
     if (!name || !designation) return sendError(res, 'name and designation required', 400);
-    let imageUrl, storagePath;
+    let imageUrl = suppliedImageUrl || null, storagePath;
     if (req.file) {
       const r = await uploadFile(req.file.buffer, req.file.mimetype, 'team', `member-${Date.now()}`);
       imageUrl = r.url; storagePath = r.path;
@@ -49,8 +49,8 @@ export async function updateMember(req, res, next) {
     const { id } = req.params;
     const existing = await prisma.teamMember.findUnique({ where: { id } });
     if (!existing) return sendError(res, 'Team member not found', 404);
-    const { name, designation, department, bio, socialLinks, sortOrder, isPublished, isFeatured } = req.body;
-    let imageUrl = existing.imageUrl, storagePath = existing.storagePath;
+    const { name, designation, department, bio, socialLinks, sortOrder, isPublished, isFeatured, imageUrl: suppliedImageUrl } = req.body;
+    let imageUrl = suppliedImageUrl !== undefined ? suppliedImageUrl : existing.imageUrl, storagePath = existing.storagePath;
     if (req.file) {
       if (storagePath) await deleteFile(storagePath).catch(() => {});
       const r = await uploadFile(req.file.buffer, req.file.mimetype, 'team', `member-${Date.now()}`);
