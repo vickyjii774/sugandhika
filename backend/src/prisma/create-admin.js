@@ -17,7 +17,8 @@ async function main() {
 
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) {
-    throw new Error('An account with ADMIN_EMAIL already exists. No changes were made.');
+    console.log(`Admin account already exists: ${existing.email}. No changes made.`);
+    return;
   }
 
   const hashedPassword = await bcrypt.hash(password, 12);
