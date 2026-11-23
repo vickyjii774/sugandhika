@@ -2,8 +2,8 @@ import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import {
   LayoutDashboard, Home, Package, Tag, Users, Image, HelpCircle,
-  Navigation, Settings, Search, LogOut, ChevronRight, Sparkles,
-  MessageSquare, Info, Star, Menu, X
+  Navigation, Settings, LogOut, ChevronRight, Sparkles,
+  Info, Star, Menu
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -20,8 +20,6 @@ const navItems = [
   { to: '/admin/faq', label: 'FAQs', icon: HelpCircle },
   { to: '/admin/navigation', label: 'Navigation', icon: Navigation },
   { to: '/admin/settings', label: 'Settings', icon: Settings },
-  { to: '/admin/seo', label: 'SEO', icon: Search },
-  { to: '/admin/users', label: 'Users', icon: Users },
 ];
 
 export default function AdminLayout() {
@@ -92,7 +90,7 @@ export default function AdminLayout() {
         </header>
 
         {/* Content */}
-        <main className="flex-1 overflow-y-auto p-6">
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6">
           <Outlet />
         </main>
       </div>
