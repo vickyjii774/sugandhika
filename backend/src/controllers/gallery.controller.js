@@ -53,10 +53,10 @@ export async function getAllAlbums(_req, res, next) {
 /** POST /api/admin/gallery/albums */
 export async function createAlbum(req, res, next) {
   try {
-    const { title, description, isPublished, sortOrder } = req.body;
+    const { title, description, isPublished, sortOrder, coverImageUrl: suppliedCoverUrl } = req.body;
     if (!title) return sendError(res, 'title required', 400);
     const slug = toSlug(title);
-    let coverImageUrl, coverImagePath;
+    let coverImageUrl = suppliedCoverUrl || null, coverImagePath;
     if (req.file) {
       const r = await uploadFile(req.file.buffer, req.file.mimetype, 'gallery/covers', `cover-${Date.now()}`);
       coverImageUrl = r.url; coverImagePath = r.path;
@@ -74,8 +74,8 @@ export async function updateAlbum(req, res, next) {
     const { id } = req.params;
     const existing = await prisma.galleryAlbum.findUnique({ where: { id } });
     if (!existing) return sendError(res, 'Album not found', 404);
-    const { title, description, isPublished, sortOrder } = req.body;
-    let coverImageUrl = existing.coverImageUrl, coverImagePath = existing.coverImagePath;
+    const { title, description, isPublished, sortOrder, coverImageUrl: suppliedCoverUrl } = req.body;
+    let coverImageUrl = suppliedCoverUrl !== undefined ? suppliedCoverUrl : existing.coverImageUrl, coverImagePath = existing.coverImagePath;
     if (req.file) {
       if (coverImagePath) await deleteFile(coverImagePath).catch(() => {});
       const r = await uploadFile(req.file.buffer, req.file.mimetype, 'gallery/covers', `cover-${Date.now()}`);
@@ -113,6 +113,16 @@ export async function uploadImages(req, res, next) {
       })
     );
     return sendSuccess(res, images, 'Images uploaded', 201);
+  } catch (err) { next(err); }
+}
+
+/** POST /api/admin/gallery/albums/:id/images/url — add an externally hosted image */
+export async function addImageByUrl(req, res, next) {
+  try {
+    const { url, title, description } = req.body;
+    if (!url || !/^https?:\\/\\//i.test(url)) return sendError(res, 'A valid http(s) image URL is required', 400);
+    const image = await prisma.galleryImage.create({ data: { albumId: req.params.id, url, title, description } });
+    return sendSuccess(res, image, 'Image URL added', 201);
   } catch (err) { next(err); }
 }
 
