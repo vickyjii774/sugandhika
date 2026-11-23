@@ -19,6 +19,8 @@ import {
   galleryService,
   faqService,
   homepageService,
+  featuresService,
+  aboutService,
 } from '../services/api.service.js';
 import ProductCard from '../components/products/ProductCard.jsx';
 import Accordion from '../components/ui/Accordion.jsx';
@@ -57,6 +59,8 @@ const WHY_FEATURES = [
   },
 ];
 
+const FEATURE_ICON_MAP = { Leaf, Shield, Heart, Star, Award, Sparkles };
+
 export default function HomePage() {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -64,6 +68,8 @@ export default function HomePage() {
   const [gallery, setGallery] = useState([]);
   const [faqs, setFaqs] = useState([]);
   const [banners, setBanners] = useState([]);
+  const [homeFeatures, setHomeFeatures] = useState(WHY_FEATURES);
+  const [aboutContent, setAboutContent] = useState(null);
   const [loading, setLoading] = useState({
     products: true,
     categories: true,
@@ -74,6 +80,8 @@ export default function HomePage() {
 
   useEffect(() => {
     homepageService.getAll().then((res) => setBanners(Array.isArray(res?.data?.banners) ? res.data.banners : [])).catch(() => setBanners([]));
+    featuresService.getPublic().then((res) => { if (Array.isArray(res?.data) && res.data.length) setHomeFeatures(res.data.map(item => ({ icon: FEATURE_ICON_MAP[item.icon] || Leaf, title: item.title, desc: item.description, imageUrl: item.imageUrl }))); }).catch(() => {});
+    aboutService.get().then((res) => setAboutContent(res?.data?.content || res?.data || {})).catch(() => {});
 
     productsService
       .getFeatured()
@@ -169,10 +177,7 @@ export default function HomePage() {
               Welcome to Sugandhika
             </h2>
             <p className="text-gray-600 leading-relaxed text-lg mb-6">
-              Sugandhika is a Nepal-based brand dedicated to bringing you the finest natural herbal
-              beauty and wellness products. We harness the power of pure plant extracts,
-              time-honored Ayurvedic traditions, and modern formulation techniques to create
-              products that nourish your body and spirit.
+              {aboutContent?.story || 'Sugandhika is a Nepal-based brand dedicated to bringing you the finest natural herbal beauty and wellness products.'}
             </p>
             <p className="text-gray-600 leading-relaxed">
               Every product we craft reflects our deep commitment to quality, sustainability, and
@@ -285,7 +290,7 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {WHY_FEATURES.map(({ icon: Icon, title, desc }) => (
+            {homeFeatures.map(({ icon: Icon, title, desc, imageUrl }) => (
               <div
                 key={title}
                 className="bg-brand-cream rounded-2xl p-7 flex flex-col gap-4 hover:shadow-md transition-shadow"
