@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Plus, Pencil, Trash2, Eye, EyeOff } from 'lucide-react';
+import { Plus, Pencil, Trash2, Eye, EyeOff, ChevronUp, ChevronDown } from 'lucide-react';
 import { featuresService } from '../../services/api.service.js';
 import Modal from '../../components/ui/Modal.jsx';
 import ConfirmDialog from '../../components/ui/ConfirmDialog.jsx';
@@ -46,6 +46,16 @@ export default function AdminFeatures() {
     try { await featuresService.update(item.id, { isActive: !item.isActive }); await load(); }
     catch { toast.error('Could not update feature visibility.'); }
   };
+  const move = async (index, direction) => {
+    const next = [...items];
+    const target = index + direction;
+    if (target < 0 || target >= next.length) return;
+    [next[index], next[target]] = [next[target], next[index]];
+    const updated = next.map((item, sortOrder) => ({ ...item, sortOrder }));
+    setItems(updated);
+    try { await featuresService.reorder({ items: updated.map(item => ({ id: item.id, sortOrder: item.sortOrder })) }); }
+    catch { toast.error('Could not save feature order.'); await load(); }
+  };
   const input = 'w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand';
   return <div>
     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6"><div><h1 className="text-2xl font-bold text-gray-900">Why Choose Us</h1><p className="text-sm text-gray-500 mt-1">Manage the cards shown in the homepage section.</p></div><button onClick={openAdd} className="inline-flex items-center gap-2 px-4 py-2 bg-brand text-white rounded-lg text-sm font-medium"><Plus className="w-4 h-4" />Add Feature</button></div>
@@ -53,7 +63,7 @@ export default function AdminFeatures() {
       {loading ? <div className="py-16 flex justify-center"><LoadingSpinner /></div> : items.length === 0 ? <p className="p-10 text-center text-gray-400">No features added yet.</p> : <div className="divide-y divide-gray-100">{items.map(item => <div key={item.id} className="p-4 flex flex-col sm:flex-row sm:items-center gap-4">
         {item.imageUrl ? <img src={item.imageUrl} alt="" className="w-16 h-16 rounded-lg object-cover" /> : <div className="w-16 h-16 rounded-lg bg-brand-cream" />}
         <div className="flex-1 min-w-0"><h3 className="font-semibold text-gray-900">{item.title}</h3><p className="text-sm text-gray-500 line-clamp-2">{item.description}</p><p className="text-xs text-gray-400 mt-1">Icon: {item.icon || 'Leaf'}</p></div>
-        <div className="flex items-center gap-3"><button onClick={() => toggle(item)} className="text-gray-500 hover:text-brand" title={item.isActive ? 'Hide' : 'Show'}>{item.isActive ? <Eye className="w-5 h-5" /> : <EyeOff className="w-5 h-5" />}</button><button onClick={() => openEdit(item)} className="text-brand"><Pencil className="w-4 h-4" /></button><button onClick={() => setDeleting(item)} className="text-red-500"><Trash2 className="w-4 h-4" /></button></div>
+        <div className="flex items-center gap-2"><button onClick={() => move(items.findIndex(row => row.id === item.id), -1)} disabled={items.findIndex(row => row.id === item.id) === 0} className="text-gray-400 disabled:opacity-30" title="Move up"><ChevronUp className="w-4 h-4" /></button><button onClick={() => move(items.findIndex(row => row.id === item.id), 1)} disabled={items.findIndex(row => row.id === item.id) === items.length - 1} className="text-gray-400 disabled:opacity-30" title="Move down"><ChevronDown className="w-4 h-4" /></button><button onClick={() => toggle(item)} className="text-gray-500 hover:text-brand" title={item.isActive ? 'Hide' : 'Show'}>{item.isActive ? <Eye className="w-5 h-5" /> : <EyeOff className="w-5 h-5" />}</button><button onClick={() => openEdit(item)} className="text-brand"><Pencil className="w-4 h-4" /></button><button onClick={() => setDeleting(item)} className="text-red-500"><Trash2 className="w-4 h-4" /></button></div>
       </div>)}</div>}
     </div>
     <Modal isOpen={modal} onClose={() => setModal(false)} title={editing ? 'Edit Feature' : 'Add Feature'} size="lg"><form onSubmit={save} className="space-y-4">
