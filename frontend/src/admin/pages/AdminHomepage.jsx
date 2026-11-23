@@ -25,7 +25,7 @@ export default function AdminHomepage() {
   useEffect(() => {
     homepageService.getAll()
       .then(res => {
-        const data = res.data?.sections || res.data || [];
+        const data = res.data?.sections || [];
         setSections(Array.isArray(data) ? data : Object.values(data));
       })
       .catch(() => toast.error('Failed to load homepage sections.'))
@@ -35,8 +35,8 @@ export default function AdminHomepage() {
   const toggle = async (section) => {
     setSaving(section.id);
     try {
-      await homepageService.updateSection(section.section, { enabled: !section.enabled });
-      setSections(prev => prev.map(s => s.id === section.id ? { ...s, enabled: !s.enabled } : s));
+      await homepageService.updateSection(section.sectionKey, { isEnabled: !section.isEnabled });
+      setSections(prev => prev.map(s => s.id === section.id ? { ...s, isEnabled: !s.isEnabled } : s));
       toast.success('Section updated!');
     } catch {
       toast.error('Failed to update section.');
@@ -53,7 +53,7 @@ export default function AdminHomepage() {
     const updated = newSections.map((s, i) => ({ ...s, sortOrder: i + 1 }));
     setSections(updated);
     try {
-      await homepageService.reorderSections({ sections: updated.map(s => ({ id: s.id, sortOrder: s.sortOrder })) });
+      await homepageService.reorderSections({ sections: updated.map(s => ({ key: s.sectionKey, sortOrder: s.sortOrder })) });
       toast.success('Order saved!');
     } catch {
       toast.error('Failed to save order.');
@@ -93,13 +93,13 @@ export default function AdminHomepage() {
                 </div>
 
                 <div className="flex-1">
-                  <p className="font-medium text-gray-900 capitalize">{section.section?.replace(/_/g, ' ') || section.title}</p>
-                  {section.title && section.section !== section.title && (
+                  <p className="font-medium text-gray-900 capitalize">{section.sectionKey?.replace(/_/g, ' ') || section.title}</p>
+                  {section.title && section.sectionKey !== section.title && (
                     <p className="text-xs text-gray-500">{section.title}</p>
                   )}
                 </div>
 
-                {SECTION_LINKS[section.section] && (
+                {SECTION_LINKS[section.sectionKey] && (
                   <Link to={SECTION_LINKS[section.section]} className="text-xs text-brand hover:text-brand-dark flex items-center gap-1">
                     <ExternalLink className="w-3.5 h-3.5" />Edit Content
                   </Link>
@@ -108,10 +108,10 @@ export default function AdminHomepage() {
                 <button
                   onClick={() => toggle(section)}
                   disabled={saving === section.id}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${section.enabled ? 'bg-green-100 text-green-700 hover:bg-green-200' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${section.isEnabled ? 'bg-green-100 text-green-700 hover:bg-green-200' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}
                 >
-                  {saving === section.id ? <LoadingSpinner size="xs" /> : section.enabled ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
-                  {section.enabled ? 'Visible' : 'Hidden'}
+                  {saving === section.id ? <LoadingSpinner size="xs" /> : section.isEnabled ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
+                  {section.isEnabled ? 'Visible' : 'Hidden'}
                 </button>
               </li>
             ))}
