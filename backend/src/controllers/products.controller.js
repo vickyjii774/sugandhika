@@ -191,3 +191,32 @@ export async function toggleFeatured(req, res, next) {
     return sendSuccess(res, product, `Product ${product.isFeatured ? 'featured' : 'unfeatured'}`);
   } catch (err) { next(err); }
 }
+
+
+/** POST /api/admin/products/:id/image — replace the main product image */
+export async function uploadProductMainImage(req, res, next) {
+  try {
+    if (!req.file) return sendError(res, 'No image file uploaded', 400);
+    const existing = await prisma.product.findUnique({ where: { id: req.params.id } });
+    if (!existing) return sendError(res, 'Product not found', 404);
+
+    if (existing.mainImagePath) {
+      await deleteFile(existing.mainImagePath).catch(() => {});
+    }
+
+    const uploaded = await uploadFile(
+      req.file.buffer,
+      req.file.mimetype,
+      'products',
+      `product-main-${req.params.id}-${Date.now()}`
+    );
+
+    const product = await prisma.product.update({
+      where: { id: req.params.id },
+      data: { mainImage: uploaded.url, mainImagePath: uploaded.path },
+      include: productInclude,
+    });
+
+    return sendSuccess(res, product, 'Main product image updated');
+  } catch (err) { next(err); }
+}
