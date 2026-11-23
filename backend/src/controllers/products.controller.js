@@ -77,10 +77,10 @@ export async function getAllProducts(req, res, next) {
 /** POST /api/admin/products */
 export async function createProduct(req, res, next) {
   try {
-    const { name, sku, shortDescription, description, price, discountPrice, categoryId, ingredients, benefits, directions, isFeatured, isPublished, stockQty, availability, seoTitle, seoDescription } = req.body;
+    const { name, slug: requestedSlug, sku, shortDescription, description, price, discountPrice, categoryId, ingredients, benefits, directions, isFeatured, isPublished, stockQty, availability, seoTitle, seoDescription, mainImageUrl } = req.body;
     if (!name || !price || !categoryId) return sendError(res, 'name, price, categoryId required', 400);
-    const slug = toSlug(name);
-    let mainImage, mainImagePath;
+    const slug = requestedSlug || toSlug(name);
+    let mainImage = mainImageUrl || null, mainImagePath;
     if (req.file) {
       const r = await uploadFile(req.file.buffer, req.file.mimetype, 'products', `prod-${Date.now()}`);
       mainImage = r.url; mainImagePath = r.path;
@@ -99,15 +99,15 @@ export async function updateProduct(req, res, next) {
     const { id } = req.params;
     const existing = await prisma.product.findUnique({ where: { id } });
     if (!existing) return sendError(res, 'Product not found', 404);
-    const { name, sku, shortDescription, description, price, discountPrice, categoryId, ingredients, benefits, directions, isFeatured, isPublished, stockQty, availability, seoTitle, seoDescription } = req.body;
-    let mainImage = existing.mainImage, mainImagePath = existing.mainImagePath;
+    const { name, slug: requestedSlug, sku, shortDescription, description, price, discountPrice, categoryId, ingredients, benefits, directions, isFeatured, isPublished, stockQty, availability, seoTitle, seoDescription, mainImageUrl } = req.body;
+    let mainImage = mainImageUrl !== undefined ? mainImageUrl : existing.mainImage, mainImagePath = existing.mainImagePath;
     if (req.file) {
       if (mainImagePath) await deleteFile(mainImagePath).catch(() => {});
       const r = await uploadFile(req.file.buffer, req.file.mimetype, 'products', `prod-${Date.now()}`);
       mainImage = r.url; mainImagePath = r.path;
     }
     const data = { mainImage, mainImagePath, sku, shortDescription, description, categoryId, ingredients, benefits, directions, seoTitle, seoDescription };
-    if (name) { data.name = name; data.slug = toSlug(name); }
+    if (name) { data.name = name; data.slug = requestedSlug || toSlug(name); }
     if (price) data.price = parseFloat(price);
     if (discountPrice !== undefined) data.discountPrice = discountPrice ? parseFloat(discountPrice) : null;
     if (isFeatured !== undefined) data.isFeatured = isFeatured === 'true' || isFeatured === true;
