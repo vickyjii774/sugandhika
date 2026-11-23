@@ -26,6 +26,10 @@ const QUICK_LINKS = [
   { label: 'Team', href: '/admin/team', icon: Users, color: 'bg-purple-50 text-purple-700' },
   { label: 'Gallery', href: '/admin/gallery', icon: Image, color: 'bg-yellow-50 text-yellow-700' },
   { label: 'FAQs', href: '/admin/faq', icon: HelpCircle, color: 'bg-pink-50 text-pink-700' },
+  { label: 'Homepage Sections', href: '/admin/homepage', icon: BarChart2, color: 'bg-indigo-50 text-indigo-700' },
+  { label: 'About Us', href: '/admin/about', icon: Image, color: 'bg-amber-50 text-amber-700' },
+  { label: 'Navigation', href: '/admin/navigation', icon: ArrowRight, color: 'bg-slate-50 text-slate-700' },
+  { label: 'Site Settings', href: '/admin/settings', icon: TrendingUp, color: 'bg-cyan-50 text-cyan-700' },
 ];
 
 export default function AdminDashboard() {
