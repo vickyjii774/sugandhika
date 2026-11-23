@@ -20,6 +20,15 @@ export function SettingsProvider({ children }) {
   }, []);
 
   useEffect(() => {
+    if (settings?.favicon) {
+      let link = document.querySelector('link[rel~="icon"]');
+      if (!link) { link = document.createElement('link'); link.rel = 'icon'; document.head.appendChild(link); }
+      link.href = settings.favicon;
+    }
+    if (settings?.siteName) document.title = settings.siteName;
+  }, [settings?.favicon, settings?.siteName]);
+
+  useEffect(() => {
     refreshSettings();
     const onUpdate = () => refreshSettings();
     window.addEventListener('sugandhika:settings-updated', onUpdate);
