@@ -69,6 +69,7 @@ router.get('/products', isEditor, products.getAllProducts);
 router.get('/products/:id', isEditor, products.getProductById);
 router.patch('/products/:id/featured', isAdmin, products.toggleFeatured);
 router.post('/products', isAdmin, upload.single('mainImage'), products.createProduct);
+router.post('/products/:id/image', isAdmin, upload.single('image'), products.uploadProductMainImage);
 router.put('/products/:id/publish', isAdmin, products.togglePublish);
 router.post('/products/:id/images', isAdmin, upload.array('images', 10), products.uploadProductImages);
 router.delete('/products/:id/images/:imageId', isAdmin, products.deleteProductImage);
