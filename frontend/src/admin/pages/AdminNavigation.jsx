@@ -102,7 +102,7 @@ export default function AdminNavigation() {
         </button>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-x-auto">
         {loading ? (
           <div className="flex justify-center py-16"><LoadingSpinner /></div>
         ) : items.length === 0 ? (
