@@ -16,7 +16,8 @@ export default function ImageUpload({
   const inputRef = useRef(null);
   const [dragging, setDragging] = useState(false);
   const [error, setError] = useState('');
-  const currentValue = preview || value || '';
+  const [localPreview, setLocalPreview] = useState('');
+  const currentValue = localPreview || preview || value || '';
   const previewUrl = currentValue instanceof File ? URL.createObjectURL(currentValue) : currentValue;
 
   const validate = (file) => {
@@ -28,18 +29,21 @@ export default function ImageUpload({
   };
   const handleFile = useCallback(file => {
     if (!validate(file)) return;
+    const objectUrl = URL.createObjectURL(file);
+    setLocalPreview(objectUrl);
     onChange?.(file);
-    onFileSelect?.(file, URL.createObjectURL(file));
+    onFileSelect?.(file, objectUrl);
   }, [onChange, onFileSelect]);
   const handleChange = e => { const file = e.target.files?.[0]; if (file) handleFile(file); };
   const handleDrop = e => { e.preventDefault(); setDragging(false); const file = e.dataTransfer.files?.[0]; if (file) handleFile(file); };
   const handleRemove = () => {
-    onChange?.(null); onFileSelect?.(null, '');
+    onChange?.(null); onFileSelect?.(null, ''); setLocalPreview('');
     if (inputRef.current) inputRef.current.value = '';
     setError('');
   };
   const handleUrl = e => {
     const url = e.target.value;
+    setLocalPreview(url);
     onUrlChange?.(url);
     if (!onUrlChange) onFileSelect?.(null, url);
     if (url) onChange?.(null);
