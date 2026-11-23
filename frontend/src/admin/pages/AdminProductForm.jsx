@@ -19,11 +19,11 @@ const EMPTY_FORM = {
   sku: '',
   shortDescription: '',
   description: '',
-  category: '',
+  categoryId: '',
   price: '',
   discountPrice: '',
-  stock: '',
-  availability: 'in_stock',
+  stockQty: '',
+  availability: 'IN_STOCK',
   isFeatured: false,
   isPublished: false,
   seoTitle: '',
@@ -65,11 +65,11 @@ export default function AdminProductForm() {
         sku: p.sku ?? '',
         shortDescription: p.shortDescription ?? '',
         description: p.description ?? '',
-        category: p.category?._id ?? p.category ?? '',
+        categoryId: p.categoryId ?? p.category?.id ?? '',
         price: p.price ?? '',
         discountPrice: p.discountPrice ?? '',
-        stock: p.stock ?? '',
-        availability: p.availability ?? 'in_stock',
+        stockQty: p.stockQty ?? 0,
+        availability: p.availability ?? 'IN_STOCK',
         isFeatured: p.isFeatured ?? false,
         isPublished: p.isPublished ?? false,
         seoTitle: p.seoTitle ?? '',
@@ -118,11 +118,11 @@ export default function AdminProductForm() {
         sku: form.sku,
         shortDescription: form.shortDescription,
         description: form.description,
-        category: form.category || undefined,
+        categoryId: form.categoryId || undefined,
         price: Number(form.price),
         discountPrice: form.discountPrice !== '' ? Number(form.discountPrice) : undefined,
-        stock: form.stock !== '' ? Number(form.stock) : undefined,
-        availability: form.availability,
+        stockQty: form.stockQty !== '' ? Number(form.stockQty) : 0,
+        availability: form.availability.toUpperCase() === 'PRE_ORDER' ? 'PREORDER' : form.availability.toUpperCase(),
         isFeatured: form.isFeatured,
         isPublished: form.isPublished,
         seoTitle: form.seoTitle,
@@ -297,9 +297,9 @@ export default function AdminProductForm() {
                   Stock Quantity
                 </label>
                 <input
-                  name="stock"
+                  name="stockQty"
                   type="number"
-                  value={form.stock}
+                  value={form.stockQty}
                   onChange={handleChange}
                   min="0"
                   className={inputClass}
@@ -316,9 +316,9 @@ export default function AdminProductForm() {
                   onChange={handleChange}
                   className={inputClass}
                 >
-                  <option value="in_stock">In Stock</option>
-                  <option value="out_of_stock">Out of Stock</option>
-                  <option value="pre_order">Pre Order</option>
+                  <option value="IN_STOCK">In Stock</option>
+                  <option value="OUT_OF_STOCK">Out of Stock</option>
+                  <option value="PREORDER">Pre Order</option>
                 </select>
               </div>
             </div>
@@ -390,14 +390,14 @@ export default function AdminProductForm() {
               Category
             </h2>
             <select
-              name="category"
-              value={form.category}
+              name="categoryId"
+              value={form.categoryId}
               onChange={handleChange}
               className={inputClass}
             >
               <option value="">— None —</option>
               {categories.map((c) => (
-                <option key={c._id} value={c._id}>
+                <option key={c.id} value={c.id}>
                   {c.name}
                 </option>
               ))}
