@@ -163,7 +163,7 @@ export default function AdminGallery() {
         uploadFiles.forEach((f) => fd.append('images', f));
         await galleryService.uploadImages(uploadAlbum.id, fd);
       }
-      const urls = uploadUrls.split(/\\r?\\n/).map(url => url.trim()).filter(Boolean);
+      const urls = uploadUrls.split(/\r?\n/).map(url => url.trim()).filter(Boolean);
       for (const url of urls) await galleryService.addImageUrl(uploadAlbum.id, { url });
       toast.success('Images uploaded!');
       setUploadModalOpen(false);
