@@ -7,6 +7,13 @@ import useToast from '../../hooks/useToast.js';
 
 const EMPTY_FORM = { title: '', subtitle: '', story: '', mission: '', vision: '', values: '', qualityCommitment: '', imageUrl: '' };
 
+const toEditorText = value => {
+  if (typeof value === 'string' || typeof value === 'number') return String(value);
+  if (Array.isArray(value)) return value.map(item => toEditorText(item)).filter(Boolean).join('\\n\\n');
+  if (value && typeof value === 'object') return [value.title, value.description, value.text, value.content].filter(item => typeof item === 'string' || typeof item === 'number').map(String).join('\\n\\n');
+  return '';
+};
+
 export default function AdminAbout() {
   const toast = useToast();
   const [form, setForm] = useState(EMPTY_FORM);
@@ -19,14 +26,14 @@ export default function AdminAbout() {
       const res = await aboutService.get();
       const d = res?.data || {};
       setForm({
-        title: d.title || '',
-        subtitle: d.subtitle || d.content?.subtitle || '',
-        story: d.story || d.content?.story || '',
-        mission: d.mission || d.content?.mission || '',
-        vision: d.vision || d.content?.vision || '',
-        values: d.values || d.content?.values || '',
-        qualityCommitment: d.qualityCommitment || d.quality_commitment || d.content?.qualityCommitment || '',
-        imageUrl: d.imageUrl || d.content?.imageUrl || '',
+        title: toEditorText(d.title),
+        subtitle: toEditorText(d.subtitle ?? d.content?.subtitle),
+        story: toEditorText(d.story ?? d.content?.story),
+        mission: toEditorText(d.mission ?? d.content?.mission),
+        vision: toEditorText(d.vision ?? d.content?.vision),
+        values: toEditorText(d.values ?? d.content?.values),
+        qualityCommitment: toEditorText(d.qualityCommitment ?? d.quality_commitment ?? d.content?.qualityCommitment),
+        imageUrl: toEditorText(d.imageUrl ?? d.content?.imageUrl),
       });
     } catch { toast.error('Failed to load About content.'); }
     finally { setLoading(false); }
