@@ -35,7 +35,7 @@ export const homepageService = {
 
 export const productsService = {
   getAll: (params = {}) => {
-    const query = new URLSearchParams(params).toString();
+    const query = new URLSearchParams(Object.entries(params).filter(([, value]) => value !== undefined && value !== null && value !== '')).toString();
     return api.get(`/products${query ? `?${query}` : ''}`);
   },
   getBySlug: (slug) => api.get(`/products/${slug}`),
