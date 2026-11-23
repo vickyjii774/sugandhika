@@ -9,7 +9,7 @@ const DEFAULT_CONTACT = {
   phone: '+977-9801234567',
   email: 'info@sugandhika.com',
   address: 'Kathmandu, Nepal',
-  whatsapp: '9779801234567',
+  whatsapp: '',
   businessHours: 'Sun–Fri: 9am – 6pm',
 };
 
@@ -146,7 +146,7 @@ export default function ContactPage() {
 
                 {/* WhatsApp */}
                 <a
-                  href={`https://wa.me/${contactInfo.whatsapp || '9779801234567'}`}
+                  href={`https://wa.me/${contactInfo.whatsapp || contactInfo.phone}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-4 bg-green-50 border border-green-200 rounded-xl p-5 hover:bg-green-100 transition-colors"
