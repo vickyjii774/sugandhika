@@ -40,10 +40,10 @@ export async function getAllCategories(_req, res, next) {
 /** POST /api/admin/categories */
 export async function createCategory(req, res, next) {
   try {
-    const { name, description, isPublished, sortOrder } = req.body;
+    const { name, description, isPublished, sortOrder, imageUrl: suppliedImageUrl } = req.body;
     if (!name) return sendError(res, 'name is required', 400);
     const slug = toSlug(name);
-    let imageUrl, storagePath;
+    let imageUrl = suppliedImageUrl || null, storagePath;
     if (req.file) {
       const result = await uploadFile(req.file.buffer, req.file.mimetype, 'categories', `cat-${Date.now()}`);
       imageUrl = result.url; storagePath = result.path;
@@ -59,10 +59,10 @@ export async function createCategory(req, res, next) {
 export async function updateCategory(req, res, next) {
   try {
     const { id } = req.params;
-    const { name, description, isPublished, sortOrder } = req.body;
+    const { name, description, isPublished, sortOrder, imageUrl: suppliedImageUrl } = req.body;
     const existing = await prisma.category.findUnique({ where: { id } });
     if (!existing) return sendError(res, 'Category not found', 404);
-    let imageUrl = existing.imageUrl, storagePath = existing.storagePath;
+    let imageUrl = suppliedImageUrl !== undefined ? suppliedImageUrl : existing.imageUrl, storagePath = existing.storagePath;
     if (req.file) {
       if (storagePath) await deleteFile(storagePath).catch(() => {});
       const result = await uploadFile(req.file.buffer, req.file.mimetype, 'categories', `cat-${Date.now()}`);
