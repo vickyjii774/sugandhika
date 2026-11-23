@@ -110,7 +110,7 @@ export default function AdminBanners() {
               <div key={banner.id} className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
                 {banner.imageUrl && (
                   <div className="h-24 bg-brand-cream overflow-hidden">
-                    <img src={banner.backgroundImage} alt="" className="w-full h-full object-cover opacity-80" />
+                    <img src={banner.imageUrl} alt="" className="w-full h-full object-cover opacity-80" />
                   </div>
                 )}
                 <div className="p-4">
