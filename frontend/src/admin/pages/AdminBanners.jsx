@@ -10,7 +10,7 @@ const EMPTY_BANNER = {
   title: '', subtitle: '', description: '',
   buttonLabel: 'Shop Now', buttonUrl: '/products',
   secondButtonLabel: 'Contact Us', secondButtonUrl: '/contact',
-  isActive: true,
+  isActive: true, imageUrl: '',
 };
 
 export default function AdminBanners() {
@@ -20,6 +20,7 @@ export default function AdminBanners() {
   const [editing, setEditing] = useState(undefined);
   const [form, setForm] = useState(EMPTY_BANNER);
   const [imageFile, setImageFile] = useState(null);
+  const [imageUrl, setImageUrl] = useState('');
   const [saving, setSaving] = useState(false);
   const [confirmId, setConfirmId] = useState(null);
   const [deleting, setDeleting] = useState(false);
@@ -37,9 +38,9 @@ export default function AdminBanners() {
 
   useEffect(load, []);
 
-  const openAdd = () => { setEditing(null); setForm(EMPTY_BANNER); setImageFile(null); };
-  const openEdit = (banner) => { setEditing(banner); setForm({ ...EMPTY_BANNER, ...banner }); setImageFile(null); };
-  const closeForm = () => { setEditing(undefined); setImageFile(null); };
+  const openAdd = () => { setEditing(null); setForm(EMPTY_BANNER); setImageFile(null); setImageUrl(''); };
+  const openEdit = (banner) => { setEditing(banner); setForm({ ...EMPTY_BANNER, ...banner }); setImageFile(null); setImageUrl(banner.imageUrl || ''); };
+  const closeForm = () => { setEditing(undefined); setImageFile(null); setImageUrl(''); };
 
   const handleSave = async (e) => {
     e.preventDefault();
@@ -48,9 +49,9 @@ export default function AdminBanners() {
     try {
       let saved;
       if (editing?.id) {
-        saved = await homepageService.updateBanner(editing.id, form);
+        saved = await homepageService.updateBanner(editing.id, { ...form, imageUrl: imageUrl || undefined });
       } else {
-        saved = await homepageService.createBanner(form);
+        saved = await homepageService.createBanner({ ...form, imageUrl: imageUrl || undefined });
       }
       if (imageFile && saved?.data?.id) {
         const fd = new FormData(); fd.append('image', imageFile);
@@ -185,7 +186,8 @@ export default function AdminBanners() {
             </div>
             <div>
               <label className={labelClass}>Background Image</label>
-              <ImageUpload preview={editing?.imageUrl ?? ''} onFileSelect={(file) => setImageFile(file)} label="Upload banner image" />
+              <ImageUpload preview={imageUrl || editing?.imageUrl || ''} onFileSelect={(file, preview) => { setImageFile(file); if (file) setImageUrl(''); }} label="Upload banner image" />
+              <input type="url" value={imageUrl} onChange={e => { setImageUrl(e.target.value); setImageFile(null); }} placeholder="Or paste image URL (https://...)" className={inputClass + ' mt-3'} />
             </div>
             <label className="flex items-center gap-2 cursor-pointer">
               <input type="checkbox" checked={form.isActive} onChange={e => setForm(f => ({ ...f, isActive: e.target.checked }))}
