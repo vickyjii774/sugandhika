@@ -25,7 +25,7 @@ const EMPTY_FORM = {
   stockQty: '',
   availability: 'IN_STOCK',
   isFeatured: false,
-  isPublished: false,
+  isPublished: true,
   seoTitle: '',
   seoDescription: '',
 };
@@ -40,6 +40,7 @@ export default function AdminProductForm() {
   const [categories, setCategories] = useState([]);
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
   const [loading, setLoading] = useState(isEditing);
   const [saving, setSaving] = useState(false);
   const [slugEdited, setSlugEdited] = useState(false);
@@ -75,7 +76,7 @@ export default function AdminProductForm() {
         seoTitle: p.seoTitle ?? '',
         seoDescription: p.seoDescription ?? '',
       });
-      if (p.mainImage) setImagePreview(p.mainImage);
+      if (p.mainImage) { setImagePreview(p.mainImage); setImageUrl(p.mainImage); }
       setSlugEdited(true); // don't auto-generate slug on edit
     }).catch(() => {
       toast.error('Failed to load product.');
@@ -101,7 +102,8 @@ export default function AdminProductForm() {
 
   const handleImageSelect = (file, preview) => {
     setImageFile(file);
-    setImagePreview(preview);
+    setImagePreview(preview || '');
+    if (file) setImageUrl('');
   };
 
   const handleSubmit = async (e) => {
@@ -127,6 +129,7 @@ export default function AdminProductForm() {
         isPublished: form.isPublished,
         seoTitle: form.seoTitle,
         seoDescription: form.seoDescription,
+        mainImageUrl: imageUrl || undefined,
       };
 
       let productId = id;
@@ -415,6 +418,8 @@ export default function AdminProductForm() {
               onFileSelect={handleImageSelect}
               label="Upload product image"
             />
+            <label className="block text-sm font-medium text-gray-700 mt-4 mb-1">Or paste image URL</label>
+            <input type="url" value={imageUrl} onChange={e => { setImageUrl(e.target.value); setImagePreview(e.target.value); setImageFile(null); }} placeholder="https://example.com/product.jpg" className={inputClass} />
           </div>
 
           {/* Save Button */}
