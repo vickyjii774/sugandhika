@@ -173,6 +173,7 @@ export const seoService = {
 
 
 export const featuresService = {
+  getPublic: () => api.get('/features'),
   getAll: () => api.get('/admin/features', getToken()),
   create: (data) => api.post('/admin/features', data, getToken()),
   update: (id, data) => api.put(`/admin/features/${id}`, data, getToken()),
