@@ -7,7 +7,7 @@ import ImageUpload from '../../components/ui/ImageUpload.jsx';
 import LoadingSpinner from '../../components/ui/LoadingSpinner.jsx';
 import useToast from '../../hooks/useToast.js';
 
-const EMPTY_ALBUM_FORM = { title: '', description: '' };
+const EMPTY_ALBUM_FORM = { title: '', description: '', slug: '' };
 
 function slugify(str) {
   return str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
@@ -116,7 +116,7 @@ export default function AdminGallery() {
       }
       if (coverFile && albumId) {
         const fd = new FormData();
-        fd.append('image', coverFile);
+        fd.append('cover', coverFile);
         await galleryService.uploadCover(albumId, fd);
       }
       toast.success(editAlbum ? 'Album updated!' : 'Album created!');
