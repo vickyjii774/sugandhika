@@ -137,3 +137,16 @@ export async function reorderImages(req, res, next) {
     return sendSuccess(res, null, 'Images reordered');
   } catch (err) { next(err); }
 }
+
+
+/** GET /api/admin/gallery/albums/:id */
+export async function getAlbumById(req, res, next) {
+  try {
+    const album = await prisma.galleryAlbum.findUnique({
+      where: { id: req.params.id },
+      include: { images: { orderBy: { sortOrder: 'asc' } } },
+    });
+    if (!album) return sendError(res, 'Album not found', 404);
+    return sendSuccess(res, album);
+  } catch (err) { next(err); }
+}
