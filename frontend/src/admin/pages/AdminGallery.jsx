@@ -86,7 +86,7 @@ export default function AdminGallery() {
 
   const openEditAlbum = (album) => {
     setEditAlbum(album);
-    setAlbumForm({ title: album.title ?? '', description: album.description ?? '' });
+    setAlbumForm({ title: album.title ?? '', description: album.description ?? '', slug: album.slug ?? '' });
     setCoverFile(null);
     setCoverPreview(album.coverImageUrl ?? '');
     setSlugEdited(true);
