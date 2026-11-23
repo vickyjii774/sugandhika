@@ -28,12 +28,12 @@ export async function updateSettings(req, res, next) {
   try {
     const {
       siteName, tagline, description, phone, whatsapp, email, address,
-      facebookUrl, instagramUrl, youtubeUrl, twitterUrl, footerText, copyright,
+      facebookUrl, instagramUrl, youtubeUrl, twitterUrl, footerText, copyright, logo, favicon,
     } = req.body;
     const settings = await prisma.siteSetting.upsert({
       where: { id: 'main' },
-      update: { siteName, tagline, description, phone, whatsapp, email, address, facebookUrl, instagramUrl, youtubeUrl, twitterUrl, footerText, copyright },
-      create: { id: 'main', siteName: siteName || 'Sugandhika', tagline, description, phone, whatsapp, email, address, facebookUrl, instagramUrl, youtubeUrl, twitterUrl, footerText, copyright },
+      update: { siteName, tagline, description, phone, whatsapp, email, address, facebookUrl, instagramUrl, youtubeUrl, twitterUrl, footerText, copyright, logo, favicon },
+      create: { id: 'main', siteName: siteName || 'Sugandhika', tagline, description, phone, whatsapp, email, address, facebookUrl, instagramUrl, youtubeUrl, twitterUrl, footerText, copyright, logo, favicon },
     });
     return sendSuccess(res, settings, 'Settings updated');
   } catch (err) { next(err); }
