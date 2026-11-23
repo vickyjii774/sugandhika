@@ -106,8 +106,8 @@ export default function AdminProductForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.name || !form.price) {
-      toast.error('Name and price are required.');
+    if (!form.name || !form.price || !form.categoryId) {
+      toast.error('Name, price and category are required.');
       return;
     }
     setSaving(true);
@@ -392,6 +392,7 @@ export default function AdminProductForm() {
             <select
               name="categoryId"
               value={form.categoryId}
+              required
               onChange={handleChange}
               className={inputClass}
             >
