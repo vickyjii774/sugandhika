@@ -9,8 +9,8 @@ const EMPTY_FORM = { title: '', subtitle: '', story: '', mission: '', vision: ''
 
 const toEditorText = value => {
   if (typeof value === 'string' || typeof value === 'number') return String(value);
-  if (Array.isArray(value)) return value.map(item => toEditorText(item)).filter(Boolean).join('\\n\\n');
-  if (value && typeof value === 'object') return [value.title, value.description, value.text, value.content].filter(item => typeof item === 'string' || typeof item === 'number').map(String).join('\\n\\n');
+  if (Array.isArray(value)) return value.map(item => toEditorText(item)).filter(Boolean).join('\n\n');
+  if (value && typeof value === 'object') return [value.title, value.description, value.text, value.content].filter(item => typeof item === 'string' || typeof item === 'number').map(String).join('\n\n');
   return '';
 };
 
