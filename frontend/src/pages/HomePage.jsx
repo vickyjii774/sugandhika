@@ -18,6 +18,7 @@ import {
   teamService,
   galleryService,
   faqService,
+  homepageService,
 } from '../services/api.service.js';
 import ProductCard from '../components/products/ProductCard.jsx';
 import Accordion from '../components/ui/Accordion.jsx';
@@ -62,6 +63,7 @@ export default function HomePage() {
   const [team, setTeam] = useState([]);
   const [gallery, setGallery] = useState([]);
   const [faqs, setFaqs] = useState([]);
+  const [banners, setBanners] = useState([]);
   const [loading, setLoading] = useState({
     products: true,
     categories: true,
@@ -71,33 +73,35 @@ export default function HomePage() {
   });
 
   useEffect(() => {
+    homepageService.getAll().then((res) => setBanners(Array.isArray(res?.data?.banners) ? res.data.banners : [])).catch(() => setBanners([]));
+
     productsService
       .getFeatured()
-      .then((data) => setProducts(Array.isArray(data) ? data.slice(0, 6) : []))
+      .then((res) => setProducts(Array.isArray(res?.data) ? res.data.slice(0, 6) : []))
       .catch(() => setProducts([]))
       .finally(() => setLoading((p) => ({ ...p, products: false })));
 
     categoriesService
       .getAll()
-      .then((data) => setCategories(Array.isArray(data) ? data : []))
+      .then((res) => setCategories(Array.isArray(res?.data) ? res.data : []))
       .catch(() => setCategories([]))
       .finally(() => setLoading((p) => ({ ...p, categories: false })));
 
     teamService
       .getFeatured()
-      .then((data) => setTeam(Array.isArray(data) ? data.slice(0, 3) : []))
+      .then((res) => setTeam(Array.isArray(res?.data) ? res.data.slice(0, 3) : []))
       .catch(() => setTeam([]))
       .finally(() => setLoading((p) => ({ ...p, team: false })));
 
     galleryService
       .getFeatured()
-      .then((data) => setGallery(Array.isArray(data) ? data.slice(0, 6) : []))
+      .then((res) => setGallery(Array.isArray(res?.data) ? res.data.slice(0, 6) : []))
       .catch(() => setGallery([]))
       .finally(() => setLoading((p) => ({ ...p, gallery: false })));
 
     faqService
       .getFeatured()
-      .then((data) => setFaqs(Array.isArray(data) ? data.slice(0, 5) : []))
+      .then((res) => setFaqs(Array.isArray(res?.data) ? res.data.slice(0, 5) : []))
       .catch(() => setFaqs([]))
       .finally(() => setLoading((p) => ({ ...p, faqs: false })));
   }, []);
@@ -106,6 +110,7 @@ export default function HomePage() {
     <div className="min-h-screen">
       {/* ── 1. HERO ───────────────────────────────────────────── */}
       <section className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-brand-dark via-brand to-brand-light overflow-hidden">
+        {banners[0]?.imageUrl && <img src={banners[0].imageUrl} alt="" className="absolute inset-0 w-full h-full object-cover opacity-25" />}
         {/* Subtle pattern overlay */}
         <div
           className="absolute inset-0 opacity-10"
@@ -118,31 +123,28 @@ export default function HomePage() {
         <div className="relative z-10 text-center text-white px-4 max-w-4xl mx-auto">
           <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 mb-6">
             <Leaf className="w-4 h-4 text-brand-gold" />
-            <span className="text-sm font-medium text-brand-gold">Natural Herbal Products</span>
+            <span className="text-sm font-medium text-brand-gold">{banners[0]?.subtitle || 'Natural Herbal Products'}</span>
           </div>
 
           <h1 className="text-5xl md:text-7xl font-extrabold leading-tight mb-6 drop-shadow-lg">
-            Pure Nature,
-            <br />
-            <span className="text-brand-gold">Pure Sugandhika</span>
+            {banners[0]?.title || 'Pure Nature, Pure Sugandhika'}
           </h1>
           <p className="text-xl md:text-2xl text-white/80 max-w-2xl mx-auto mb-10 leading-relaxed">
-            Discover premium herbal beauty and wellness products crafted from Nepal's finest
-            botanical extracts and traditional wisdom.
+            {banners[0]?.description || "Discover premium herbal beauty and wellness products crafted from Nepal's finest botanical extracts and traditional wisdom."}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
-              to="/products"
+              to={banners[0]?.buttonUrl || '/products'}
               className="inline-flex items-center gap-2 px-8 py-4 bg-brand-gold text-brand-dark font-bold rounded-xl hover:bg-yellow-400 transition-all shadow-xl text-lg"
             >
-              Explore Products
+              {banners[0]?.buttonLabel || 'Explore Products'}
               <ArrowRight className="w-5 h-5" />
             </Link>
             <Link
-              to="/contact"
+              to={banners[0]?.secondButtonUrl || '/contact'}
               className="inline-flex items-center gap-2 px-8 py-4 bg-white/10 border border-white/40 text-white font-bold rounded-xl hover:bg-white/20 backdrop-blur-sm transition-all text-lg"
             >
-              Contact Us
+              {banners[0]?.secondButtonLabel || 'Contact Us'}
             </Link>
           </div>
         </div>
@@ -258,8 +260,8 @@ export default function HomePage() {
                   <h3 className="font-bold text-brand-dark group-hover:text-brand transition-colors text-sm">
                     {cat.name}
                   </h3>
-                  {cat.productCount != null && (
-                    <p className="text-xs text-gray-500 mt-1">{cat.productCount} products</p>
+                  {cat._count?.products != null && (
+                    <p className="text-xs text-gray-500 mt-1">{cat._count.products} products</p>
                   )}
                 </Link>
               ))}
@@ -365,9 +367,9 @@ export default function HomePage() {
                   className="bg-white rounded-2xl p-7 text-center shadow-sm hover:shadow-md transition-shadow"
                 >
                   <div className="w-20 h-20 rounded-full overflow-hidden mx-auto mb-4 bg-brand-light/20 border-4 border-brand-cream">
-                    {member.photo ? (
+                    {member.imageUrl ? (
                       <img
-                        src={member.photo}
+                        src={member.imageUrl}
                         alt={member.name}
                         className="w-full h-full object-cover"
                       />
@@ -378,7 +380,7 @@ export default function HomePage() {
                     )}
                   </div>
                   <h3 className="font-bold text-brand-dark text-lg">{member.name}</h3>
-                  <p className="text-brand text-sm font-medium mt-1">{member.role}</p>
+                  <p className="text-brand text-sm font-medium mt-1">{member.designation}</p>
                   {member.bio && (
                     <p className="text-gray-500 text-sm mt-3 leading-relaxed line-clamp-3">
                       {member.bio}
@@ -421,14 +423,14 @@ export default function HomePage() {
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
               {gallery.map((item, idx) => (
                 <div
-                  key={item._id || idx}
+                  key={item.id || idx}
                   className={`relative overflow-hidden rounded-2xl ${
                     idx === 0 ? 'row-span-2' : ''
                   } aspect-square bg-brand-cream`}
                 >
                   <img
                     src={item.url || item.imageUrl}
-                    alt={item.alt || item.caption || `Gallery ${idx + 1}`}
+                    alt={item.title || `Gallery ${idx + 1}`}
                     className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
                     loading="lazy"
                   />
