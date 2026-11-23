@@ -136,7 +136,7 @@ export default function AdminGallery() {
       await galleryService.deleteAlbum(confirmDeleteAlbum.id);
       toast.success('Album deleted.');
       setConfirmDeleteAlbum(null);
-      if (expandedAlbum === confirmDeleteAlbum._id) setExpandedAlbum(null);
+      if (expandedAlbum === confirmDeleteAlbum.id) setExpandedAlbum(null);
       fetchAlbums();
     } catch {
       toast.error('Failed to delete album.');
@@ -158,11 +158,11 @@ export default function AdminGallery() {
       await galleryService.uploadImages(uploadAlbum.id, fd);
       toast.success('Images uploaded!');
       setUploadModalOpen(false);
-      setAlbumImages((prev) => { const n = { ...prev }; delete n[uploadAlbum._id]; return n; });
-      if (expandedAlbum === uploadAlbum._id) {
-        const res = await galleryService.getAlbumById(uploadAlbum._id);
+      setAlbumImages((prev) => { const n = { ...prev }; delete n[uploadAlbum.id]; return n; });
+      if (expandedAlbum === uploadAlbum.id) {
+        const res = await galleryService.getAlbumById(uploadAlbum.id);
         const data = res?.data?.album ?? res?.data;
-        setAlbumImages((prev) => ({ ...prev, [uploadAlbum._id]: data?.images ?? [] }));
+        setAlbumImages((prev) => ({ ...prev, [uploadAlbum.id]: data?.images ?? [] }));
       }
       fetchAlbums();
     } catch {
@@ -243,7 +243,7 @@ export default function AdminGallery() {
               </div>
 
               {/* Expanded Images */}
-              {expandedAlbum === album._id && (
+              {expandedAlbum === album.id && (
                 <div className="border-t border-gray-100 p-4">
                   {loadingImages[album.id] ? (
                     <div className="flex justify-center py-6"><LoadingSpinner /></div>
@@ -251,7 +251,7 @@ export default function AdminGallery() {
                     <p className="text-center text-gray-400 text-sm py-6">No images in this album.</p>
                   ) : (
                     <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
-                      {(albumImages[album._id] ?? []).map((img) => {
+                      {(albumImages[album.id] ?? []).map((img) => {
                         const imgId = img.id;
                         const imgUrl = img.url ?? img.src ?? img;
                         return (
