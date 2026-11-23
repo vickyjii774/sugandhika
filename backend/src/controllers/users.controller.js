@@ -56,3 +56,16 @@ export async function deleteUser(req, res, next) {
     return sendSuccess(res, null, 'User deleted');
   } catch (err) { next(err); }
 }
+
+
+/** GET /api/admin/users/:id */
+export async function getUserById(req, res, next) {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: req.params.id },
+      select: { id: true, name: true, email: true, role: true, isActive: true, createdAt: true },
+    });
+    if (!user) return sendError(res, 'User not found', 404);
+    return sendSuccess(res, user);
+  } catch (err) { next(err); }
+}
