@@ -31,8 +31,9 @@ export default function AdminProducts() {
         search: search || undefined,
       });
       const data = res?.data;
-      setProducts(data?.items ?? data?.products ?? (Array.isArray(data) ? data : []));
-      setTotal(data?.total ?? 0);
+      const rows = data?.products ?? data?.items ?? (Array.isArray(data) ? data : []);
+      setProducts(rows);
+      setTotal(Number(data?.total ?? rows.length));
     } catch (err) {
       toast.error('Failed to load products.');
     } finally {
