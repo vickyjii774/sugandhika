@@ -103,7 +103,7 @@ export default function AdminGallery() {
   };
 
   const handleSaveAlbum = async () => {
-    if (!albumForm.name) { toast.error('Album name is required.'); return; }
+    if (!albumForm.title) { toast.error('Album name is required.'); return; }
     setSavingAlbum(true);
     try {
       let albumId = editAlbum?.id;
@@ -211,7 +211,7 @@ export default function AdminGallery() {
               {/* Album Header Row */}
               <div className="flex items-center gap-4 p-4">
                 {album.coverImageUrl ? (
-                  <img src={album.cover ?? album.coverImage} alt={album.title} className="w-14 h-14 rounded-lg object-cover border border-gray-200 flex-shrink-0" />
+                  <img src={album.coverImageUrl} alt={album.title} className="w-14 h-14 rounded-lg object-cover border border-gray-200 flex-shrink-0" />
                 ) : (
                   <div className="w-14 h-14 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0 border border-gray-200">
                     <ImageIcon className="w-6 h-6 text-gray-400" />
