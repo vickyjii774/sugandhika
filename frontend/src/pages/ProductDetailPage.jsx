@@ -111,17 +111,25 @@ export default function ProductDetailPage() {
     images.push({ url: null, alt: product.name });
   }
 
+  // The API product price field is "price" (not "regularPrice").
   const hasDiscount =
-    product.discountPrice &&
-    product.regularPrice &&
-    product.discountPrice < product.regularPrice;
+    product.discountPrice != null &&
+    product.price != null &&
+    Number(product.discountPrice) < Number(product.price);
 
   const displayPrice = hasDiscount
     ? product.discountPrice
-    : product.regularPrice;
+    : product.price;
 
-  const whatsappText = `Hello! I would like to enquire about: ${product.name} (Qty: ${qty})
-Price: Rs.${displayPrice ?? 'Please confirm price'}`;
+  const unitPrice = displayPrice != null ? Number(displayPrice) : null;
+  const totalPrice = unitPrice != null ? unitPrice * qty : null;
+  const formatRs = (value) =>
+    `Rs. ${Number(value).toLocaleString('en-IN')}`;
+
+  const whatsappText = `Hello! I would like to enquire about: ${product.name}
+Quantity: ${qty}
+Unit Price: ${unitPrice != null ? formatRs(unitPrice) : 'Please confirm price'}
+Total Price: ${totalPrice != null ? formatRs(totalPrice) : 'Please confirm price'}`;
 
   const whatsappNumber = String(
     settings?.whatsapp || settings?.phone || ''
@@ -336,6 +344,13 @@ Price: Rs.${displayPrice ?? 'Please confirm price'}`;
                 </button>
               </div>
             </div>
+
+            {totalPrice != null && (
+              <div className="mb-5 flex items-center justify-between rounded-lg bg-brand-cream/60 px-4 py-3">
+                <span className="text-sm font-medium text-gray-700">Total for {qty}:</span>
+                <span className="text-lg font-bold text-brand-dark">{formatRs(totalPrice)}</span>
+              </div>
+            )}
 
             {/* WhatsApp Enquiry */}
             <div className="flex flex-col gap-3 mb-6">
