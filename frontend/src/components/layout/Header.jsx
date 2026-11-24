@@ -120,7 +120,21 @@ useEffect(() => {
 
           </nav>
 
-      
+          {/* WHATSAPP */}
+          {whatsappNumber && (
+            <button
+              onClick={() =>
+                openWhatsApp(
+                  whatsappNumber,
+                  'Hello Sugandhika, I would like to inquire about your products.'
+                )
+              }
+              className="flex items-center justify-center gap-1 sm:gap-2 px-1.5 sm:px-4 py-1.5 sm:py-2 bg-green-500 hover:bg-green-600 text-white text-[8px] sm:text-sm font-semibold rounded-md sm:rounded-xl shrink-0"
+            >
+              <Phone className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span>WhatsApp</span>
+            </button>
+          )}
 
         </div>
       </div>
