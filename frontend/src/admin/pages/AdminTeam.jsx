@@ -13,6 +13,11 @@ const EMPTY_FORM = {
   bio: '',
   email: '',
   phone: '',
+  facebook: '',
+  instagram: '',
+  tiktok: '',
+  youtube: '',
+  linkedin: '',
   sortOrder: '',
   isFeatured: false,
   isPublished: true,
@@ -63,6 +68,11 @@ export default function AdminTeam() {
       bio: member.bio ?? '',
       email: member.socialLinks?.email ?? member.email ?? '',
       phone: member.socialLinks?.phone ?? member.phone ?? '',
+      facebook: member.socialLinks?.facebook ?? '',
+      instagram: member.socialLinks?.instagram ?? '',
+      tiktok: member.socialLinks?.tiktok ?? '',
+      youtube: member.socialLinks?.youtube ?? '',
+      linkedin: member.socialLinks?.linkedin ?? '',
       sortOrder: member.sortOrder ?? member.order ?? '',
       isFeatured: member.isFeatured ?? false,
       isPublished: member.isPublished ?? true,
@@ -89,6 +99,7 @@ export default function AdminTeam() {
         bio: form.bio,
         email: form.email,
         phone: form.phone,
+        socialLinks: { facebook: form.facebook, instagram: form.instagram, tiktok: form.tiktok, youtube: form.youtube, linkedin: form.linkedin },
         sortOrder: form.sortOrder !== '' ? Number(form.sortOrder) : undefined,
         isFeatured: form.isFeatured,
         isPublished: form.isPublished,
@@ -261,6 +272,12 @@ export default function AdminTeam() {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
             <input name="phone" value={form.phone} onChange={handleChange} className={inputClass} placeholder="Phone number" />
+          </div>
+          <div className="sm:col-span-2 border-t border-gray-100 pt-4">
+            <h3 className="text-sm font-semibold text-gray-900 mb-3">Social Media Links <span className="font-normal text-gray-500">(optional — only added links appear on the profile)</span></h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {[['facebook', 'Facebook URL'], ['instagram', 'Instagram URL'], ['tiktok', 'TikTok URL'], ['youtube', 'YouTube URL'], ['linkedin', 'LinkedIn URL']].map(([name, placeholder]) => <div key={name}><label className="block text-sm font-medium text-gray-700 mb-1">{placeholder}</label><input name={name} type="url" value={form[name]} onChange={handleChange} className={inputClass} placeholder="https://..." /></div>)}
+            </div>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Sort Order</label>
