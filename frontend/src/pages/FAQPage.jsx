@@ -17,7 +17,7 @@ export default function FAQPage() {
       .catch(() => {});
   }, []);
 
-  const whatsappNumber = String(contact.whatsapp || contact.phone || '').replace(/\\D/g, '');
+  const whatsappNumber = String(contact.whatsapp || contact.phone || '').replace(/\D/g, '');
 
   useEffect(() => {
     faqService.getAll()
