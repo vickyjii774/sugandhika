@@ -29,7 +29,9 @@ export default function AdminSettings() {
     facebookUrl: '',
     instagramUrl: '',
     youtubeUrl: '',
-    twitterUrl: ''
+    twitterUrl: '',
+    tiktokUrl: '',
+    linkedinUrl: ''
   });
 
   const [contact, setContact] = useState({
@@ -75,7 +77,9 @@ export default function AdminSettings() {
           facebookUrl: s.facebookUrl || '',
           instagramUrl: s.instagramUrl || '',
           youtubeUrl: s.youtubeUrl || '',
-          twitterUrl: s.twitterUrl || ''
+          twitterUrl: s.twitterUrl || '',
+          tiktokUrl: s.tiktokUrl || '',
+          linkedinUrl: s.linkedinUrl || ''
         });
 
         setBranding({
@@ -198,7 +202,7 @@ export default function AdminSettings() {
   };
 
   const inputClass =
-    'w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent';
+    'w-full min-w-0 px-3 py-3 sm:py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent';
 
   const labelClass =
     'block text-sm font-medium text-gray-700 mb-1.5';
@@ -233,7 +237,7 @@ export default function AdminSettings() {
   }
 
   return (
-    <div className="max-w-3xl space-y-8 pb-10">
+    <div className="w-full max-w-4xl space-y-5 sm:space-y-8 pb-8 sm:pb-10">
       <div>
         <h1 className="text-2xl font-bold text-gray-900">
           Site Settings
@@ -246,7 +250,7 @@ export default function AdminSettings() {
       {/* General Settings */}
       <form
         onSubmit={saveGeneral}
-        className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 space-y-5"
+        className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6 space-y-4 sm:space-y-5"
       >
         <h2 className="text-lg font-semibold text-gray-900 border-b pb-3 border-gray-100">
           General Settings
@@ -287,34 +291,30 @@ export default function AdminSettings() {
           />
         </div>
 
-        <h3 className="text-base font-semibold text-gray-800 mt-2">
-          Social Media
-        </h3>
-
-        {[
-          ['facebookUrl', 'Facebook URL'],
-          ['instagramUrl', 'Instagram URL'],
-          ['youtubeUrl', 'YouTube URL'],
-          ['twitterUrl', 'X / Twitter URL']
-        ].map(([key, label]) => (
-          <div key={key}>
-            <label className={labelClass}>{label}</label>
-            <input
-              value={social[key]}
-              onChange={(e) =>
-                setSocial(s => ({ ...s, [key]: e.target.value }))
-              }
-              className={inputClass}
-              placeholder={`https://${key}.com/...`}
-            />
-          </div>
-        ))}
+        <div className="pt-2 border-t border-gray-100">
+          <h3 className="text-base font-semibold text-gray-800">Social Media Links</h3>
+          <p className="text-xs sm:text-sm text-gray-500 mt-1">Add only the profiles you actively use. Empty links stay hidden on the public website.</p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {[
+            ['facebookUrl', 'Facebook URL'], ['instagramUrl', 'Instagram URL'],
+            ['tiktokUrl', 'TikTok URL'], ['youtubeUrl', 'YouTube URL'],
+            ['linkedinUrl', 'LinkedIn URL'], ['twitterUrl', 'X / Twitter URL']
+          ].map(([key, label]) => (
+            <div key={key} className="min-w-0">
+              <label className={labelClass}>{label}</label>
+              <input type="url" inputMode="url" value={social[key]}
+                onChange={(e) => setSocial(s => ({ ...s, [key]: e.target.value }))}
+                className={inputClass} placeholder="https://..." />
+            </div>
+          ))}
+        </div>
 
         <h3 className="text-base font-semibold text-gray-800 mt-2">
           Branding
         </h3>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
           <div>
             <label className={labelClass}>Logo</label>
             <ImageUpload value={branding.logoUrl} onChange={setLogoFile} label="Upload Logo" />
@@ -345,7 +345,7 @@ export default function AdminSettings() {
       {/* Contact Information */}
       <form
         onSubmit={saveContact}
-        className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 space-y-5"
+        className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6 space-y-4 sm:space-y-5"
       >
         <h2 className="text-lg font-semibold text-gray-900 border-b pb-3 border-gray-100">
           Contact Information
@@ -388,7 +388,7 @@ export default function AdminSettings() {
       {/* Change Admin Password */}
       <form
         onSubmit={handlePasswordChange}
-        className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 space-y-5"
+        className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6 space-y-4 sm:space-y-5"
       >
         <div className="flex items-center gap-3 border-b border-gray-100 pb-4">
           <div className="w-10 h-10 rounded-lg bg-brand/10 flex items-center justify-center">
