@@ -2,7 +2,7 @@ import { createContext, useContext, useState, useEffect, useCallback } from 'rea
 import { settingsService } from '../services/api.service.js';
 
 const SettingsContext = createContext(null);
-const DEFAULTS = { siteName: 'Sugandhika', tagline: 'Pure Eco Fragrance', phone: '', email: '', address: '', whatsapp: '', facebookUrl: '', instagramUrl: '', youtubeUrl: '' };
+const DEFAULTS = { siteName: 'Sugandhika', tagline: 'Pure Eco Fragrance', phone: '', email: '', address: '', whatsapp: '', facebookUrl: '', instagramUrl: '', youtubeUrl: '', twitterUrl: '', tiktokUrl: '', linkedinUrl: '' };
 
 export function SettingsProvider({ children }) {
   const [settings, setSettings] = useState(DEFAULTS);
