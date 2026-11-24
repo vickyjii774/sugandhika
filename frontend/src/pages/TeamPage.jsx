@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Users, X, Mail, Facebook, Instagram, Linkedin } from 'lucide-react';
+import { Users, X, Mail, Facebook, Instagram, Linkedin, Youtube, Music2, Phone } from 'lucide-react';
 import { teamService } from '../services/api.service.js';
 import LoadingSpinner from '../components/ui/LoadingSpinner.jsx';
 import EmptyState from '../components/ui/EmptyState.jsx';
@@ -21,7 +21,7 @@ export default function TeamPage() {
       <div className="max-w-6xl mx-auto px-4 py-14">
         {loading ? <div className="flex justify-center py-24"><LoadingSpinner /></div> : members.length === 0 ? <EmptyState icon={Users} title="Team members coming soon" description="We're updating our team page." /> : (
         
-<div className="grid grid-cols-3 gap-2 sm:gap-5 md:gap-8">
+<div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-5 md:gap-8">
   {members.map((member) => (
     <article
       key={member._id}
@@ -87,9 +87,9 @@ export default function TeamPage() {
       {selectedMember && <div className="fixed inset-0 z-[100] bg-black/60 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-label={`${selectedMember.name} profile`} onClick={() => setSelectedMember(null)}>
         <div className="relative bg-white rounded-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto p-6 sm:p-8" onClick={e => e.stopPropagation()}>
           <button onClick={() => setSelectedMember(null)} className="absolute top-4 right-4 p-2 rounded-full bg-gray-100 hover:bg-gray-200" aria-label="Close profile"><X className="w-5 h-5" /></button>
-          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5 pr-8">
-            {selectedMember.imageUrl && <img src={selectedMember.imageUrl} alt={selectedMember.name} className="w-28 h-28 rounded-full object-cover border-4 border-brand/20" />}
+          <div className="pr-8">
             <div className="text-center sm:text-left"><h2 className="text-2xl font-bold text-gray-900">{selectedMember.name}</h2><p className="text-brand font-semibold mt-1">{selectedMember.designation}</p>{selectedMember.department && <p className="text-sm text-gray-500 mt-1">{selectedMember.department}</p>}</div>
+            {selectedMember.imageUrl && <img src={selectedMember.imageUrl} alt={selectedMember.name} className="mt-5 w-full h-56 sm:h-72 rounded-xl object-cover border border-brand/20" />}
           </div>
           {selectedMember.bio && <div className="mt-6"><h3 className="font-semibold text-gray-900 mb-2">About</h3><p className="text-gray-600 leading-relaxed whitespace-pre-line">{selectedMember.bio}</p></div>}
           {(selectedMember.socialLinks?.email || selectedMember.socialLinks?.phone) && <div className="mt-5 flex flex-wrap gap-4 text-sm">{selectedMember.socialLinks?.email && <a href={`mailto:${selectedMember.socialLinks.email}`} className="inline-flex items-center gap-2 text-brand"><Mail className="w-4 h-4" />{selectedMember.socialLinks.email}</a>}{selectedMember.socialLinks?.phone && <a href={`tel:${selectedMember.socialLinks.phone}`} className="inline-flex items-center gap-2 text-brand">{selectedMember.socialLinks.phone}</a>}</div>}
