@@ -122,7 +122,7 @@ useEffect(() => {
           {/* WHATSAPP */}
           {whatsappNumber && (
             <a
-              href={`https://wa.me/${String(whatsappNumber).replace(/\\D/g, '')}?text=${encodeURIComponent(
+              href={`https://wa.me/${String(whatsappNumber).replace(/\D/g, '')}?text=${encodeURIComponent(
                 'Hello Sugandhika, I would like to inquire about your products.'
               )}`}
               target="_blank"
