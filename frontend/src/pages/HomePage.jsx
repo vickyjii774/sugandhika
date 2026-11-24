@@ -265,7 +265,7 @@ export default function HomePage() {
         <LoadingSpinner />
       </div>
     ) : products.length > 0 ? (
-      <div className="grid grid-cols-4 gap-2 sm:gap-4 md:gap-6">
+      <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 sm:gap-4 md:gap-6">
         {products.slice(0, 4).map((p) => (
           <ProductCard key={p._id} product={p} />
         ))}
