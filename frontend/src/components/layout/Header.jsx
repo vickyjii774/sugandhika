@@ -128,10 +128,10 @@ useEffect(() => {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Contact Sugandhika on WhatsApp"
-              className="flex items-center justify-center gap-1 sm:gap-2 px-1.5 sm:px-4 py-1.5 sm:py-2 bg-green-500 hover:bg-green-600 text-white text-[8px] sm:text-sm font-semibold rounded-md sm:rounded-xl shrink-0 cursor-pointer"
+              className="flex items-center justify-center gap-1 sm:gap-2 p-2 sm:px-4 sm:py-2 bg-green-500 hover:bg-green-600 text-white text-[8px] sm:text-sm font-semibold rounded-md sm:rounded-xl shrink-0 cursor-pointer"
             >
-              <Phone className="w-3 h-3 sm:w-4 sm:h-4" />
-              <span>WhatsApp</span>
+              <Phone className="w-4 h-4 sm:w-4 sm:h-4" />
+              <span className="hidden sm:inline">WhatsApp</span>
             </a>
           )}
 
