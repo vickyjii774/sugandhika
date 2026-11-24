@@ -7,7 +7,15 @@ import {
   Recycle,
   Lightbulb,
   Users,
-  Star
+  Star,
+  X,
+  Mail,
+  Phone,
+  Facebook,
+  Instagram,
+  Linkedin,
+  Youtube,
+  Music2
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { aboutService } from '../services/api.service.js';
@@ -100,6 +108,12 @@ const renderableText = (value) => {
 export default function AboutPage() {
   const [about, setAbout] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [teamMembers, setTeamMembers] = useState([]);
+  const [selectedMember, setSelectedMember] = useState(null);
+
+  useEffect(() => {
+    teamService.getAll().then((res) => setTeamMembers(Array.isArray(res?.data) ? res.data.slice(0, 2) : res?.data?.team?.slice(0, 2) || [])).catch(() => setTeamMembers([]));
+  }, []);
 
   useEffect(() => {
     aboutService
@@ -290,11 +304,25 @@ export default function AboutPage() {
                 Get to know the passionate people behind Sugandhika.
               </p>
 
+              {teamMembers.length > 0 && (
+                <div className="mt-6 sm:mt-8 grid grid-cols-2 gap-3 sm:gap-6 text-left">
+                  {teamMembers.map((member) => (
+                    <article key={member.id || member._id} className="bg-white rounded-xl sm:rounded-2xl border border-gray-200 shadow-sm overflow-hidden min-w-0">
+                      <div className="p-2.5 sm:p-5 flex flex-col items-center text-center">
+                        <div className="w-14 h-14 sm:w-24 sm:h-24 rounded-full overflow-hidden bg-brand-cream border-2 border-brand/20 mb-2 sm:mb-3 shrink-0">
+                          {member.imageUrl ? <img src={member.imageUrl} alt={member.name} className="w-full h-full object-cover" /> : <Users className="w-full h-full p-3 text-brand/30" />}
+                        </div>
+                        <h3 className="text-xs sm:text-base font-bold text-gray-900 leading-tight break-words w-full">{member.name}</h3>
+                        <p className="text-brand text-[10px] sm:text-sm font-medium mt-1 leading-tight break-words w-full">{member.designation}</p>
+                        <button type="button" onClick={() => setSelectedMember(member)} className="mt-3 px-3 py-1.5 sm:px-5 sm:py-2 rounded-lg bg-brand-cream text-brand-dark text-[10px] sm:text-xs font-semibold hover:bg-brand hover:text-white transition-colors w-full">View Profile</button>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              )}
+
               <div className="mt-5 sm:mt-8">
-                <Link
-                  to="/team"
-                  className="inline-flex items-center gap-1 sm:gap-2 px-4 py-2 sm:px-7 sm:py-3 bg-brand-dark text-white text-xs sm:text-base font-semibold rounded-lg sm:rounded-xl hover:bg-brand transition-colors shadow-md"
-                >
+                <Link to="/team" className="inline-flex items-center gap-1 sm:gap-2 px-4 py-2 sm:px-7 sm:py-3 bg-brand-dark text-white text-xs sm:text-base font-semibold rounded-lg sm:rounded-xl hover:bg-brand transition-colors shadow-md">
                   View All Team Members
                   <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
                 </Link>
@@ -333,6 +361,27 @@ export default function AboutPage() {
         </>
       )}
 
+      {selectedMember && <div className="fixed inset-0 z-[100] bg-black/60 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-label={`${selectedMember.name} profile`} onClick={() => setSelectedMember(null)}>
+        <div className="relative bg-white rounded-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto p-6 sm:p-8" onClick={(e) => e.stopPropagation()}>
+          <button onClick={() => setSelectedMember(null)} className="absolute top-4 right-4 p-2 rounded-full bg-gray-100 hover:bg-gray-200" aria-label="Close profile"><X className="w-5 h-5" /></button>
+          <div className="pr-8">
+            <h2 className="text-2xl font-bold text-gray-900">{selectedMember.name}</h2>
+            <p className="text-brand font-semibold mt-1">{selectedMember.designation}</p>
+            {selectedMember.department && <p className="text-sm text-gray-500 mt-1">{selectedMember.department}</p>}
+            {selectedMember.imageUrl && <img src={selectedMember.imageUrl} alt={selectedMember.name} className="mt-5 w-full h-56 sm:h-72 rounded-xl object-cover border border-brand/20" />}
+          </div>
+          {selectedMember.bio && <div className="mt-6"><h3 className="font-semibold text-gray-900 mb-2">About</h3><p className="text-gray-600 leading-relaxed whitespace-pre-line">{selectedMember.bio}</p></div>}
+          {(selectedMember.socialLinks?.email || selectedMember.socialLinks?.phone) && <div className="mt-5 flex flex-wrap gap-4 text-sm">
+            {selectedMember.socialLinks?.email && <a href={`mailto:${selectedMember.socialLinks.email}`} className="inline-flex items-center gap-2 text-brand"><Mail className="w-4 h-4" />{selectedMember.socialLinks.email}</a>}
+            {selectedMember.socialLinks?.phone && <a href={`tel:${selectedMember.socialLinks.phone}`} className="inline-flex items-center gap-2 text-brand"><Phone className="w-4 h-4" />{selectedMember.socialLinks.phone}</a>}
+          </div>}
+          {selectedMember.socialLinks && <div className="flex flex-wrap gap-4 mt-6">
+            {[
+              ['facebook', Facebook], ['instagram', Instagram], ['tiktok', Music2], ['youtube', Youtube], ['linkedin', Linkedin],
+            ].filter(([key]) => selectedMember.socialLinks?.[key]).map(([key, Icon]) => <a key={key} href={selectedMember.socialLinks[key]} target="_blank" rel="noopener noreferrer" aria-label={key} title={key} className="text-brand hover:text-brand-dark"><Icon className="w-6 h-6" /></a>)}
+          </div>}
+        </div>
+      </div>}
     </div>
   );
 }
