@@ -42,9 +42,13 @@ export function openWhatsApp(phone, message) {
     return;
   }
 
-  const cleanPhone = phone.replace(/\D/g, '');
-  const encoded = encodeURIComponent(message);
+  const cleanPhone = String(phone).replace(/\D/g, '');
+  if (!cleanPhone) {
+    console.warn('WhatsApp phone number is invalid');
+    return;
+  }
 
+  const encoded = encodeURIComponent(message);
   window.open(
     `https://wa.me/${cleanPhone}?text=${encoded}`,
     '_blank',
