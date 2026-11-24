@@ -268,13 +268,13 @@ Total Price: ${totalPrice != null ? formatRs(totalPrice) : 'Please confirm price
               {hasDiscount && (
                 <>
                   <span className="text-lg text-gray-400 line-through">
-                    Rs. {Number(product.regularPrice).toLocaleString()}
+                    Rs. {Number(product.price).toLocaleString()}
                   </span>
                   <span className="text-sm font-medium text-green-600">
                     {Math.round(
                       (1 -
                         Number(product.discountPrice) /
-                          Number(product.regularPrice)) *
+                          Number(product.price)) *
                         100
                     )}
                     % off
