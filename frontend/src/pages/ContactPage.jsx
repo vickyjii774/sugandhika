@@ -422,7 +422,9 @@ export default function ContactPage() {
 
                 </div>
 
-                {/* WhatsApp */}
+                {/* WhatsApp and Visit Us: side by side on mobile */}
+                <div className="grid grid-cols-2 sm:grid-cols-1 gap-2 sm:gap-4">
+
                 {whatsappNumber && (
                   <a
                     href={`https://wa.me/${whatsappNumber}`}
@@ -447,6 +449,23 @@ export default function ContactPage() {
 
                   </a>
                 )}
+
+                <div className="bg-brand-cream rounded-md sm:rounded-xl p-2 sm:p-4 flex items-center gap-1.5 sm:gap-3">
+
+                  <MapPin className="w-4 h-4 sm:w-7 sm:h-7 text-brand shrink-0" />
+
+                  <div className="min-w-0">
+                    <p className="font-semibold text-brand-dark text-[8px] sm:text-xs md:text-sm">
+                      Visit Us
+                    </p>
+
+                    <p className="text-[8px] sm:text-xs text-gray-600 leading-snug">
+                      {contactInfo.address}
+                    </p>
+                  </div>
+
+                </div>
+                </div>
 
                 {/* Social Media */}
                 {socialItems.length > 0 && (
@@ -477,23 +496,6 @@ export default function ContactPage() {
                     </div>
                   </div>
                 )}
-
-                {/* Visit Us */}
-                <div className="bg-brand-cream rounded-md sm:rounded-xl p-2 sm:p-4 flex items-center gap-1.5 sm:gap-3">
-
-                  <MapPin className="w-4 h-4 sm:w-7 sm:h-7 text-brand shrink-0" />
-
-                  <div className="min-w-0">
-                    <p className="font-semibold text-brand-dark text-[8px] sm:text-xs md:text-sm">
-                      Visit Us
-                    </p>
-
-                    <p className="text-[8px] sm:text-xs text-gray-600 leading-snug">
-                      {contactInfo.address}
-                    </p>
-                  </div>
-
-                </div>
 
               </div>
             )}
