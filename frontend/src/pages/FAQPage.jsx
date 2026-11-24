@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, MessageCircle, HelpCircle } from 'lucide-react';
-import { faqService } from '../services/api.service.js';
+import { faqService, contactService } from '../services/api.service.js';
 import Accordion from '../components/ui/Accordion.jsx';
 import LoadingSpinner from '../components/ui/LoadingSpinner.jsx';
 
@@ -9,6 +9,15 @@ export default function FAQPage() {
   const [faqs, setFaqs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [contact, setContact] = useState({ whatsapp: '', phone: '' });
+
+  useEffect(() => {
+    contactService.get()
+      .then(res => setContact(res?.data || {}))
+      .catch(() => {});
+  }, []);
+
+  const whatsappNumber = String(contact.whatsapp || contact.phone || '').replace(/\\D/g, '');
 
   useEffect(() => {
     faqService.getAll()
@@ -74,17 +83,17 @@ export default function FAQPage() {
           </div>
         )}
 
-        {/* WhatsApp CTA */}
-        <div className="mt-14 bg-gradient-to-r from-brand-dark to-brand rounded-2xl p-8 text-center text-white">
+        {/* WhatsApp CTA uses the number saved in Admin Dashboard > Contact Information */}
+        {whatsappNumber && <div className="mt-14 bg-gradient-to-r from-brand-dark to-brand rounded-2xl p-8 text-center text-white">
           <MessageCircle className="w-10 h-10 mx-auto mb-3 text-brand-cream" />
           <h3 className="text-xl font-bold mb-2">Still have questions?</h3>
           <p className="text-brand-cream/80 text-sm mb-5">Our team is happy to help you personally.</p>
-          <a href="https://wa.me/9779801234567" target="_blank" rel="noopener noreferrer"
+          <a href={`https://wa.me/${whatsappNumber}`} target="_blank" rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-6 py-3 bg-white text-brand-dark font-semibold rounded-full hover:bg-brand-cream transition-colors text-sm">
             <MessageCircle className="w-4 h-4" />
             Chat on WhatsApp
           </a>
-        </div>
+        </div>}
       </div>
     </div>
   );
