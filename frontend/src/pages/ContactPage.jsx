@@ -230,10 +230,10 @@ export default function ContactPage() {
       <section className="max-w-6xl mx-auto px-2 sm:px-5 md:px-6 py-6 sm:py-10 md:py-14">
 
         {/* Two columns on mobile and desktop */}
-        <div className="grid grid-cols-2 gap-2 sm:gap-5 md:gap-8 items-stretch">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-5 md:gap-8 items-stretch">
 
           {/* ── CONTACT FORM ─────────────────────────── */}
-          <div className="bg-white rounded-lg sm:rounded-2xl shadow-sm border border-gray-200 p-2.5 sm:p-5 md:p-8 min-w-0">
+          <div className="order-2 sm:order-1 bg-white rounded-lg sm:rounded-2xl shadow-sm border border-gray-200 p-2.5 sm:p-5 md:p-8 min-w-0">
 
             <h2 className="text-sm sm:text-xl md:text-2xl font-bold text-gray-900 mb-1 sm:mb-2">
               Send us a Message
@@ -365,7 +365,7 @@ export default function ContactPage() {
           </div>
 
           {/* ── CONTACT INFORMATION: SINGLE BOX ─────── */}
-          <div className="bg-white rounded-lg sm:rounded-2xl shadow-sm border border-gray-200 p-2.5 sm:p-5 md:p-8 min-w-0 flex flex-col">
+          <div className="order-1 sm:order-2 bg-white rounded-lg sm:rounded-2xl shadow-sm border border-gray-200 p-2.5 sm:p-5 md:p-8 min-w-0 flex flex-col">
 
             <h2 className="text-sm sm:text-xl md:text-2xl font-bold text-gray-900 mb-1 sm:mb-2">
               Contact Information
@@ -383,7 +383,7 @@ export default function ContactPage() {
               <div className="flex flex-col gap-3 sm:gap-5 flex-1">
 
                 {/* Contact Details */}
-                <div className="space-y-3 sm:space-y-5">
+                <div className="grid grid-cols-2 sm:grid-cols-1 gap-3 sm:gap-5">
 
                   {contactItems.map(
                     ({ icon: Icon, label, value, href }) => (
