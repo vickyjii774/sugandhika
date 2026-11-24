@@ -11,7 +11,8 @@ import {
   Instagram,
   Linkedin,
   Youtube,
-  Twitter
+  Twitter,
+  Music2
 } from 'lucide-react';
 
 import { contactService } from '../services/api.service.js';
@@ -191,7 +192,9 @@ export default function ContactPage() {
   const socialItems = [
     { name: 'Facebook', icon: Facebook, url: settings?.facebookUrl },
     { name: 'Instagram', icon: Instagram, url: settings?.instagramUrl },
+    { name: 'TikTok', icon: Music2, url: settings?.tiktokUrl },
     { name: 'YouTube', icon: Youtube, url: settings?.youtubeUrl },
+    { name: 'LinkedIn', icon: Linkedin, url: settings?.linkedinUrl },
     { name: 'X / Twitter', icon: Twitter, url: settings?.twitterUrl }
   ].filter(
     (item) =>
