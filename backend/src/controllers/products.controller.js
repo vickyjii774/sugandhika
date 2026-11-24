@@ -23,7 +23,7 @@ export async function getPublishedProducts(req, res, next) {
     const orderBy = sort === 'price-asc' ? { price: 'asc' }
       : sort === 'price-desc' ? { price: 'desc' }
       : sort === 'newest' ? { createdAt: 'desc' }
-      : { sortOrder: 'asc' };
+      : { createdAt: 'desc' };
     const skip = (parseInt(page) - 1) * parseInt(limit);
     const [products, total] = await Promise.all([
       prisma.product.findMany({ where, orderBy, skip, take: parseInt(limit), include: productInclude }),
