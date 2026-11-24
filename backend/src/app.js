@@ -8,6 +8,10 @@ import { errorHandler, notFound } from './middleware/error.middleware.js';
 
 const app = express();
 
+// Render runs Express behind one trusted reverse proxy. Use the forwarded client IP
+// so express-rate-limit does not count every visitor as the same proxy address.
+app.set('trust proxy', 1);
+
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 
 const allowedOrigins = (config.cors?.origin || 'http://localhost:3000,http://localhost:3001')
