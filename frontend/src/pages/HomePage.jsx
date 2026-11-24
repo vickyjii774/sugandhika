@@ -123,13 +123,13 @@ export default function HomePage() {
     <div className="min-h-screen">
      
 {/* ── 1. HERO ───────────────────────────────────────────── */}
-<section className={`relative min-h-[75vh] md:min-h-screen flex items-center justify-center bg-gradient-to-br from-brand-dark via-brand to-brand-light overflow-hidden ${isSectionEnabled("hero") ? "" : "hidden"}`}>
+<section className={`relative min-h-[58vh] sm:min-h-[75vh] md:min-h-screen flex items-center justify-center bg-gradient-to-br from-brand-dark via-brand to-brand-light overflow-hidden ${isSectionEnabled("hero") ? "" : "hidden"}`}>
 
   {banners[0]?.imageUrl && (
     <img
       src={banners[0].imageUrl}
       alt=""
-      className="absolute inset-0 w-full h-full object-cover opacity-25"
+      className="absolute inset-0 w-full h-full object-contain sm:object-cover opacity-40"
     />
   )}
 
@@ -142,7 +142,7 @@ export default function HomePage() {
     }}
   />
 
-  <div className="relative z-10 text-center text-white px-4 sm:px-6 max-w-4xl mx-auto py-16 sm:py-20">
+  <div className="relative z-10 text-center text-white px-4 sm:px-6 max-w-4xl mx-auto py-8 sm:py-16 md:py-20">
 
     {/* Badge */}
     <div className="inline-flex items-center gap-1.5 sm:gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-3 sm:px-4 py-1.5 sm:py-2 mb-4 sm:mb-6">
