@@ -92,8 +92,21 @@ export default function TeamPage() {
             {selectedMember.imageUrl && <img src={selectedMember.imageUrl} alt={selectedMember.name} className="mt-5 w-full h-56 sm:h-72 rounded-xl object-cover border border-brand/20" />}
           </div>
           {selectedMember.bio && <div className="mt-6"><h3 className="font-semibold text-gray-900 mb-2">About</h3><p className="text-gray-600 leading-relaxed whitespace-pre-line">{selectedMember.bio}</p></div>}
-          {(selectedMember.socialLinks?.email || selectedMember.socialLinks?.phone) && <div className="mt-5 flex flex-wrap gap-4 text-sm">{selectedMember.socialLinks?.email && <a href={`mailto:${selectedMember.socialLinks.email}`} className="inline-flex items-center gap-2 text-brand"><Mail className="w-4 h-4" />{selectedMember.socialLinks.email}</a>}{selectedMember.socialLinks?.phone && <a href={`tel:${selectedMember.socialLinks.phone}`} className="inline-flex items-center gap-2 text-brand">{selectedMember.socialLinks.phone}</a>}</div>}
-          {selectedMember.socialLinks && <div className="flex gap-3 mt-6">{Object.entries(selectedMember.socialLinks).filter(([,url]) => typeof url === 'string' && url).map(([key,url]) => <a key={key} href={url} target="_blank" rel="noopener noreferrer" aria-label={key} className="text-brand hover:text-brand-dark">{key.toLowerCase().includes('facebook') ? <Facebook /> : key.toLowerCase().includes('instagram') ? <Instagram /> : <Linkedin />}</a>)}</div>}
+          {(selectedMember.socialLinks?.email || selectedMember.socialLinks?.phone) && <div className="mt-5 flex flex-wrap gap-4 text-sm">
+            {selectedMember.socialLinks?.email && <a href={`mailto:${selectedMember.socialLinks.email}`} className="inline-flex items-center gap-2 text-brand"><Mail className="w-4 h-4" />{selectedMember.socialLinks.email}</a>}
+            {selectedMember.socialLinks?.phone && <a href={`tel:${selectedMember.socialLinks.phone}`} className="inline-flex items-center gap-2 text-brand"><Phone className="w-4 h-4" />{selectedMember.socialLinks.phone}</a>}
+          </div>}
+          {selectedMember.socialLinks && <div className="flex flex-wrap gap-4 mt-6">
+            {[
+              ['facebook', Facebook],
+              ['instagram', Instagram],
+              ['tiktok', Music2],
+              ['youtube', Youtube],
+              ['linkedin', Linkedin],
+            ].filter(([key]) => selectedMember.socialLinks?.[key]).map(([key, Icon]) => (
+              <a key={key} href={selectedMember.socialLinks[key]} target="_blank" rel="noopener noreferrer" aria-label={key} title={key} className="text-brand hover:text-brand-dark transition-colors"><Icon className="w-6 h-6" /></a>
+            ))}
+          </div>}
         </div>
       </div>}
     </div>
