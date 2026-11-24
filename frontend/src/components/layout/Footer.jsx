@@ -68,7 +68,7 @@ export default function Footer() {
   </div>
 </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 grid grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 grid grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-10">
         <div>
           <Link to="/" className="inline-flex items-center gap-2.5 mb-5">{settings?.logo ? <img src={settings.logo} alt="" className="w-10 h-10 object-contain" /> : <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center"><Sparkles className="w-5 h-5 text-brand-gold" /></div>}<div><div className="font-serif font-bold text-lg">{settings?.siteName || 'Sugandhika'}</div><div className="text-[10px] tracking-widest uppercase text-brand-light">{settings?.tagline || 'Pure Eco Fragrance'}</div></div></Link>
           <p className="text-sm text-white leading-relaxed mb-5">{settings?.description || "Bringing Nepal's natural heritage and modern living together through thoughtfully crafted herbal fragrances."}</p>
