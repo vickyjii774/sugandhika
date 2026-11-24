@@ -58,7 +58,7 @@ useEffect(() => {
     >
       <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
 
-        <div className="flex items-center justify-between gap-2 min-h-[58px] sm:min-h-[72px] py-2">
+        <div className="flex items-center justify-between gap-3 sm:gap-5 lg:gap-7 min-h-[58px] sm:min-h-[72px] py-2">
 
       
 {/* LOGO AND BRAND */}
@@ -98,7 +98,7 @@ useEffect(() => {
 
 
           {/* DESKTOP + MOBILE NAVIGATION */}
-          <nav className="flex items-center justify-end gap-1 sm:gap-5 lg:gap-7 text-[10px] sm:text-sm font-medium flex-1 min-w-0">
+          <nav className="flex items-center justify-end gap-2 sm:gap-5 lg:gap-7 text-[10px] sm:text-sm font-medium flex-1 min-w-0">
 
             {navItems.map((item) => (
               <NavLink
