@@ -3,7 +3,6 @@ import { Link, NavLink, useLocation } from 'react-router-dom';
 import { Phone, Sparkles } from 'lucide-react';
 import { useSettings } from '../../hooks/useSettings.js';
 import { navigationService } from '../../services/api.service.js';
-import { openWhatsApp } from '../../utils/whatsapp.js';
 
 const DEFAULT_NAV = [
   { label: 'Home', url: '/' },
@@ -122,18 +121,18 @@ useEffect(() => {
 
           {/* WHATSAPP */}
           {whatsappNumber && (
-            <button
-              onClick={() =>
-                openWhatsApp(
-                  whatsappNumber,
-                  'Hello Sugandhika, I would like to inquire about your products.'
-                )
-              }
-              className="flex items-center justify-center gap-1 sm:gap-2 px-1.5 sm:px-4 py-1.5 sm:py-2 bg-green-500 hover:bg-green-600 text-white text-[8px] sm:text-sm font-semibold rounded-md sm:rounded-xl shrink-0"
+            <a
+              href={`https://wa.me/${String(whatsappNumber).replace(/\\D/g, '')}?text=${encodeURIComponent(
+                'Hello Sugandhika, I would like to inquire about your products.'
+              )}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Contact Sugandhika on WhatsApp"
+              className="flex items-center justify-center gap-1 sm:gap-2 px-1.5 sm:px-4 py-1.5 sm:py-2 bg-green-500 hover:bg-green-600 text-white text-[8px] sm:text-sm font-semibold rounded-md sm:rounded-xl shrink-0 cursor-pointer"
             >
               <Phone className="w-3 h-3 sm:w-4 sm:h-4" />
               <span>WhatsApp</span>
-            </button>
+            </a>
           )}
 
         </div>
