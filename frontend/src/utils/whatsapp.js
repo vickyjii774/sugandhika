@@ -5,6 +5,9 @@
 export function getOrderMessage(product, quantity = 1, price) {
   const displayPrice =
     price ?? product.discountPrice ?? product.price;
+  const unitPrice = displayPrice != null ? Number(displayPrice) : null;
+  const totalPrice = unitPrice != null ? unitPrice * Number(quantity || 1) : null;
+  const formatRs = (value) => `Rs. ${Number(value).toLocaleString('en-IN')}`;
 
   return `Hello Sugandhika! 🌿
 
@@ -12,11 +15,8 @@ I would like to enquire about this product:
 
 *Product:* ${product.name}
 *Quantity:* ${quantity}
-*Price:* ${
-    displayPrice != null
-      ? `Rs. ${Number(displayPrice).toLocaleString('en-IN')}`
-      : 'Please confirm'
-  }
+*Unit Price:* ${unitPrice != null ? formatRs(unitPrice) : 'Please confirm'}
+*Total Price:* ${totalPrice != null ? formatRs(totalPrice) : 'Please confirm'}
 ${product.selectedVariant ? `*Variant:* ${product.selectedVariant}` : ''}
 
 Please share the product availability and delivery details.
