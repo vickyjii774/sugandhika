@@ -58,7 +58,7 @@ useEffect(() => {
     >
       <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
 
-        <div className="flex items-center justify-between gap-4 sm:gap-6 lg:gap-8 min-h-[58px] sm:min-h-[72px] py-2">
+        <div className="flex items-center justify-between gap-4 sm:gap-6 lg:gap-8 min-h-[64px] sm:min-h-[76px] py-2">
 
       
 {/* LOGO AND BRAND */}
@@ -77,20 +77,20 @@ useEffect(() => {
     <img
       src={settings.logo}
       alt={settings.siteName || 'Sugandhika'}
-      className="w-7 h-7 sm:w-10 sm:h-10 object-contain"
+      className="w-9 h-9 sm:w-12 sm:h-12 object-contain"
     />
   ) : (
-    <div className="w-7 h-7 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-brand-dark flex items-center justify-center">
-      <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-brand-gold" />
+    <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-brand-dark flex items-center justify-center">
+      <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-brand-gold" />
     </div>
   )}
 
   <div className="min-w-0">
-    <div className="font-serif font-bold text-[11px] sm:text-xl text-brand-dark leading-none whitespace-nowrap">
+    <div className="font-serif font-bold text-[13px] sm:text-2xl text-brand-dark leading-none whitespace-nowrap">
       {settings?.siteName || 'Sugandhika'}
     </div>
 
-    <div className="text-[6px] sm:text-[10px] tracking-widest uppercase text-brand font-semibold whitespace-nowrap mt-1">
+    <div className="text-[7px] sm:text-[11px] tracking-widest uppercase text-brand font-semibold whitespace-nowrap mt-1">
       {settings?.tagline || 'Pure Eco Fragrance'}
     </div>
   </div>
