@@ -12,6 +12,7 @@ import {
 import { productsService } from '../services/api.service.js';
 import ProductCard from '../components/products/ProductCard.jsx';
 import LoadingSpinner from '../components/ui/LoadingSpinner.jsx';
+import { useSettings } from '../hooks/useSettings.js';
 
 const TABS = [
   'Description',
@@ -24,6 +25,7 @@ const TABS = [
 export default function ProductDetailPage() {
   const { slug } = useParams();
   const navigate = useNavigate();
+  const { settings } = useSettings();
 
   const [product, setProduct] = useState(null);
   const [related, setRelated] = useState([]);
@@ -121,9 +123,13 @@ export default function ProductDetailPage() {
   const whatsappText = `Hello! I would like to enquire about: ${product.name} (Qty: ${qty})
 Price: Rs.${displayPrice ?? 'Please confirm price'}`;
 
-  const whatsappUrl = `https://wa.me/9779801234567?text=${encodeURIComponent(
-    whatsappText
-  )}`;
+  const whatsappNumber = String(
+    settings?.whatsapp || settings?.phone || ''
+  ).replace(/\D/g, '');
+
+  const whatsappUrl = whatsappNumber
+    ? `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappText)}`
+    : '';
 
   const stockQuantity = Number(product.stockQuantity);
   const isInStock =
@@ -333,15 +339,21 @@ Price: Rs.${displayPrice ?? 'Please confirm price'}`;
 
             {/* WhatsApp Enquiry */}
             <div className="flex flex-col gap-3 mb-6">
-              <a
-                href={whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 py-3 bg-green-500 text-white rounded-xl font-medium hover:bg-green-600 transition-colors"
-              >
-                <MessageCircle className="w-5 h-5" />
-                Enquire via WhatsApp
-              </a>
+              {whatsappUrl ? (
+                <a
+                  href={whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 py-3 bg-green-500 text-white rounded-xl font-medium hover:bg-green-600 transition-colors"
+                >
+                  <MessageCircle className="w-5 h-5" />
+                  Enquire via WhatsApp
+                </a>
+              ) : (
+                <p className="text-sm text-gray-500">
+                  WhatsApp contact number is not configured yet.
+                </p>
+              )}
             </div>
 
             {/* Meta */}
