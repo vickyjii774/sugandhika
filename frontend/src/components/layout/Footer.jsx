@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { navigationService } from '../../services/api.service.js';
-import { MapPin, Phone, Mail, Sparkles, Facebook, Instagram, Youtube, ArrowRight } from 'lucide-react';
+import { MapPin, Phone, Mail, Sparkles, Facebook, Instagram, Youtube, ArrowRight, Linkedin, Twitter, Music2 } from 'lucide-react';
 import { useSettings } from '../../hooks/useSettings.js';
 
 const quickLinks = [
@@ -23,6 +23,14 @@ export default function Footer() {
   const year = new Date().getFullYear();
   const phone = settings?.phone || '';
   const whatsapp = settings?.whatsapp || phone;
+  const socialItems = [
+    { label: 'Facebook', url: settings?.facebookUrl, Icon: Facebook },
+    { label: 'Instagram', url: settings?.instagramUrl, Icon: Instagram },
+    { label: 'TikTok', url: settings?.tiktokUrl, Icon: Music2 },
+    { label: 'YouTube', url: settings?.youtubeUrl, Icon: Youtube },
+    { label: 'LinkedIn', url: settings?.linkedinUrl, Icon: Linkedin },
+    { label: 'X / Twitter', url: settings?.twitterUrl, Icon: Twitter },
+  ].filter(item => typeof item.url === 'string' && /^https?:\/\//i.test(item.url.trim()));
   return (
     <footer className="bg-brand-dark text-white">
    
@@ -77,7 +85,7 @@ export default function Footer() {
             {phone && <div className="flex items-center gap-2"><Phone className="w-4 h-4 shrink-0 text-brand-light" /><a href={`tel:${phone}`} className="hover:text-white">{phone}</a></div>}
             {settings?.email && <div className="flex items-center gap-2"><Mail className="w-4 h-4 shrink-0 text-brand-light" /><a href={`mailto:${settings.email}`} className="hover:text-white">{settings.email}</a></div>}
           </div>
-          <div className="flex gap-3 mt-5">{settings?.facebookUrl && <a href={settings.facebookUrl} target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center"><Facebook className="w-4 h-4" /></a>}{settings?.instagramUrl && <a href={settings.instagramUrl} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center"><Instagram className="w-4 h-4" /></a>}{settings?.youtubeUrl && <a href={settings.youtubeUrl} target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center"><Youtube className="w-4 h-4" /></a>}</div>
+          {socialItems.length > 0 && <div className="flex flex-wrap gap-3 mt-5">{socialItems.map(({ label, url, Icon }) => <a key={label} href={url.trim()} target="_blank" rel="noopener noreferrer" aria-label={label} title={label} className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center hover:bg-white/20 transition-colors"><Icon className="w-4 h-4" /></a>)}</div>}
         </div>
         <div><h4 className="text-xs sm:text-sm font-semibold uppercase tracking-wider mb-5">Quick Links</h4><ul className="space-y-2.5">{links.map(l => <li key={l.to}><Link to={l.to} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="text-xs sm:text-sm text-white hover:text-white/40 flex items-center gap-1.5"><ArrowRight className="w-3 h-3 text-brand-light" />{l.label}</Link></li>)}</ul></div>
         <div><h4 className="text-xs sm:text-sm font-semibold uppercase tracking-wider mb-5">Our Products</h4><ul className="space-y-2.5">{productLinks.map(l => <li key={l.to}><Link to={l.to} className="text-xs sm:text-sm text-white hover:text-white/40 flex items-center gap-1.5"><ArrowRight className="w-3 h-3 text-brand-light" />{l.label}</Link></li>)}</ul></div>
