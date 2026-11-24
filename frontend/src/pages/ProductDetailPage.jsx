@@ -164,7 +164,7 @@ Total Price: ${totalPrice != null ? formatRs(totalPrice) : 'Please confirm price
       <div className="max-w-6xl mx-auto px-4 py-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
           {/* Image Gallery */}
-          <div className="space-y-3">
+          <div className="w-full max-w-[22rem] mx-auto space-y-3 lg:max-w-none">
             <div className="relative aspect-square bg-white rounded-2xl border border-gray-200 overflow-hidden">
               {images[mainImage]?.url ? (
                 <img
