@@ -154,29 +154,6 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      {/* Recent Activity Placeholder */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-        <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-          <TrendingUp className="w-5 h-5 text-brand" /> Recent Activity
-        </h2>
-        <div className="space-y-3">
-          {[
-            'Product "Himalayan Herbs" was updated',
-            'New FAQ added under General category',
-            'Gallery album "Farm Visit 2024" was published',
-            'Team member "Dr. Rajan Sharma" was added',
-          ].map((item, i) => (
-            <div key={i} className="flex items-center gap-3 py-2 border-b border-gray-100 last:border-0">
-              <div className="w-2 h-2 rounded-full bg-brand-light flex-shrink-0" />
-              <span className="text-sm text-gray-600">{item}</span>
-              <span className="text-xs text-gray-400 ml-auto whitespace-nowrap">Just now</span>
-            </div>
-          ))}
-        </div>
-        <p className="text-xs text-gray-400 mt-4 text-center">
-          Full activity log coming soon.
-        </p>
-      </div>
     </div>
   );
 }
