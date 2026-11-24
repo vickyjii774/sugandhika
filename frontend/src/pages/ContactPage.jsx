@@ -9,12 +9,15 @@ import {
   Send,
   Facebook,
   Instagram,
-  Linkedin
+  Linkedin,
+  Youtube,
+  Twitter
 } from 'lucide-react';
 
 import { contactService } from '../services/api.service.js';
 import LoadingSpinner from '../components/ui/LoadingSpinner.jsx';
 import useToast from '../hooks/useToast.js';
+import { useSettings } from '../hooks/useSettings.js';
 
 const DEFAULT_CONTACT = {
   phone: '+977-9801234567',
@@ -185,29 +188,20 @@ export default function ContactPage() {
 
   // ── SOCIAL MEDIA LINKS ─────────────────────────────
   const socialItems = [
-    {
-      name: 'Facebook',
-      icon: Facebook,
-      url: contactInfo.socialLinks?.facebook
-    },
-    {
-      name: 'Instagram',
-      icon: Instagram,
-      url: contactInfo.socialLinks?.instagram
-    },
-    {
-      name: 'LinkedIn',
-      icon: Linkedin,
-      url: contactInfo.socialLinks?.linkedin
-    }
+    { name: 'Facebook', icon: Facebook, url: settings?.facebookUrl },
+    { name: 'Instagram', icon: Instagram, url: settings?.instagramUrl },
+    { name: 'YouTube', icon: Youtube, url: settings?.youtubeUrl },
+    { name: 'X / Twitter', icon: Twitter, url: settings?.twitterUrl }
   ].filter(
     (item) =>
       typeof item.url === 'string' &&
-      /^https?:\/\//i.test(item.url)
+      /^https?:\/\//i.test(item.url.trim())
   );
 
   // ── WHATSAPP NUMBER ────────────────────────────────
-  const whatsappNumber = (
+  const whatsappNumber = String(
+    settings?.whatsapp ||
+    settings?.phone ||
     contactInfo.whatsapp ||
     contactInfo.phone ||
     ''
