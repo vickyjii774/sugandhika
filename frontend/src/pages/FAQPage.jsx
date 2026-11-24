@@ -37,11 +37,7 @@ export default function FAQPage() {
         <div className="max-w-6xl mx-auto text-center">
           <h1 className="text-4xl font-bold mb-3">Frequently Asked Questions</h1>
           <p className="text-brand-cream/80 text-lg">Find answers to common questions about our products</p>
-          <nav className="mt-4 text-sm text-brand-cream/60">
-            <Link to="/" className="hover:text-white">Home</Link>
-            <span className="mx-2">/</span>
-            <span className="text-white">FAQ</span>
-          </nav>
+  
         </div>
       </div>
 

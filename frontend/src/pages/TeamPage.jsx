@@ -17,23 +17,71 @@ export default function TeamPage() {
     <div className="min-h-screen bg-gray-50">
       <div className="bg-gradient-to-br from-brand-dark to-brand text-white py-14 px-4"><div className="max-w-6xl mx-auto text-center">
         <h1 className="text-4xl font-bold mb-3">Our Team</h1><p className="text-brand-cream/80 text-lg">The passionate people behind Sugandhika</p>
-        <nav className="mt-4 text-sm text-brand-cream/60"><Link to="/" className="hover:text-white">Home</Link><span className="mx-2">/</span><span className="text-white">Our Team</span></nav>
       </div></div>
       <div className="max-w-6xl mx-auto px-4 py-14">
         {loading ? <div className="flex justify-center py-24"><LoadingSpinner /></div> : members.length === 0 ? <EmptyState icon={Users} title="Team members coming soon" description="We're updating our team page." /> : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-            {members.map(member => <article key={member.id} className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden hover:shadow-md transition-shadow">
-              <div className="p-6 flex flex-col items-center text-center">
-                <div className="w-28 h-28 rounded-full overflow-hidden bg-brand-cream border-4 border-brand/20 mb-4 shrink-0">
-                  {member.imageUrl ? <img src={member.imageUrl} alt={member.name} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center"><Users className="w-12 h-12 text-brand/30" /></div>}
-                </div>
-                <h3 className="text-lg font-bold text-gray-900">{member.name}</h3><p className="text-brand text-sm font-medium mt-0.5">{member.designation}</p>
-                {member.department && <p className="text-xs text-gray-400 mt-1">{member.department}</p>}
-                {member.bio && <p className="text-gray-500 text-sm mt-3 leading-relaxed line-clamp-3">{member.bio}</p>}
-                <button type="button" onClick={() => setSelectedMember(member)} className="mt-5 px-5 py-2 rounded-lg bg-brand-cream text-brand-dark text-sm font-semibold hover:bg-brand hover:text-white transition-colors">View Full Profile</button>
-              </div>
-            </article>)}
-          </div>
+        
+<div className="grid grid-cols-3 gap-2 sm:gap-5 md:gap-8">
+  {members.map((member) => (
+    <article
+      key={member._id}
+      className="bg-white rounded-lg sm:rounded-2xl border border-gray-200 shadow-sm overflow-hidden hover:shadow-md transition-shadow min-w-0"
+    >
+      <div className="p-2 sm:p-5 md:p-6 flex flex-col items-center text-center">
+
+        {/* Profile Image */}
+        <div className="w-12 h-12 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full overflow-hidden bg-brand-cream border-2 sm:border-4 border-brand/20 mb-2 sm:mb-4 shrink-0">
+          {member.imageUrl ? (
+            <img
+              src={member.imageUrl}
+              alt={member.name}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center">
+              <Users className="w-5 h-5 sm:w-10 sm:h-10 text-brand/30" />
+            </div>
+          )}
+        </div>
+
+        {/* Name */}
+        <h3 className="text-[9px] sm:text-base md:text-lg font-bold text-gray-900 leading-tight break-words w-full">
+          {member.name}
+        </h3>
+
+        {/* Designation */}
+        <p className="text-brand text-[8px] sm:text-sm font-medium mt-1 leading-tight break-words w-full">
+          {member.designation}
+        </p>
+
+        {/* Department */}
+        {member.department && (
+          <p className="text-[7px] sm:text-xs text-gray-400 mt-1 leading-tight break-words w-full">
+            {member.department}
+          </p>
+        )}
+
+        {/* Bio */}
+        {member.bio && (
+          <p className="text-gray-500 text-[7px] sm:text-xs md:text-sm mt-2 sm:mt-3 leading-relaxed line-clamp-3">
+            {member.bio}
+          </p>
+        )}
+
+        {/* View Profile Button */}
+        <button
+          type="button"
+          onClick={() => setSelectedMember(member)}
+          className="mt-2 sm:mt-5 px-1.5 py-1 sm:px-5 sm:py-2 rounded-md sm:rounded-lg bg-brand-cream text-brand-dark text-[7px] sm:text-xs md:text-sm font-semibold hover:bg-brand hover:text-white transition-colors w-full"
+        >
+          View Profile
+        </button>
+
+      </div>
+    </article>
+  ))}
+</div>
+
         )}
       </div>
       {selectedMember && <div className="fixed inset-0 z-[100] bg-black/60 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-label={`${selectedMember.name} profile`} onClick={() => setSelectedMember(null)}>

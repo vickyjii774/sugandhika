@@ -22,11 +22,7 @@ export default function GalleryPage() {
         <div className="max-w-6xl mx-auto text-center">
           <h1 className="text-4xl font-bold mb-3">Our Gallery</h1>
           <p className="text-brand-cream/80 text-lg">Explore our products and moments</p>
-          <nav className="mt-4 text-sm text-brand-cream/60">
-            <Link to="/" className="hover:text-white">Home</Link>
-            <span className="mx-2">/</span>
-            <span className="text-white">Gallery</span>
-          </nav>
+    
         </div>
       </div>
 
