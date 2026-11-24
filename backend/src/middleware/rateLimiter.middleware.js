@@ -2,13 +2,14 @@ import rateLimit from 'express-rate-limit';
 import { config } from '../config/env.js';
 
 /**
- * Local React development generates many parallel API requests while screens
- * load. Keep a higher development ceiling, but retain the configured limit
- * in production.
+ * Public website pages load several independent resources in parallel.
+ * Rate-limit write operations, but do not throttle safe read requests used
+ * to render the public website or authenticated admin screens.
  */
 export const generalLimiter = rateLimit({
   windowMs: config.rateLimit.windowMs,
   max: config.isDev ? Math.max(config.rateLimit.max, 1000) : config.rateLimit.max,
+  skip: (req) => ['GET', 'HEAD', 'OPTIONS'].includes(req.method),
   standardHeaders: true,
   legacyHeaders: false,
   message: {
@@ -17,18 +18,12 @@ export const generalLimiter = rateLimit({
   },
 });
 
-/** Stricter limiter for auth endpoints */
 /** Stricter limiter for login endpoint */
 export const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-
-  // Development: 150 requests
-  // Production: 10 requests
   max: config.isDev ? 150 : 10,
-
   standardHeaders: true,
   legacyHeaders: false,
-
   message: {
     success: false,
     message: 'Too many login attempts. Please try again later.',
