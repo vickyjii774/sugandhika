@@ -123,7 +123,7 @@ export default function HomePage() {
     <div className="min-h-screen">
      
 {/* ── 1. HERO ───────────────────────────────────────────── */}
-<section className={`relative min-h-[58vh] sm:min-h-[75vh] md:min-h-screen flex items-center justify-center bg-gradient-to-br from-brand-dark via-brand to-brand-light overflow-hidden ${isSectionEnabled("hero") ? "" : "hidden"}`}>
+<section className={`relative min-h-[42vh] sm:min-h-[75vh] md:min-h-screen flex items-center justify-center bg-gradient-to-br from-brand-dark via-brand to-brand-light overflow-hidden ${isSectionEnabled("hero") ? "" : "hidden"}`}>
 
   {banners[0]?.imageUrl && (
     <img
@@ -142,7 +142,7 @@ export default function HomePage() {
     }}
   />
 
-  <div className="relative z-10 text-center text-white px-4 sm:px-6 max-w-4xl mx-auto py-8 sm:py-16 md:py-20">
+  <div className="relative z-10 text-center text-white px-4 sm:px-6 max-w-4xl mx-auto py-4 sm:py-16 md:py-20">
 
     {/* Badge */}
     <div className="inline-flex items-center gap-1.5 sm:gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-3 sm:px-4 py-1.5 sm:py-2 mb-4 sm:mb-6">
@@ -153,12 +153,12 @@ export default function HomePage() {
     </div>
 
     {/* Main Heading */}
-    <h1 className="text-3xl sm:text-5xl md:text-7xl font-extrabold leading-tight mb-4 sm:mb-6 drop-shadow-lg">
+    <h1 className="text-2xl sm:text-5xl md:text-7xl font-extrabold leading-tight mb-2 sm:mb-6 drop-shadow-lg">
       {banners[0]?.title || 'Pure Nature, Pure Sugandhika'}
     </h1>
 
     {/* Description */}
-    <p className="text-sm sm:text-lg md:text-2xl text-white/80 max-w-2xl mx-auto mb-6 sm:mb-10 leading-relaxed">
+    <p className="text-xs sm:text-lg md:text-2xl text-white/80 max-w-2xl mx-auto mb-4 sm:mb-10 leading-relaxed">
       {banners[0]?.description || "Discover premium herbal beauty and wellness products crafted from Nepal's finest botanical extracts and traditional wisdom."}
     </p>
 
@@ -167,7 +167,7 @@ export default function HomePage() {
 
       <Link
         to={banners[0]?.buttonUrl || '/products'}
-        className="inline-flex items-center justify-center gap-1 sm:gap-2 px-3 sm:px-8 py-2.5 sm:py-4 bg-brand-gold text-brand-dark font-bold rounded-lg sm:rounded-xl hover:bg-yellow-400 transition-all shadow-xl text-xs sm:text-lg"
+        className="inline-flex items-center justify-center gap-1 sm:gap-2 px-3 sm:px-8 py-2 sm:py-4 bg-brand-gold text-brand-dark font-bold rounded-lg sm:rounded-xl hover:bg-yellow-400 transition-all shadow-xl text-xs sm:text-lg"
       >
         {banners[0]?.buttonLabel || 'Explore Products'}
         <ArrowRight className="w-3 h-3 sm:w-5 sm:h-5" />
