@@ -60,6 +60,8 @@ model SiteSetting {
   instagramUrl String?
   youtubeUrl   String?
   twitterUrl   String?
+  tiktokUrl    String?
+  linkedinUrl  String?
   footerText   String?
   copyright    String?
   updatedAt    DateTime @updatedAt
