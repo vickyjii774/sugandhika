@@ -34,6 +34,7 @@ const DEFAULT_CONTACT = {
 
 export default function ContactPage() {
   const toast = useToast();
+  const { settings } = useSettings();
 
   const [contactInfo, setContactInfo] = useState(DEFAULT_CONTACT);
   const [loading, setLoading] = useState(true);
